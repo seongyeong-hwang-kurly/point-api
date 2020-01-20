@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: point-api-service
+
+
+filebeat:
+  service: pointapi
+  domain: point

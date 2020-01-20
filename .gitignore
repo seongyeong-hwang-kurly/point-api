@@ -1,0 +1,9 @@
+/target/
+/.classpath/
+/.settings/
+/build/
+/.gradle/
+/out/
+lombok.config
+application-*.yml
+**/static/docs/index.html
