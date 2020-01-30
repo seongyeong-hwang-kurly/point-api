@@ -48,6 +48,11 @@ dependencies {
     testImplementation 'com.kurly.cloud:cloud-test-starter:0.0.1'
 }
 
+test {
+    useJUnitPlatform()
+    outputs.dir snippetsDir
+}
+
 asciidoctor {
     inputs.dir snippetsDir
     dependsOn test // gradle build 시 test가 완료된 뒤에 asciidoctor 실행
