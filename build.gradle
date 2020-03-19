@@ -4,17 +4,13 @@ plugins {
     id "io.freefair.lombok" version "4.1.6"
     id "org.springframework.boot" version "2.2.3.RELEASE"
     id "io.spring.dependency-management" version "1.0.8.RELEASE"
-    id "org.asciidoctor.convert" version "2.4.0"
+    id "org.asciidoctor.jvm.convert" version "3.1.0"
 }
 
 group 'com.kurly.cloud'
-version '0.0.1-SNAPSHOT'
+version '1.0.0-SNAPSHOT'
 
 sourceCompatibility = JavaVersion.VERSION_11
-
-ext {
-    snippetsDir = file('build/generated-snippets')
-}
 
 repositories {
     mavenCentral()
@@ -40,28 +36,28 @@ springBoot {
 }
 
 dependencies {
-    implementation "com.kurly.cloud:api-base:1.0.0"
-    implementation "com.kurly.cloud:api-jwt-auth:0.1-SNAPSHOT"
+    implementation "com.kurly.cloud:api-base:2.2.0"
+    implementation "com.kurly.cloud:api-jwt-auth:1.0.0"
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
     implementation 'org.mariadb.jdbc:mariadb-java-client'
 
-    testImplementation 'com.kurly.cloud:cloud-test-starter:0.0.1'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'com.kurly.cloud:cloud-test-starter:1.1.0-SNAPSHOT'
 }
 
 test {
     useJUnitPlatform()
-    outputs.dir snippetsDir
 }
 
 asciidoctor {
-    inputs.dir snippetsDir
+    baseDirFollowsSourceDir()
     dependsOn test // gradle build 시 test가 완료된 뒤에 asciidoctor 실행
 }
 
 bootJar {
     dependsOn asciidoctor
-    from("${asciidoctor.outputDir}/html5") {
+    from("${asciidoctor.outputDir}") {
         into 'static/docs'
     }
-    archiveName "${rootProject.name}.jar" // 이 옵션대신 archiveFileName을 사용해야 하지만 현재 정상 작동하지 않는다
+    archiveFileName.set "${rootProject.name}.jar"
 }
