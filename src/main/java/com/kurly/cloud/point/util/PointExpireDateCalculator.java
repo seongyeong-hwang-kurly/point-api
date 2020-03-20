@@ -7,7 +7,7 @@
  * 1)
  */
 
-package com.kurly.cloud.point.api.util;
+package com.kurly.cloud.point.util;
 
 import java.time.LocalDateTime;
 import lombok.NoArgsConstructor;
