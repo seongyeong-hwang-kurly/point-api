@@ -7,31 +7,40 @@
  * 1)
  */
 
-package com.kurly.cloud.order.entity;
+package com.kurly.cloud.point.api.order.entity;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import org.hibernate.annotations.Where;
 
-@Where(clause = "column='point_ratio'")
 @Entity
-@Table(name = "gd_order_dynamic_column")
-public class OrderDynamicColumn {
+@Table(name = "gd_order")
+public class Order {
   @Id
   @Column(name = "ordno")
   long orderNumber;
 
-  @ManyToOne
-  @JoinColumn(name = "ordno", insertable = false, updatable = false)
-  Order order;
+  @Column(name = "m_no")
+  long memberNumber;
 
-  @Column(name = "column")
-  String column;
+  @Column(name = "cdt")
+  LocalDateTime payDateTime;
 
-  @Column(name = "value")
-  String value;
+  @Column(name = "prn_settleprice")
+  int payPrice;
+
+  @Column(name = "step")
+  int orderStatus;
+
+  @Column(name = "step2")
+  int orderProcessCode;
+
+  @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
+  List<OrderDynamicColumn> orderDynamicColumns;
+
 }

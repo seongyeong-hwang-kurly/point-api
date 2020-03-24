@@ -7,13 +7,11 @@
  * 1)
  */
 
-package com.kurly.cloud;
+package com.kurly.cloud.point.api;
 
-import com.kurly.cloud.api.common.annotation.EnableKurlyResourceConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@EnableKurlyResourceConfig
 @SpringBootApplication
 public class PointApiApplication {
   public static void main(String[] args) {

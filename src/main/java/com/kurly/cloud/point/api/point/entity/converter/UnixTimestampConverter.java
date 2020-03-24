@@ -7,7 +7,7 @@
  * 1)
  */
 
-package com.kurly.cloud.point.entity.converter;
+package com.kurly.cloud.point.api.point.entity.converter;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;

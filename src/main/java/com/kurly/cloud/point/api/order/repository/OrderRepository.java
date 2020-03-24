@@ -7,12 +7,12 @@
  * 1)
  */
 
-package com.kurly.cloud.point.repository;
+package com.kurly.cloud.point.api.order.repository;
 
-import com.kurly.cloud.point.entity.PointInfoHistory;
+import com.kurly.cloud.point.api.order.entity.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PointInfoHistoryRepository extends JpaRepository<PointInfoHistory, Long> {
+public interface OrderRepository extends JpaRepository<Order, Long> {
 }
