@@ -7,7 +7,7 @@
  * 1)
  */
 
-package com.kurly.cloud.point;
+package com.kurly.cloud;
 
 import com.kurly.cloud.api.common.annotation.EnableKurlyResourceConfig;
 import org.springframework.boot.SpringApplication;
