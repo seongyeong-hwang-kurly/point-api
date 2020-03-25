@@ -16,6 +16,7 @@ import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -46,4 +47,20 @@ public class PointInfo {
   @Convert(converter = UnixTimestampConverter.class)
   @Column(name = "update_time")
   LocalDateTime updateTime;
+
+  @Transient
+  public void plusPoint(PointInfo pointInfo, int freePoint, int cashPoint){
+    pointInfo.setTotalPoint(pointInfo.getTotalPoint() + freePoint + cashPoint);
+    pointInfo.setFreePoint(pointInfo.getFreePoint() + freePoint);
+    pointInfo.setCashPoint(pointInfo.getCashPoint() + cashPoint);
+    pointInfo.setUpdateTime(LocalDateTime.now());
+  }
+
+  @Transient
+  public void minusPoint(PointInfo pointInfo, int freePoint, int cashPoint){
+    pointInfo.setTotalPoint(pointInfo.getTotalPoint() - freePoint - cashPoint);
+    pointInfo.setFreePoint(pointInfo.getFreePoint() - freePoint);
+    pointInfo.setCashPoint(pointInfo.getCashPoint() - cashPoint);
+    pointInfo.setUpdateTime(LocalDateTime.now());
+  }
 }
