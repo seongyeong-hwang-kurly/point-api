@@ -16,7 +16,7 @@ import javax.persistence.AttributeConverter;
 public class UnixTimestampConverter implements AttributeConverter<LocalDateTime, Long> {
   @Override
   public Long convertToDatabaseColumn(LocalDateTime attribute) {
-    return attribute != null ? Timestamp.valueOf(attribute).getTime() / 1000 : null;
+    return attribute != null ? Timestamp.valueOf(attribute).getTime() / 1000 : 0;
   }
 
   @Override

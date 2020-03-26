@@ -19,6 +19,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -44,14 +45,16 @@ public class PointInfoHistory {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   long seq;
 
+  @NotNull
   @Column(name = "mk_point_info_m_no")
-  long memberNumber;
+  Long memberNumber;
 
   @Column(name = "ordno")
   long orderNumber;
 
+  @NotNull
   @Column(name = "history_type")
-  int historyType;
+  Integer historyType;
 
   @Column(name = "total_point")
   int totalPoint;
