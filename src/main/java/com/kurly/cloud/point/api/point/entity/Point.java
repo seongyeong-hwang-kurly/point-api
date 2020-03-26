@@ -18,8 +18,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,46 +32,54 @@ import org.hibernate.annotations.Type;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "mk_point_list_history",
+@Table(name = "mk_point_list",
     indexes = {
-        @Index(columnList = "ordno")
-        , @Index(columnList = "action_m_no")
+        @Index(columnList = "m_no")
+        , @Index(columnList = "ordno")
+        , @Index(columnList = "point_type")
         , @Index(columnList = "reg_time")
+        , @Index(columnList = "expire_time")
     }
 )
-public class PointListHistory {
+public class Point {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   long seq;
 
-  @ManyToOne
-  @JoinColumn(name = "mk_point_list_seq")
-  PointList pointList;
+  @Column(name = "m_no")
+  long memberNumber;
 
   @Column(name = "ordno")
   long orderNumber;
 
-  @Column(name = "point")
-  int point;
+  @Column(name = "charge")
+  int charge;
 
-  @Column(name = "history_type")
-  int historyType;
+  @Column(name = "remain")
+  int remain;
 
-  @Column(name = "detail")
-  String detail;
+  @Column(name = "point_ratio")
+  float pointRatio;
 
-  @Column(name = "memo")
-  String memo;
+  @Column(name = "point_type")
+  int pointType;
+
+  @Column(name = "refund_type")
+  int refundType;
+
+  @Type(type = "numeric_boolean")
+  @Column(name = "is_payment")
+  boolean payment;
 
   @Type(type = "numeric_boolean")
   @Column(name = "settle_flag")
   boolean settle;
 
-  @Column(name = "action_m_no")
-  long actionMemberNumber;
-
   @Convert(converter = UnixTimestampConverter.class)
   @Column(name = "reg_time")
   LocalDateTime regTime;
 
+  @Convert(converter = UnixTimestampConverter.class)
+  @Column(name = "expire_time")
+  LocalDateTime expireTime;
 }
