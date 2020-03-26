@@ -52,7 +52,7 @@ public class PointExpireDateCalculatorTest {
         final LocalDateTime 내년_분기_말일 = LocalDateTime.of(2021, 3, 31, 0, 0, 0);
 
         for (LocalDateTime 입력일 : given입력일()) {
-          assertThat(subject(입력일)).isEqualTo(내년_분기_말일);
+          assertThat(subject(입력일)).isEqualToIgnoringHours(내년_분기_말일);
         }
       }
     }
@@ -73,7 +73,7 @@ public class PointExpireDateCalculatorTest {
         final LocalDateTime 내년_분기_말일 = LocalDateTime.of(2021, 6, 30, 0, 0, 0);
 
         for (LocalDateTime 입력일 : given입력일()) {
-          assertThat(subject(입력일)).isEqualTo(내년_분기_말일);
+          assertThat(subject(입력일)).isEqualToIgnoringHours(내년_분기_말일);
         }
       }
     }
@@ -94,7 +94,7 @@ public class PointExpireDateCalculatorTest {
         final LocalDateTime 내년_분기_말일 = LocalDateTime.of(2021, 9, 30, 0, 0, 0);
 
         for (LocalDateTime 입력일 : given입력일()) {
-          assertThat(subject(입력일)).isEqualTo(내년_분기_말일);
+          assertThat(subject(입력일)).isEqualToIgnoringHours(내년_분기_말일);
         }
       }
     }
@@ -115,7 +115,7 @@ public class PointExpireDateCalculatorTest {
         final LocalDateTime 내년_분기_말일 = LocalDateTime.of(2021, 12, 31, 0, 0, 0);
 
         for (LocalDateTime 입력일 : given입력일()) {
-          assertThat(subject(입력일)).isEqualTo(내년_분기_말일);
+          assertThat(subject(입력일)).isEqualToIgnoringHours(내년_분기_말일);
         }
       }
     }
@@ -138,7 +138,7 @@ public class PointExpireDateCalculatorTest {
       @Test
       @DisplayName("다음해 같은 일을 리턴해야 한다.")
       void test() {
-        assertThat(subject(입력일)).isEqualTo(입력일.plusYears(1));
+        assertThat(subject(입력일)).isEqualToIgnoringHours(입력일.plusYears(1));
       }
     }
 
@@ -151,7 +151,7 @@ public class PointExpireDateCalculatorTest {
       @Test
       @DisplayName("다음 해 2월 28일을 리턴해야 한다.")
       void test() {
-        assertThat(subject(입력일)).isEqualTo(입력일.plusYears(1));
+        assertThat(subject(입력일)).isEqualToIgnoringHours(입력일.plusYears(1));
       }
     }
   }
@@ -169,7 +169,7 @@ public class PointExpireDateCalculatorTest {
       @DisplayName("N+1일 후를 리턴해야 한다.")
       public void test() {
         LocalDateTime expireDate = PointExpireDateCalculator.calculateDaysAfter(입력일, 30);
-        assertThat(expireDate).isEqualTo(입력일.plusDays(30));
+        assertThat(expireDate).isEqualToIgnoringHours(입력일.plusDays(30));
       }
     }
   }
