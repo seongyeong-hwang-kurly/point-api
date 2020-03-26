@@ -7,12 +7,22 @@
  * 1)
  */
 
-package com.kurly.cloud.point.api.point.repository;
+package com.kurly.cloud.point.api.point.domain;
 
-import com.kurly.cloud.point.api.point.entity.PointInfo;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import lombok.Builder;
+import lombok.Getter;
+import org.springframework.data.domain.Sort;
 
-@Repository
-public interface PointInfoRepository extends JpaRepository<PointInfo, Long> {
+@Getter
+@Builder
+public class MemberPointHistoryListRequest {
+
+  private long memberNumber;
+  private boolean includeHidden;
+
+  int page;
+  @Builder.Default
+  int size = 10;
+  @Builder.Default
+  Sort sort = Sort.by(Sort.Direction.DESC, "regTime");
 }

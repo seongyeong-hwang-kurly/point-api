@@ -14,14 +14,18 @@ import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 
 @Builder
 @Setter
@@ -29,11 +33,28 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "mk_point_info")
-public class PointInfo {
+@Table(name = "mk_point_info_history",
+    indexes = {
+        @Index(columnList = "mk_point_info_m_no")
+        , @Index(columnList = "ordno")
+        , @Index(columnList = "reg_time")
+    }
+)
+public class MemberPointHistory {
   @Id
-  @Column(name = "m_no")
-  long memberNumber;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  long seq;
+
+  @NotNull
+  @Column(name = "mk_point_info_m_no")
+  Long memberNumber;
+
+  @Column(name = "ordno")
+  long orderNumber;
+
+  @NotNull
+  @Column(name = "history_type")
+  Integer historyType;
 
   @Column(name = "total_point")
   int totalPoint;
@@ -44,23 +65,21 @@ public class PointInfo {
   @Column(name = "cash_point")
   int cashPoint;
 
+  @Column(name = "detail")
+  String detail;
+
+  @Column(name = "memo")
+  String memo;
+
+  @Type(type = "numeric_boolean")
+  @Column(name = "is_hidden")
+  boolean hidden;
+
   @Convert(converter = UnixTimestampConverter.class)
-  @Column(name = "update_time")
-  LocalDateTime updateTime;
+  @Column(name = "reg_time")
+  LocalDateTime regTime;
 
-  @Transient
-  public void plusPoint(PointInfo pointInfo, int freePoint, int cashPoint){
-    pointInfo.setTotalPoint(pointInfo.getTotalPoint() + freePoint + cashPoint);
-    pointInfo.setFreePoint(pointInfo.getFreePoint() + freePoint);
-    pointInfo.setCashPoint(pointInfo.getCashPoint() + cashPoint);
-    pointInfo.setUpdateTime(LocalDateTime.now());
-  }
-
-  @Transient
-  public void minusPoint(PointInfo pointInfo, int freePoint, int cashPoint){
-    pointInfo.setTotalPoint(pointInfo.getTotalPoint() - freePoint - cashPoint);
-    pointInfo.setFreePoint(pointInfo.getFreePoint() - freePoint);
-    pointInfo.setCashPoint(pointInfo.getCashPoint() - cashPoint);
-    pointInfo.setUpdateTime(LocalDateTime.now());
-  }
+  @Convert(converter = UnixTimestampConverter.class)
+  @Column(name = "expire_time")
+  LocalDateTime expireTime;
 }

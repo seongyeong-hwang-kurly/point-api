@@ -14,17 +14,14 @@ import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Index;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Type;
 
 @Builder
 @Setter
@@ -32,26 +29,11 @@ import org.hibernate.annotations.Type;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "mk_point_info_history",
-    indexes = {
-        @Index(columnList = "mk_point_info_m_no")
-        , @Index(columnList = "ordno")
-        , @Index(columnList = "reg_time")
-    }
-)
-public class PointInfoHistory {
+@Table(name = "mk_point_info")
+public class MemberPoint {
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  long seq;
-
-  @Column(name = "mk_point_info_m_no")
+  @Column(name = "m_no")
   long memberNumber;
-
-  @Column(name = "ordno")
-  long orderNumber;
-
-  @Column(name = "history_type")
-  int historyType;
 
   @Column(name = "total_point")
   int totalPoint;
@@ -62,21 +44,23 @@ public class PointInfoHistory {
   @Column(name = "cash_point")
   int cashPoint;
 
-  @Column(name = "detail")
-  String detail;
-
-  @Column(name = "memo")
-  String memo;
-
-  @Type(type = "numeric_boolean")
-  @Column(name = "is_hidden")
-  boolean hidden;
-
   @Convert(converter = UnixTimestampConverter.class)
-  @Column(name = "reg_time")
-  LocalDateTime regTime;
+  @Column(name = "update_time")
+  LocalDateTime updateTime;
 
-  @Convert(converter = UnixTimestampConverter.class)
-  @Column(name = "expire_time")
-  LocalDateTime expireTime;
+  @Transient
+  public void plusPoint(MemberPoint memberPoint, int freePoint, int cashPoint){
+    memberPoint.setTotalPoint(memberPoint.getTotalPoint() + freePoint + cashPoint);
+    memberPoint.setFreePoint(memberPoint.getFreePoint() + freePoint);
+    memberPoint.setCashPoint(memberPoint.getCashPoint() + cashPoint);
+    memberPoint.setUpdateTime(LocalDateTime.now());
+  }
+
+  @Transient
+  public void minusPoint(MemberPoint memberPoint, int freePoint, int cashPoint){
+    memberPoint.setTotalPoint(memberPoint.getTotalPoint() - freePoint - cashPoint);
+    memberPoint.setFreePoint(memberPoint.getFreePoint() - freePoint);
+    memberPoint.setCashPoint(memberPoint.getCashPoint() - cashPoint);
+    memberPoint.setUpdateTime(LocalDateTime.now());
+  }
 }

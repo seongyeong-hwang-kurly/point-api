@@ -9,10 +9,16 @@
 
 package com.kurly.cloud.point.api.point.repository;
 
-import com.kurly.cloud.point.api.point.entity.PointInfoHistory;
+import com.kurly.cloud.point.api.point.entity.MemberPointHistory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PointInfoHistoryRepository extends JpaRepository<PointInfoHistory, Long> {
+public interface MemberPointHistoryRepository extends JpaRepository<MemberPointHistory, Long> {
+  int deleteByMemberNumber(long memberNumber);
+  Page<MemberPointHistory> getAllByMemberNumberAndHidden(long memberNumber, boolean hidden,
+                                                         Pageable pageable);
+  Page<MemberPointHistory> getAllByMemberNumber(long memberNumber, Pageable pageable);
 }
