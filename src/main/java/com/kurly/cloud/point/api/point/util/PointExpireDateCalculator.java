@@ -16,10 +16,14 @@ import org.springframework.beans.factory.annotation.Value;
 @NoArgsConstructor
 public class PointExpireDateCalculator {
 
-  @Value("${pointExpireDefaultStrategy:QUARTER}")
-  private String DEFAULT_STRATEGY = "QUARTER";
+  private static String DEFAULT_STRATEGY = "QUARTER";
 
-  public PointExpireDateCalculator(String strategy) {
+  public PointExpireDateCalculator(String strategy){
+    DEFAULT_STRATEGY = strategy;
+  }
+
+  @Value("${pointExpireDefaultStrategy:QUARTER}")
+  public void setStrategy(String strategy) {
     DEFAULT_STRATEGY = strategy;
   }
 
@@ -29,8 +33,8 @@ public class PointExpireDateCalculator {
    * @param from 시작 기준일
    * @return 만료일
    */
-  public LocalDateTime calculateNextYear(LocalDateTime from) {
-    return from.plusYears(1);
+  public static LocalDateTime calculateNextYear(LocalDateTime from) {
+    return from.plusYears(1).withHour(23).withMinute(59).withSecond(59);
   }
 
   /**
@@ -40,8 +44,8 @@ public class PointExpireDateCalculator {
    * @param offset N일
    * @return 만료일
    */
-  public LocalDateTime calculateDaysAfter(LocalDateTime from, int offset) {
-    return from.plusDays(offset);
+  public static LocalDateTime calculateDaysAfter(LocalDateTime from, int offset) {
+    return from.plusDays(offset).withHour(23).withMinute(59).withSecond(59);
   }
 
   /**
@@ -50,13 +54,13 @@ public class PointExpireDateCalculator {
    * @param from 시작 기준 일
    * @return 만료일
    */
-  public LocalDateTime calculateNextYearQuarter(LocalDateTime from) {
+  public static LocalDateTime calculateNextYearQuarter(LocalDateTime from) {
     int quarter = (int) Math.ceil(from.getMonth().getValue() / 3f); //현재 월을 3으로 나누면 분기
     int quarterMonth = quarter * 3; // 분기에 3을 곱하면 분기 말월
     LocalDateTime quarterMonthLastDay = LocalDateTime.of(from.getYear(), quarterMonth, 1, 0, 0);
     //분기 말월의 다음달 1일에서 -1일을 하면 분기 말일
     quarterMonthLastDay = quarterMonthLastDay.plusMonths(1).minusDays(1);
-    return quarterMonthLastDay.plusYears(1);
+    return quarterMonthLastDay.plusYears(1).withHour(23).withMinute(59).withSecond(59);
   }
 
   /**
@@ -65,7 +69,7 @@ public class PointExpireDateCalculator {
    * @param from 시작 기준 일
    * @return 만료 일
    */
-  public LocalDateTime calculateDefault(LocalDateTime from) {
+  public static LocalDateTime calculateDefault(LocalDateTime from) {
     switch (DEFAULT_STRATEGY) {
       case "QUARTER":
         return calculateNextYearQuarter(from);

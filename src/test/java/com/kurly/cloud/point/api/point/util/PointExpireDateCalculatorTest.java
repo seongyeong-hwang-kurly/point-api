@@ -24,14 +24,6 @@ import static org.assertj.core.api.Assertions.fail;
 @DisplayName("PointExpireDateCalculator class")
 public class PointExpireDateCalculatorTest {
 
-  PointExpireDateCalculator givenCalculator() {
-    return new PointExpireDateCalculator();
-  }
-
-  PointExpireDateCalculator givenCalculator(String defaultConfig) {
-    return new PointExpireDateCalculator(defaultConfig);
-  }
-
   LocalDateTime given(MonthDay monthDay) {
     return LocalDateTime.of(2020, monthDay.getMonth(), monthDay.getDayOfMonth(), 0, 0, 0);
   }
@@ -41,7 +33,7 @@ public class PointExpireDateCalculatorTest {
   class DescribeCalculateNextYearQuarter {
 
     LocalDateTime subject(LocalDateTime 입력일) {
-      return givenCalculator().calculateNextYearQuarter(입력일);
+      return PointExpireDateCalculator.calculateNextYearQuarter(입력일);
     }
 
     @Nested
@@ -134,7 +126,7 @@ public class PointExpireDateCalculatorTest {
   class DescribeCalculateNextYear {
 
     LocalDateTime subject(LocalDateTime 입력일) {
-      return givenCalculator().calculateNextYear(입력일);
+      return PointExpireDateCalculator.calculateNextYear(입력일);
     }
 
     @Nested
@@ -176,8 +168,7 @@ public class PointExpireDateCalculatorTest {
       @Test
       @DisplayName("N+1일 후를 리턴해야 한다.")
       public void test() {
-        PointExpireDateCalculator calculator = givenCalculator();
-        LocalDateTime expireDate = calculator.calculateDaysAfter(입력일, 30);
+        LocalDateTime expireDate = PointExpireDateCalculator.calculateDaysAfter(입력일, 30);
         assertThat(expireDate).isEqualTo(입력일.plusDays(30));
       }
     }
@@ -191,19 +182,23 @@ public class PointExpireDateCalculatorTest {
     @DisplayName("입력값이 임의의 날짜 일 때")
     class ContextWithDate {
 
+      void givenCalculator(String strategy) {
+        new PointExpireDateCalculator(strategy);
+      }
+
       LocalDateTime 입력일 = given(MonthDay.of(Month.JANUARY, 1));
 
       @Nested
       @DisplayName("기본설정이 'QUARTER'로 설정 된다면")
       class Context0 {
 
-        PointExpireDateCalculator calculator = givenCalculator("QUARTER");
 
         @Test
         @DisplayName("calculateNextYearQuarter 와 같은 값을 리턴해야 한다.")
         public void test() {
-          LocalDateTime expireDate = calculator.calculateDefault(입력일);
-          assertThat(expireDate).isEqualTo(calculator.calculateNextYearQuarter(입력일));
+          givenCalculator("QUARTER");
+          LocalDateTime expireDate = PointExpireDateCalculator.calculateDefault(입력일);
+          assertThat(expireDate).isEqualTo(PointExpireDateCalculator.calculateNextYearQuarter(입력일));
         }
       }
 
@@ -211,13 +206,12 @@ public class PointExpireDateCalculatorTest {
       @DisplayName("기본설정이 'NEXT_YEAR'로 설정 된다면")
       class Context1 {
 
-        PointExpireDateCalculator calculator = givenCalculator("NEXT_YEAR");
-
         @Test
         @DisplayName("calculateNextYear 와 같은 값을 리턴해야 한다.")
         public void test() {
-          LocalDateTime expireDate = calculator.calculateDefault(입력일);
-          assertThat(expireDate).isEqualTo(calculator.calculateNextYear(입력일));
+          givenCalculator("NEXT_YEAR");
+          LocalDateTime expireDate = PointExpireDateCalculator.calculateDefault(입력일);
+          assertThat(expireDate).isEqualTo(PointExpireDateCalculator.calculateNextYear(입력일));
         }
       }
 
@@ -225,13 +219,12 @@ public class PointExpireDateCalculatorTest {
       @DisplayName("기본설정이 알 수 없는 값 이면")
       class Context2 {
 
-        PointExpireDateCalculator calculator = givenCalculator("SOME_CONFIG");
-
         @Test
         @DisplayName("예외가 발생해야 한다.")
         public void test() {
           try {
-            calculator.calculateDefault(입력일);
+            givenCalculator("SOME_CONFIG");
+            PointExpireDateCalculator.calculateDefault(입력일);
             fail("실행되면 안되는 코드");
           } catch (IllegalStateException expected) {
             assertThat(expected.getMessage()).isEqualTo("존재하지 않는 적립금 만료 정책입니다");
