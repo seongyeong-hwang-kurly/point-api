@@ -9,17 +9,14 @@
 
 package com.kurly.cloud.point.api.point.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurly.cloud.point.api.point.domain.HistoryType;
-import com.kurly.cloud.point.api.point.domain.PointInfoHistoryDto;
-import com.kurly.cloud.point.api.point.domain.PointInfoHistoryInsertRequestDto;
-import com.kurly.cloud.point.api.point.domain.PointInfoHistoryListRequestDto;
-import com.kurly.cloud.point.api.point.repository.PointInfoHistoryRepository;
+import com.kurly.cloud.point.api.point.domain.MemberPointHistoryDto;
+import com.kurly.cloud.point.api.point.domain.MemberPointHistoryInsertRequest;
+import com.kurly.cloud.point.api.point.domain.MemberPointHistoryListRequest;
+import com.kurly.cloud.point.api.point.repository.MemberPointHistoryRepository;
 import com.kurly.cloud.point.api.point.util.PointExpireDateCalculator;
 import java.time.LocalDateTime;
 import javax.validation.ConstraintViolationException;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -36,14 +33,14 @@ import static org.assertj.core.api.Assertions.fail;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-@DisplayName("PointInfoHistoryService class")
-class PointInfoHistoryServiceTest {
+@DisplayName("MemberPointHistoryService class")
+class MemberPointHistoryServiceTest {
 
   @Autowired
-  PointInfoHistoryService pointInfoHistoryService;
+  MemberPointHistoryService memberPointHistoryService;
 
   @Autowired
-  PointInfoHistoryRepository pointInfoHistoryRepository;
+  MemberPointHistoryRepository memberPointHistoryRepository;
 
   long givenMemberNumber() {
     return 999999999;
@@ -56,20 +53,20 @@ class PointInfoHistoryServiceTest {
     @Nested
     @DisplayName("MemberNumber가 없으면")
     class Context0 {
-      PointInfoHistoryInsertRequestDto givenExceptMemberNumber() {
-        return PointInfoHistoryInsertRequestDto.builder()
+      MemberPointHistoryInsertRequest givenExceptMemberNumber() {
+        return MemberPointHistoryInsertRequest.builder()
             .type(HistoryType.TYPE_1.getValue())
             .build();
       }
 
-      PointInfoHistoryDto subject(PointInfoHistoryInsertRequestDto pointInfoHistoryInsertRequestDto) {
-        return pointInfoHistoryService.insertHistory(pointInfoHistoryInsertRequestDto);
+      MemberPointHistoryDto subject(MemberPointHistoryInsertRequest memberPointHistoryInsertRequest) {
+        return memberPointHistoryService.insertHistory(memberPointHistoryInsertRequest);
       }
 
       @DisplayName("ConstraintViolationException 예외가 발생해야 한다")
       @Test
       void test() {
-        PointInfoHistoryInsertRequestDto given = givenExceptMemberNumber();
+        MemberPointHistoryInsertRequest given = givenExceptMemberNumber();
         try {
           subject(given);
           fail("실행되면 안되는 코드");
@@ -82,20 +79,20 @@ class PointInfoHistoryServiceTest {
     @Nested
     @DisplayName("HistoryType이 없으면")
     class Context1 {
-      PointInfoHistoryInsertRequestDto givenExceptHistoryType() {
-        return PointInfoHistoryInsertRequestDto.builder()
+      MemberPointHistoryInsertRequest givenExceptHistoryType() {
+        return MemberPointHistoryInsertRequest.builder()
             .memberNumber(givenMemberNumber())
             .build();
       }
 
-      PointInfoHistoryDto subject(PointInfoHistoryInsertRequestDto pointInfoHistoryInsertRequestDto) {
-        return pointInfoHistoryService.insertHistory(pointInfoHistoryInsertRequestDto);
+      MemberPointHistoryDto subject(MemberPointHistoryInsertRequest memberPointHistoryInsertRequest) {
+        return memberPointHistoryService.insertHistory(memberPointHistoryInsertRequest);
       }
 
       @DisplayName("ConstraintViolationException 예외가 발생해야 한다")
       @Test
       void test() {
-        PointInfoHistoryInsertRequestDto given = givenExceptHistoryType();
+        MemberPointHistoryInsertRequest given = givenExceptHistoryType();
         try {
           subject(given);
           fail("실행되면 안되는 코드");
@@ -110,8 +107,8 @@ class PointInfoHistoryServiceTest {
     @Transactional
     @DisplayName("올바른 값이 입력 된다면")
     class Context2 {
-      PointInfoHistoryInsertRequestDto givenRequest() {
-        return PointInfoHistoryInsertRequestDto.builder()
+      MemberPointHistoryInsertRequest givenRequest() {
+        return MemberPointHistoryInsertRequest.builder()
             .freePoint(100)
             .cashPoint(10)
             .detail("설명")
@@ -125,15 +122,15 @@ class PointInfoHistoryServiceTest {
             .build();
       }
 
-      PointInfoHistoryDto subject(PointInfoHistoryInsertRequestDto pointInfoHistoryInsertRequestDto) {
-        return pointInfoHistoryService.insertHistory(pointInfoHistoryInsertRequestDto);
+      MemberPointHistoryDto subject(MemberPointHistoryInsertRequest memberPointHistoryInsertRequest) {
+        return memberPointHistoryService.insertHistory(memberPointHistoryInsertRequest);
       }
 
       @DisplayName("입력하고 값을 리턴해야 한다")
       @Test
       void test() {
-        PointInfoHistoryInsertRequestDto given = givenRequest();
-        PointInfoHistoryDto subject = subject(given);
+        MemberPointHistoryInsertRequest given = givenRequest();
+        MemberPointHistoryDto subject = subject(given);
 
         assertThat(subject.getSeq()).isNotZero();
         assertThat(subject.getOrderNumber()).isEqualTo(given.getOrderNumber());
@@ -151,14 +148,14 @@ class PointInfoHistoryServiceTest {
   @DisplayName("적립금 이력을 조회 할 때")
   class DescribeGetHistoryList {
 
-    Page<PointInfoHistoryDto> subject(PointInfoHistoryListRequestDto request) {
-      return pointInfoHistoryService.getHistoryList(request);
+    Page<MemberPointHistoryDto> subject(MemberPointHistoryListRequest request) {
+      return memberPointHistoryService.getHistoryList(request);
     }
 
     void insertHistoryWithHidden(boolean hidden, int count) {
       for (int i = 0; i < count ; i++) {
-        pointInfoHistoryService.insertHistory(
-            PointInfoHistoryInsertRequestDto.builder()
+        memberPointHistoryService.insertHistory(
+            MemberPointHistoryInsertRequest.builder()
                 .freePoint(100)
                 .cashPoint(10)
                 .detail("설명")
@@ -185,8 +182,8 @@ class PointInfoHistoryServiceTest {
     @Nested
     @DisplayName("숨겨진 이력을 모두 조회한다면")
     class Context0 {
-      PointInfoHistoryListRequestDto givenRequest() {
-        return PointInfoHistoryListRequestDto.builder()
+      MemberPointHistoryListRequest givenRequest() {
+        return MemberPointHistoryListRequest.builder()
             .memberNumber(givenMemberNumber())
             .includeHidden(true)
             .build();
@@ -195,7 +192,7 @@ class PointInfoHistoryServiceTest {
       @Test
       @DisplayName("총 20개의 이력이 조회 되어야 한다")
       void test() {
-        Page<PointInfoHistoryDto> historyList = subject(givenRequest());
+        Page<MemberPointHistoryDto> historyList = subject(givenRequest());
         assertThat(historyList.getTotalElements()).isEqualTo(20);
       }
     }
@@ -206,8 +203,8 @@ class PointInfoHistoryServiceTest {
     @Nested
     @DisplayName("숨겨진 이력을 제외하고 조회한다면")
     class Context1 {
-      PointInfoHistoryListRequestDto givenRequest() {
-        return PointInfoHistoryListRequestDto.builder()
+      MemberPointHistoryListRequest givenRequest() {
+        return MemberPointHistoryListRequest.builder()
             .memberNumber(givenMemberNumber())
             .includeHidden(false)
             .build();
@@ -216,7 +213,7 @@ class PointInfoHistoryServiceTest {
       @Test
       @DisplayName("총 10개의 이력이 조회 되어야 한다")
       void test() {
-        Page<PointInfoHistoryDto> historyList = subject(givenRequest());
+        Page<MemberPointHistoryDto> historyList = subject(givenRequest());
         assertThat(historyList.getTotalElements()).isEqualTo(10);
       }
     }

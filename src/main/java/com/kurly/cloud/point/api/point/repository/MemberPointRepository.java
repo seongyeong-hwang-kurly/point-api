@@ -9,10 +9,10 @@
 
 package com.kurly.cloud.point.api.point.repository;
 
-import com.kurly.cloud.point.api.point.entity.PointInfo;
+import com.kurly.cloud.point.api.point.entity.MemberPoint;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PointInfoRepository extends JpaRepository<PointInfo, Long> {
+public interface MemberPointRepository extends JpaRepository<MemberPoint, Long> {
 }

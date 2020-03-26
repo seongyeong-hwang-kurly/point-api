@@ -30,7 +30,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 @Table(name = "mk_point_info")
-public class PointInfo {
+public class MemberPoint {
   @Id
   @Column(name = "m_no")
   long memberNumber;
@@ -49,18 +49,18 @@ public class PointInfo {
   LocalDateTime updateTime;
 
   @Transient
-  public void plusPoint(PointInfo pointInfo, int freePoint, int cashPoint){
-    pointInfo.setTotalPoint(pointInfo.getTotalPoint() + freePoint + cashPoint);
-    pointInfo.setFreePoint(pointInfo.getFreePoint() + freePoint);
-    pointInfo.setCashPoint(pointInfo.getCashPoint() + cashPoint);
-    pointInfo.setUpdateTime(LocalDateTime.now());
+  public void plusPoint(MemberPoint memberPoint, int freePoint, int cashPoint){
+    memberPoint.setTotalPoint(memberPoint.getTotalPoint() + freePoint + cashPoint);
+    memberPoint.setFreePoint(memberPoint.getFreePoint() + freePoint);
+    memberPoint.setCashPoint(memberPoint.getCashPoint() + cashPoint);
+    memberPoint.setUpdateTime(LocalDateTime.now());
   }
 
   @Transient
-  public void minusPoint(PointInfo pointInfo, int freePoint, int cashPoint){
-    pointInfo.setTotalPoint(pointInfo.getTotalPoint() - freePoint - cashPoint);
-    pointInfo.setFreePoint(pointInfo.getFreePoint() - freePoint);
-    pointInfo.setCashPoint(pointInfo.getCashPoint() - cashPoint);
-    pointInfo.setUpdateTime(LocalDateTime.now());
+  public void minusPoint(MemberPoint memberPoint, int freePoint, int cashPoint){
+    memberPoint.setTotalPoint(memberPoint.getTotalPoint() - freePoint - cashPoint);
+    memberPoint.setFreePoint(memberPoint.getFreePoint() - freePoint);
+    memberPoint.setCashPoint(memberPoint.getCashPoint() - cashPoint);
+    memberPoint.setUpdateTime(LocalDateTime.now());
   }
 }

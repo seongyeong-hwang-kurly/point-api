@@ -15,7 +15,7 @@ import org.springframework.data.domain.Sort;
 
 @Getter
 @Builder
-public class PointInfoHistoryListRequestDto {
+public class MemberPointHistoryListRequest {
 
   private long memberNumber;
   private boolean includeHidden;

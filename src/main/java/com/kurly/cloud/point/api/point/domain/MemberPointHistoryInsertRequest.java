@@ -10,14 +10,14 @@
 package com.kurly.cloud.point.api.point.domain;
 
 
-import com.kurly.cloud.point.api.point.entity.PointInfoHistory;
+import com.kurly.cloud.point.api.point.entity.MemberPointHistory;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
-public class PointInfoHistoryInsertRequestDto {
+public class MemberPointHistoryInsertRequest {
 
   private int cashPoint;
   private int freePoint;
@@ -33,8 +33,8 @@ public class PointInfoHistoryInsertRequestDto {
   private LocalDateTime regTime = LocalDateTime.now();
   private LocalDateTime expireTime;
 
-  public PointInfoHistory toEntity() {
-    return PointInfoHistory.builder()
+  public MemberPointHistory toEntity() {
+    return MemberPointHistory.builder()
         .detail(this.detail)
         .cashPoint(this.cashPoint)
         .freePoint(this.freePoint)

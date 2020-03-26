@@ -9,14 +9,14 @@
 
 package com.kurly.cloud.point.api.point.domain;
 
-import com.kurly.cloud.point.api.point.entity.PointInfoHistory;
+import com.kurly.cloud.point.api.point.entity.MemberPointHistory;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
-public class PointInfoHistoryDto {
+public class MemberPointHistoryDto {
 
   long seq;
   long orderNumber;
@@ -25,14 +25,14 @@ public class PointInfoHistoryDto {
   LocalDateTime regDateTime;
   LocalDateTime expireDateTime;
 
-  public static PointInfoHistoryDto fromEntity(PointInfoHistory pointInfoHistory) {
-    return PointInfoHistoryDto.builder()
-        .seq(pointInfoHistory.getSeq())
-        .orderNumber(pointInfoHistory.getOrderNumber())
-        .point(pointInfoHistory.getTotalPoint())
-        .detail(pointInfoHistory.getDetail())
-        .regDateTime(pointInfoHistory.getRegTime())
-        .expireDateTime(pointInfoHistory.getExpireTime())
+  public static MemberPointHistoryDto fromEntity(MemberPointHistory memberPointHistory) {
+    return MemberPointHistoryDto.builder()
+        .seq(memberPointHistory.getSeq())
+        .orderNumber(memberPointHistory.getOrderNumber())
+        .point(memberPointHistory.getTotalPoint())
+        .detail(memberPointHistory.getDetail())
+        .regDateTime(memberPointHistory.getRegTime())
+        .expireDateTime(memberPointHistory.getExpireTime())
         .build();
   }
 }

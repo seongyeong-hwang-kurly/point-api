@@ -40,7 +40,7 @@ import org.hibernate.annotations.Type;
         , @Index(columnList = "reg_time")
     }
 )
-public class PointInfoHistory {
+public class MemberPointHistory {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   long seq;
