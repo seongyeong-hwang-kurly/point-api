@@ -25,28 +25,23 @@ class MemberPointHistoryService {
 
   private final MemberPointHistoryRepository memberPointHistoryRepository;
 
-  public MemberPointHistoryDto insertHistory(MemberPointHistoryInsertRequest request) {
+  MemberPointHistory insertHistory(MemberPointHistoryInsertRequest request) {
     MemberPointHistory memberPointHistory = memberPointHistoryRepository.save(request.toEntity());
-    return MemberPointHistoryDto.fromEntity(memberPointHistory);
+    return memberPointHistory;
   }
 
-  public Page<MemberPointHistoryDto> getHistoryList(MemberPointHistoryListRequest request) {
-    Page<MemberPointHistory> memberPointHistories;
-
+  Page<MemberPointHistory> getHistoryList(MemberPointHistoryListRequest request) {
     if (request.isIncludeHidden()) {
-      memberPointHistories = memberPointHistoryRepository.getAllByMemberNumber(
+      return memberPointHistoryRepository.getAllByMemberNumber(
           request.getMemberNumber()
           , PageRequest.of(request.getPage(), request.getSize(), request.getSort())
       );
     } else {
-      memberPointHistories = memberPointHistoryRepository.getAllByMemberNumberAndHidden(
+      return memberPointHistoryRepository.getAllByMemberNumberAndHidden(
           request.getMemberNumber()
           , false
           , PageRequest.of(request.getPage(), request.getSize(), request.getSort())
       );
     }
-
-    return memberPointHistories.map(MemberPointHistoryDto::fromEntity);
   }
-
 }
