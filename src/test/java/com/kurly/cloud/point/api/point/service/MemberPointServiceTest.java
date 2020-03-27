@@ -194,7 +194,7 @@ class MemberPointServiceTest {
         assertThat(memberPoint.getTotalPoint()).isEqualTo(0);
         assertThat(memberPoint.getFreePoint()).isEqualTo(0);
         assertThat(memberPoint.getCashPoint()).isEqualTo(0);
-        assertThat(memberPoint.getUpdateTime()).isEqualToIgnoringNanos(LocalDateTime.now());
+        assertThat(memberPoint.getUpdateTime()).isEqualToIgnoringSeconds(LocalDateTime.now());
       }
     }
 

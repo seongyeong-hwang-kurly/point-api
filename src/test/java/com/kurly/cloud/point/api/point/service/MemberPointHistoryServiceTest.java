@@ -13,6 +13,7 @@ import com.kurly.cloud.point.api.point.domain.HistoryType;
 import com.kurly.cloud.point.api.point.domain.MemberPointHistoryDto;
 import com.kurly.cloud.point.api.point.domain.MemberPointHistoryInsertRequest;
 import com.kurly.cloud.point.api.point.domain.MemberPointHistoryListRequest;
+import com.kurly.cloud.point.api.point.entity.MemberPointHistory;
 import com.kurly.cloud.point.api.point.repository.MemberPointHistoryRepository;
 import com.kurly.cloud.point.api.point.util.PointExpireDateCalculator;
 import java.time.LocalDateTime;
@@ -59,7 +60,7 @@ class MemberPointHistoryServiceTest {
             .build();
       }
 
-      MemberPointHistoryDto subject(MemberPointHistoryInsertRequest memberPointHistoryInsertRequest) {
+      MemberPointHistory subject(MemberPointHistoryInsertRequest memberPointHistoryInsertRequest) {
         return memberPointHistoryService.insertHistory(memberPointHistoryInsertRequest);
       }
 
@@ -85,7 +86,7 @@ class MemberPointHistoryServiceTest {
             .build();
       }
 
-      MemberPointHistoryDto subject(MemberPointHistoryInsertRequest memberPointHistoryInsertRequest) {
+      MemberPointHistory subject(MemberPointHistoryInsertRequest memberPointHistoryInsertRequest) {
         return memberPointHistoryService.insertHistory(memberPointHistoryInsertRequest);
       }
 
@@ -122,7 +123,7 @@ class MemberPointHistoryServiceTest {
             .build();
       }
 
-      MemberPointHistoryDto subject(MemberPointHistoryInsertRequest memberPointHistoryInsertRequest) {
+      MemberPointHistory subject(MemberPointHistoryInsertRequest memberPointHistoryInsertRequest) {
         return memberPointHistoryService.insertHistory(memberPointHistoryInsertRequest);
       }
 
@@ -130,14 +131,19 @@ class MemberPointHistoryServiceTest {
       @Test
       void test() {
         MemberPointHistoryInsertRequest given = givenRequest();
-        MemberPointHistoryDto subject = subject(given);
+        MemberPointHistory subject = subject(given);
 
         assertThat(subject.getSeq()).isNotZero();
         assertThat(subject.getOrderNumber()).isEqualTo(given.getOrderNumber());
-        assertThat(subject.getPoint()).isEqualTo(given.getTotalPoint());
+        assertThat(subject.getTotalPoint()).isEqualTo(given.getTotalPoint());
+        assertThat(subject.getFreePoint()).isEqualTo(given.getFreePoint());
+        assertThat(subject.getCashPoint()).isEqualTo(given.getCashPoint());
+        assertThat(subject.getHistoryType()).isEqualTo(given.getType());
         assertThat(subject.getDetail()).isEqualTo(given.getDetail());
-        assertThat(subject.getRegDateTime()).isEqualTo(given.getRegTime());
-        assertThat(subject.getExpireDateTime()).isEqualTo(given.getExpireTime());
+        assertThat(subject.getMemo()).isEqualTo(given.getMemo());
+        assertThat(subject.isHidden()).isEqualTo(given.isHidden());
+        assertThat(subject.getRegTime()).isEqualTo(given.getRegTime());
+        assertThat(subject.getExpireTime()).isEqualTo(given.getExpireTime());
 
       }
     }
@@ -148,7 +154,7 @@ class MemberPointHistoryServiceTest {
   @DisplayName("적립금 이력을 조회 할 때")
   class DescribeGetHistoryList {
 
-    Page<MemberPointHistoryDto> subject(MemberPointHistoryListRequest request) {
+    Page<MemberPointHistory> subject(MemberPointHistoryListRequest request) {
       return memberPointHistoryService.getHistoryList(request);
     }
 
@@ -192,7 +198,7 @@ class MemberPointHistoryServiceTest {
       @Test
       @DisplayName("총 20개의 이력이 조회 되어야 한다")
       void test() {
-        Page<MemberPointHistoryDto> historyList = subject(givenRequest());
+        Page<MemberPointHistory> historyList = subject(givenRequest());
         assertThat(historyList.getTotalElements()).isEqualTo(20);
       }
     }
@@ -213,7 +219,7 @@ class MemberPointHistoryServiceTest {
       @Test
       @DisplayName("총 10개의 이력이 조회 되어야 한다")
       void test() {
-        Page<MemberPointHistoryDto> historyList = subject(givenRequest());
+        Page<MemberPointHistory> historyList = subject(givenRequest());
         assertThat(historyList.getTotalElements()).isEqualTo(10);
       }
     }
