@@ -10,9 +10,19 @@
 package com.kurly.cloud.point.api.point.repository;
 
 import com.kurly.cloud.point.api.point.entity.Point;
+import java.time.LocalDateTime;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PointRepository extends JpaRepository<Point, Long> {
+  @Query("SELECT p FROM Point p WHERE " +
+      "p.memberNumber = :memberNumber AND p.remain > 0 AND" +
+      "(p.expireTime = 0L OR p.expireTime >= :expireTime)")
+  List<Point> findAllAvailableMemberPoint(
+      @Param("memberNumber") long memberNumber,
+      @Param("expireTime") LocalDateTime expireTime);
 }

@@ -21,6 +21,6 @@ public class UnixTimestampConverter implements AttributeConverter<LocalDateTime,
 
   @Override
   public LocalDateTime convertToEntityAttribute(Long dbData) {
-    return new Timestamp(dbData * 1000).toLocalDateTime();
+    return dbData == 0 ? null : new Timestamp(dbData * 1000).toLocalDateTime();
   }
 }
