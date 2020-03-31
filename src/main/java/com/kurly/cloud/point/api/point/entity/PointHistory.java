@@ -41,20 +41,20 @@ import org.hibernate.annotations.Type;
         , @Index(columnList = "reg_time")
     }
 )
-public class PointListHistory {
+public class PointHistory {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   long seq;
 
   @ManyToOne
   @JoinColumn(name = "mk_point_list_seq")
-  PointList pointList;
+  Point point;
 
   @Column(name = "ordno")
   long orderNumber;
 
   @Column(name = "point")
-  int point;
+  int amount;
 
   @Column(name = "history_type")
   int historyType;

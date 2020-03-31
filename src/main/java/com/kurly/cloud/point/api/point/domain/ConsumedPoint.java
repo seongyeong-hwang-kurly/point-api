@@ -7,12 +7,17 @@
  * 1)
  */
 
-package com.kurly.cloud.point.api.point.repository;
+package com.kurly.cloud.point.api.point.domain;
 
-import com.kurly.cloud.point.api.point.entity.PointListHistory;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import lombok.Getter;
 
-@Repository
-public interface PointListHistoryRepository extends JpaRepository<PointListHistory, Long> {
+@Getter
+public class ConsumedPoint {
+  long pointSeq;
+  int consumed;
+
+  public ConsumedPoint(long pointSeq, int consumed) {
+    this.pointSeq = pointSeq;
+    this.consumed = consumed;
+  }
 }

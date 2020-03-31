@@ -10,6 +10,7 @@
 package com.kurly.cloud.point.api.point.util;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -18,23 +19,15 @@ public class PointExpireDateCalculator {
 
   private static String DEFAULT_STRATEGY = "QUARTER";
 
-  public PointExpireDateCalculator(String strategy){
-    DEFAULT_STRATEGY = strategy;
-  }
+  static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("Q");
 
   @Value("${pointExpireDefaultStrategy:QUARTER}")
   public void setStrategy(String strategy) {
     DEFAULT_STRATEGY = strategy;
   }
 
-  /**
-   * 1년 만료 정책을 기반으로 만료일을 계산한다.
-   *
-   * @param from 시작 기준일
-   * @return 만료일
-   */
-  public static LocalDateTime calculateNextYear(LocalDateTime from) {
-    return from.plusYears(1).withHour(23).withMinute(59).withSecond(59);
+  public PointExpireDateCalculator(String strategy) {
+    DEFAULT_STRATEGY = strategy;
   }
 
   /**
@@ -45,22 +38,16 @@ public class PointExpireDateCalculator {
    * @return 만료일
    */
   public static LocalDateTime calculateDaysAfter(LocalDateTime from, int offset) {
-    return from.plusDays(offset).withHour(23).withMinute(59).withSecond(59);
+    return withEndOfDate(from.plusDays(offset));
   }
 
   /**
-   * 내년 분기 말일 만료 정책을 기반으로 만료일을 계산한다.
+   * 해당 일자의 시각을 23:59:59로 세팅한다
    *
-   * @param from 시작 기준 일
-   * @return 만료일
+   * @return 23:59:59
    */
-  public static LocalDateTime calculateNextYearQuarter(LocalDateTime from) {
-    int quarter = (int) Math.ceil(from.getMonth().getValue() / 3f); //현재 월을 3으로 나누면 분기
-    int quarterMonth = quarter * 3; // 분기에 3을 곱하면 분기 말월
-    LocalDateTime quarterMonthLastDay = LocalDateTime.of(from.getYear(), quarterMonth, 1, 0, 0);
-    //분기 말월의 다음달 1일에서 -1일을 하면 분기 말일
-    quarterMonthLastDay = quarterMonthLastDay.plusMonths(1).minusDays(1);
-    return quarterMonthLastDay.plusYears(1).withHour(23).withMinute(59).withSecond(59);
+  public static LocalDateTime withEndOfDate(LocalDateTime from) {
+    return from.withHour(23).withMinute(59).withSecond(59);
   }
 
   /**
@@ -78,5 +65,30 @@ public class PointExpireDateCalculator {
       default:
         throw new IllegalStateException("존재하지 않는 적립금 만료 정책입니다");
     }
+  }
+
+  /**
+   * 내년 분기 말일 만료 정책을 기반으로 만료일을 계산한다.
+   *
+   * @param from 시작 기준 일
+   * @return 만료일
+   */
+  public static LocalDateTime calculateNextYearQuarter(LocalDateTime from) {
+    int quarter = Integer.parseInt(from.format(dateTimeFormatter));
+    int quarterMonth = quarter * 3; // 분기에 3을 곱하면 분기 말월
+    LocalDateTime quarterMonthLastDay = LocalDateTime.of(from.getYear(), quarterMonth, 1, 0, 0);
+    //분기 말월의 다음달 1일에서 -1일을 하면 분기 말일
+    quarterMonthLastDay = quarterMonthLastDay.plusMonths(1).minusDays(1);
+    return withEndOfDate(quarterMonthLastDay.plusYears(1));
+  }
+
+  /**
+   * 1년 만료 정책을 기반으로 만료일을 계산한다.
+   *
+   * @param from 시작 기준일
+   * @return 만료일
+   */
+  public static LocalDateTime calculateNextYear(LocalDateTime from) {
+    return withEndOfDate(from.plusYears(1));
   }
 }
