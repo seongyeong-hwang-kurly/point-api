@@ -10,7 +10,6 @@
 package com.kurly.cloud.point.api.point.service;
 
 import com.kurly.cloud.point.api.point.domain.HistoryType;
-import com.kurly.cloud.point.api.point.domain.MemberPointHistoryDto;
 import com.kurly.cloud.point.api.point.domain.MemberPointHistoryInsertRequest;
 import com.kurly.cloud.point.api.point.domain.MemberPointHistoryListRequest;
 import com.kurly.cloud.point.api.point.entity.MemberPointHistory;
@@ -64,7 +63,7 @@ class MemberPointHistoryServiceTest {
         return memberPointHistoryService.insertHistory(memberPointHistoryInsertRequest);
       }
 
-      @DisplayName("ConstraintViolationException 예외가 발생해야 한다")
+      @DisplayName("ConstraintViolationException 예외가 발생 한다")
       @Test
       void test() {
         MemberPointHistoryInsertRequest given = givenExceptMemberNumber();
@@ -90,7 +89,7 @@ class MemberPointHistoryServiceTest {
         return memberPointHistoryService.insertHistory(memberPointHistoryInsertRequest);
       }
 
-      @DisplayName("ConstraintViolationException 예외가 발생해야 한다")
+      @DisplayName("ConstraintViolationException 예외가 발생 한다")
       @Test
       void test() {
         MemberPointHistoryInsertRequest given = givenExceptHistoryType();
@@ -127,7 +126,7 @@ class MemberPointHistoryServiceTest {
         return memberPointHistoryService.insertHistory(memberPointHistoryInsertRequest);
       }
 
-      @DisplayName("입력하고 값을 리턴해야 한다")
+      @DisplayName("입력하고 값을 리턴 한다")
       @Test
       void test() {
         MemberPointHistoryInsertRequest given = givenRequest();
@@ -159,7 +158,7 @@ class MemberPointHistoryServiceTest {
     }
 
     void insertHistoryWithHidden(boolean hidden, int count) {
-      for (int i = 0; i < count ; i++) {
+      for (int i = 0; i < count; i++) {
         memberPointHistoryService.insertHistory(
             MemberPointHistoryInsertRequest.builder()
                 .freePoint(100)
@@ -179,8 +178,8 @@ class MemberPointHistoryServiceTest {
 
     @BeforeEach
     public void setUp() {
-      insertHistoryWithHidden(false,10);
-      insertHistoryWithHidden(true,10);
+      insertHistoryWithHidden(false, 10);
+      insertHistoryWithHidden(true, 10);
     }
 
     @Transactional
@@ -196,7 +195,7 @@ class MemberPointHistoryServiceTest {
       }
 
       @Test
-      @DisplayName("총 20개의 이력이 조회 되어야 한다")
+      @DisplayName("총 20개의 이력이 조회 된다")
       void test() {
         Page<MemberPointHistory> historyList = subject(givenRequest());
         assertThat(historyList.getTotalElements()).isEqualTo(20);
@@ -217,7 +216,7 @@ class MemberPointHistoryServiceTest {
       }
 
       @Test
-      @DisplayName("총 10개의 이력이 조회 되어야 한다")
+      @DisplayName("총 10개의 이력이 조회 된다")
       void test() {
         Page<MemberPointHistory> historyList = subject(givenRequest());
         assertThat(historyList.getTotalElements()).isEqualTo(10);

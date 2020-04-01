@@ -47,7 +47,7 @@ public class PointExpireDateCalculatorTest {
       }
 
       @Test
-      @DisplayName("다음해 1분기 마지막 일을 리턴해야 한다.")
+      @DisplayName("다음해 1분기 마지막 일을 리턴 한다")
       public void test() {
         final LocalDateTime 내년_분기_말일 = LocalDateTime.of(2021, 3, 31, 0, 0, 0);
 
@@ -68,7 +68,7 @@ public class PointExpireDateCalculatorTest {
       }
 
       @Test
-      @DisplayName("다음해 2분기 마지막 일을 리턴해야 한다.")
+      @DisplayName("다음해 2분기 마지막 일을 리턴 한다")
       public void test() {
         final LocalDateTime 내년_분기_말일 = LocalDateTime.of(2021, 6, 30, 0, 0, 0);
 
@@ -89,7 +89,7 @@ public class PointExpireDateCalculatorTest {
       }
 
       @Test
-      @DisplayName("다음해 3분기 마지막 일을 리턴해야 한다.")
+      @DisplayName("다음해 3분기 마지막 일을 리턴 한다")
       public void test() {
         final LocalDateTime 내년_분기_말일 = LocalDateTime.of(2021, 9, 30, 0, 0, 0);
 
@@ -110,7 +110,7 @@ public class PointExpireDateCalculatorTest {
       }
 
       @Test
-      @DisplayName("다음해 4분기 마지막 일을 리턴해야 한다.")
+      @DisplayName("다음해 4분기 마지막 일을 리턴 한다")
       public void test() {
         final LocalDateTime 내년_분기_말일 = LocalDateTime.of(2021, 12, 31, 0, 0, 0);
 
@@ -136,7 +136,7 @@ public class PointExpireDateCalculatorTest {
       LocalDateTime 입력일 = given(MonthDay.of(Month.JANUARY, 1));
 
       @Test
-      @DisplayName("다음해 같은 일을 리턴해야 한다.")
+      @DisplayName("다음해 같은 일을 리턴 한다")
       void test() {
         assertThat(subject(입력일)).isEqualToIgnoringHours(입력일.plusYears(1));
       }
@@ -149,7 +149,7 @@ public class PointExpireDateCalculatorTest {
       LocalDateTime 입력일 = given(MonthDay.of(Month.FEBRUARY, 29));
 
       @Test
-      @DisplayName("다음 해 2월 28일을 리턴해야 한다.")
+      @DisplayName("다음 해 2월 28일을 리턴 한다")
       void test() {
         assertThat(subject(입력일)).isEqualToIgnoringHours(입력일.plusYears(1));
       }
@@ -166,7 +166,7 @@ public class PointExpireDateCalculatorTest {
       LocalDateTime 입력일 = given(MonthDay.of(Month.JANUARY, 1));
 
       @Test
-      @DisplayName("N+1일 후를 리턴해야 한다.")
+      @DisplayName("N+1일 후를 리턴 한다")
       public void test() {
         LocalDateTime expireDate = PointExpireDateCalculator.calculateDaysAfter(입력일, 30);
         assertThat(expireDate).isEqualToIgnoringHours(입력일.plusDays(30));
@@ -194,7 +194,7 @@ public class PointExpireDateCalculatorTest {
 
 
         @Test
-        @DisplayName("calculateNextYearQuarter 와 같은 값을 리턴해야 한다.")
+        @DisplayName("calculateNextYearQuarter 와 같은 값을 리턴 한다")
         public void test() {
           givenCalculator("QUARTER");
           LocalDateTime expireDate = PointExpireDateCalculator.calculateDefault(입력일);
@@ -207,7 +207,7 @@ public class PointExpireDateCalculatorTest {
       class Context1 {
 
         @Test
-        @DisplayName("calculateNextYear 와 같은 값을 리턴해야 한다.")
+        @DisplayName("calculateNextYear 와 같은 값을 리턴 한다")
         public void test() {
           givenCalculator("NEXT_YEAR");
           LocalDateTime expireDate = PointExpireDateCalculator.calculateDefault(입력일);
@@ -220,7 +220,7 @@ public class PointExpireDateCalculatorTest {
       class Context2 {
 
         @Test
-        @DisplayName("예외가 발생해야 한다.")
+        @DisplayName("예외가 발생 한다")
         public void test() {
           try {
             givenCalculator("SOME_CONFIG");

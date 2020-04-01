@@ -52,7 +52,7 @@ class PointHistoryServiceTest {
             .build();
       }
 
-      @DisplayName("ConstraintViolationException 예외가 발생해야 한다")
+      @DisplayName("ConstraintViolationException 예외가 발생 한다")
       @Test
       void test() {
         PointHistoryInsertRequest given = givenExceptPointSeq();
@@ -75,7 +75,7 @@ class PointHistoryServiceTest {
             .build();
       }
 
-      @DisplayName("ConstraintViolationException 예외가 발생해야 한다")
+      @DisplayName("ConstraintViolationException 예외가 발생 한다")
       @Test
       void test() {
         PointHistoryInsertRequest given = givenExceptAmount();
@@ -98,7 +98,7 @@ class PointHistoryServiceTest {
             .build();
       }
 
-      @DisplayName("ConstraintViolationException 예외가 발생해야 한다")
+      @DisplayName("ConstraintViolationException 예외가 발생 한다")
       @Test
       void test() {
         PointHistoryInsertRequest given = givenExceptHistoryType();
@@ -129,7 +129,7 @@ class PointHistoryServiceTest {
             .build();
       }
 
-      @DisplayName("입력하고 값을 리턴해야 한다")
+      @DisplayName("입력하고 값을 리턴 한다")
       @Test
       void test() {
         PointHistoryInsertRequest given = given();
@@ -207,7 +207,7 @@ class PointHistoryServiceTest {
       }
 
       @Test
-      @DisplayName("이력을 1건 리턴해야 한다")
+      @DisplayName("이력을 1건 리턴 한다")
       void test() {
         Point given = given();
         List<PointHistory> subject = subject(given.getSeq());
@@ -227,7 +227,7 @@ class PointHistoryServiceTest {
       }
 
       @Test
-      @DisplayName("이력을 1건 리턴해야 한다")
+      @DisplayName("이력을 1건 리턴 한다")
       void test() {
         given();
         List<PointHistory> subject = subject();

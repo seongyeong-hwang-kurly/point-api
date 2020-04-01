@@ -59,7 +59,7 @@ class PointServiceTest {
             .build();
       }
 
-      @DisplayName("ConstraintViolationException 예외가 발생해야 한다")
+      @DisplayName("ConstraintViolationException 예외가 발생 한다")
       @Test
       void test() {
         try {
@@ -81,7 +81,7 @@ class PointServiceTest {
             .build();
       }
 
-      @DisplayName("ConstraintViolationException 예외가 발생해야 한다")
+      @DisplayName("ConstraintViolationException 예외가 발생 한다")
       @Test
       void test() {
         try {
@@ -103,7 +103,7 @@ class PointServiceTest {
             .build();
       }
 
-      @DisplayName("ConstraintViolationException 예외가 발생해야 한다")
+      @DisplayName("ConstraintViolationException 예외가 발생 한다")
       @Test
       void test() {
         try {
@@ -164,7 +164,7 @@ class PointServiceTest {
             .build();
       }
 
-      @DisplayName("지정한 만료일의 시각이 23:59:59 으로 입력되어야 한다")
+      @DisplayName("지정한 만료일의 시각이 23:59:59 으로 입력 한다")
       @Test
       void test() {
         PublishPointRequest given = givenRequest();
@@ -229,7 +229,7 @@ class PointServiceTest {
       }
 
       @Test
-      @DisplayName("해당 포인트를 반환해야 한다")
+      @DisplayName("해당 포인트를 반환 한다")
       void test() {
         given();
         List<Point> subject = subject();
@@ -248,7 +248,7 @@ class PointServiceTest {
       }
 
       @Test
-      @DisplayName("해당 포인트를 반환해야 한다")
+      @DisplayName("해당 포인트를 반환 한다")
       void test() {
         given();
         List<Point> subject = subject();
@@ -267,7 +267,7 @@ class PointServiceTest {
       }
 
       @Test
-      @DisplayName("포인트를 반환하지 않아야 한다")
+      @DisplayName("포인트를 반환하지 않는다")
       void test() {
         given();
         List<Point> subject = subject();
@@ -286,7 +286,7 @@ class PointServiceTest {
       }
 
       @Test
-      @DisplayName("포인트를 반환하지 않아야 한다")
+      @DisplayName("포인트를 반환하지 않는다")
       void test() {
         given();
         List<Point> subject = subject();
@@ -340,7 +340,7 @@ class PointServiceTest {
       }
 
       @Test
-      @DisplayName("일부만 사용 되어야 한다")
+      @DisplayName("일부만 사용 한다")
       void test() {
         publishPoint(givenPublishPoint());
         PointConsumeResult pointConsumeResult = subject(givenConsumeAmount());
@@ -361,7 +361,7 @@ class PointServiceTest {
       }
 
       @Test
-      @DisplayName("요청한 포인트를 전부 사용하고 남은포인트가 조회 되어야 한다")
+      @DisplayName("요청한 포인트를 전부 사용하고 남은포인트가 조회 된다")
       void test() {
         publishPoint(givenPublishPoint());
         PointConsumeResult pointConsumeResult = subject(givenConsumeAmount());

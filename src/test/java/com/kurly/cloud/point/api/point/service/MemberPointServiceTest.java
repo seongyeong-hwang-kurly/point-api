@@ -65,14 +65,14 @@ class MemberPointServiceTest {
       }
 
       @Test
-      @DisplayName("생성되어야 한다")
+      @DisplayName("생성 된다")
       void test() {
         MemberPoint subject = subject();
         assertThat(subject.getMemberNumber()).isEqualTo(givenMemberNumber());
         assertThat(subject.getTotalPoint()).isEqualTo(givenTotalPoint());
         assertThat(subject.getFreePoint()).isEqualTo(givenFreePoint());
         assertThat(subject.getCashPoint()).isEqualTo(givenCashPoint());
-        assertThat(subject.getUpdateTime()).isEqualToIgnoringNanos(LocalDateTime.now());
+        assertThat(subject.getUpdateTime()).isEqualToIgnoringSeconds(LocalDateTime.now());
       }
     }
   }
@@ -101,7 +101,7 @@ class MemberPointServiceTest {
       }
 
       @Test
-      @DisplayName("무상 적립금과 총적립금이 증가 해야 한다")
+      @DisplayName("무상 적립금과 총적립금이 증가 한다")
       void test() {
         MemberPoint givenMemberPoint = givenMemberPoint();
         MemberPoint subjectMemberPoint = subject(givenMemberPoint.getMemberNumber(), givenFreePoint());
@@ -109,7 +109,7 @@ class MemberPointServiceTest {
         assertThat(subjectMemberPoint.getTotalPoint()).isEqualTo(givenMemberPoint.getTotalPoint() + givenFreePoint());
         assertThat(subjectMemberPoint.getFreePoint()).isEqualTo(givenMemberPoint.getFreePoint() + givenFreePoint());
         assertThat(subjectMemberPoint.getCashPoint()).isEqualTo(givenMemberPoint.getCashPoint());
-        assertThat(subjectMemberPoint.getUpdateTime()).isEqualToIgnoringNanos(LocalDateTime.now());
+        assertThat(subjectMemberPoint.getUpdateTime()).isEqualToIgnoringSeconds(LocalDateTime.now());
       }
     }
 
@@ -121,7 +121,7 @@ class MemberPointServiceTest {
       }
 
       @Test
-      @DisplayName("유상 적립금과 총적립금이 증가 해야 한다")
+      @DisplayName("유상 적립금과 총적립금이 증가 한다")
       void test() {
         MemberPoint givenMemberPoint = givenMemberPoint();
         MemberPoint subjectMemberPoint = subject(givenMemberPoint.getMemberNumber(), givenCashPoint());
@@ -129,7 +129,7 @@ class MemberPointServiceTest {
         assertThat(subjectMemberPoint.getTotalPoint()).isEqualTo(givenMemberPoint.getTotalPoint() + givenCashPoint());
         assertThat(subjectMemberPoint.getFreePoint()).isEqualTo(givenMemberPoint.getFreePoint());
         assertThat(subjectMemberPoint.getCashPoint()).isEqualTo(givenMemberPoint.getCashPoint() + givenCashPoint());
-        assertThat(subjectMemberPoint.getUpdateTime()).isEqualToIgnoringNanos(LocalDateTime.now());
+        assertThat(subjectMemberPoint.getUpdateTime()).isEqualToIgnoringSeconds(LocalDateTime.now());
       }
     }
 
@@ -141,7 +141,7 @@ class MemberPointServiceTest {
       }
 
       @Test
-      @DisplayName("무상 적립금과 총적립금이 감소 해야 한다")
+      @DisplayName("무상 적립금과 총적립금이 감소 한다")
       void test() {
         MemberPoint givenMemberPoint = givenMemberPoint();
         MemberPoint subjectMemberPoint = subject(givenMemberPoint.getMemberNumber(), givenFreePoint());
@@ -149,7 +149,7 @@ class MemberPointServiceTest {
         assertThat(subjectMemberPoint.getTotalPoint()).isEqualTo(givenMemberPoint.getTotalPoint() - givenFreePoint());
         assertThat(subjectMemberPoint.getFreePoint()).isEqualTo(givenMemberPoint.getFreePoint() - givenFreePoint());
         assertThat(subjectMemberPoint.getCashPoint()).isEqualTo(givenMemberPoint.getCashPoint());
-        assertThat(subjectMemberPoint.getUpdateTime()).isEqualToIgnoringNanos(LocalDateTime.now());
+        assertThat(subjectMemberPoint.getUpdateTime()).isEqualToIgnoringSeconds(LocalDateTime.now());
       }
     }
 
@@ -162,7 +162,7 @@ class MemberPointServiceTest {
       }
 
       @Test
-      @DisplayName("유상 적립금과 총적립금이 감소 해야 한다")
+      @DisplayName("유상 적립금과 총적립금이 감소 한다")
       void test() {
         MemberPoint givenMemberPoint = givenMemberPoint();
         MemberPoint subjectMemberPoint = subject(givenMemberPoint.getMemberNumber(), givenCashPoint());
@@ -170,7 +170,7 @@ class MemberPointServiceTest {
         assertThat(subjectMemberPoint.getTotalPoint()).isEqualTo(givenMemberPoint.getTotalPoint() - givenCashPoint());
         assertThat(subjectMemberPoint.getFreePoint()).isEqualTo(givenMemberPoint.getFreePoint());
         assertThat(subjectMemberPoint.getCashPoint()).isEqualTo(givenMemberPoint.getCashPoint() - givenCashPoint());
-        assertThat(subjectMemberPoint.getUpdateTime()).isEqualToIgnoringNanos(LocalDateTime.now());
+        assertThat(subjectMemberPoint.getUpdateTime()).isEqualToIgnoringSeconds(LocalDateTime.now());
       }
     }
   }
@@ -187,7 +187,7 @@ class MemberPointServiceTest {
     class ContextWithNonExists {
 
       @Test
-      @DisplayName("회원의 적립금 정보를 초기화 하여 생성 해야 한다")
+      @DisplayName("회원의 적립금 정보를 초기화 하여 생성 한다")
       void test() {
         MemberPoint memberPoint = subject();
         assertThat(memberPoint.getMemberNumber()).isEqualTo(givenMemberNumber());
@@ -206,7 +206,7 @@ class MemberPointServiceTest {
       }
 
       @Test
-      @DisplayName("회원의 적립금이 조회 되어야 한다")
+      @DisplayName("회원의 적립금이 조회 된다")
       void test() {
         MemberPoint givenMemberPoint = givenMemberPoint();
         MemberPoint subjectMemberPoint = subject();
@@ -214,7 +214,7 @@ class MemberPointServiceTest {
         assertThat(subjectMemberPoint.getTotalPoint()).isEqualTo(givenMemberPoint.getTotalPoint());
         assertThat(subjectMemberPoint.getFreePoint()).isEqualTo(givenMemberPoint.getFreePoint());
         assertThat(subjectMemberPoint.getCashPoint()).isEqualTo(givenMemberPoint.getCashPoint());
-        assertThat(subjectMemberPoint.getUpdateTime()).isEqualToIgnoringNanos(givenMemberPoint.getUpdateTime());
+        assertThat(subjectMemberPoint.getUpdateTime()).isEqualToIgnoringSeconds(givenMemberPoint.getUpdateTime());
       }
     }
   }
