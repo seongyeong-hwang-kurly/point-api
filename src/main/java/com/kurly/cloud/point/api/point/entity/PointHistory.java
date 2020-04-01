@@ -21,6 +21,7 @@ import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -46,6 +47,7 @@ public class PointHistory {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   long seq;
 
+  @NotNull
   @ManyToOne
   @JoinColumn(name = "mk_point_list_seq")
   Point point;
@@ -53,11 +55,13 @@ public class PointHistory {
   @Column(name = "ordno")
   long orderNumber;
 
+  @NotNull
   @Column(name = "point")
-  int amount;
+  Integer amount;
 
+  @NotNull
   @Column(name = "history_type")
-  int historyType;
+  Integer historyType;
 
   @Column(name = "detail")
   String detail;
