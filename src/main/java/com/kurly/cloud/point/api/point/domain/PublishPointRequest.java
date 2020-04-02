@@ -11,6 +11,7 @@ package com.kurly.cloud.point.api.point.domain;
 
 import com.kurly.cloud.point.api.point.entity.Point;
 import com.kurly.cloud.point.api.point.util.PointExpireDateCalculator;
+import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import javax.validation.constraints.NotNull;
@@ -36,6 +37,12 @@ public class PublishPointRequest {
   boolean unlimitedDate;
   LocalDateTime expireDate;
 
+  @Builder.Default
+  String memo = "";
+  String detail;
+  long actionMemberNumber;
+  boolean hidden;
+
   public Point toEntity() {
     return Point.builder()
         .charge(point)
@@ -52,8 +59,19 @@ public class PublishPointRequest {
         .build();
   }
 
+  public boolean isUnlimitedDate() {
+    return isSettle() || unlimitedDate;
+  }
+
+  public String getDetail() {
+    if (Objects.isNull(detail)) {
+      detail = MessageFormat.format("{0} 포인트 적립", isPayment() ? "유료" : "무료");
+    }
+    return detail;
+  }
+
   public @Nullable LocalDateTime getExpireDate() {
-    if (unlimitedDate) {
+    if (isUnlimitedDate()) {
       return null;
     }
     return Objects.isNull(expireDate) ?
