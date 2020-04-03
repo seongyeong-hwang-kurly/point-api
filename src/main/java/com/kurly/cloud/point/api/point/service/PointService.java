@@ -16,6 +16,7 @@ import com.kurly.cloud.point.api.point.entity.Point;
 import com.kurly.cloud.point.api.point.repository.PointRepository;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -31,17 +32,36 @@ class PointService {
 
   PointConsumeResult consumeMemberPoint(long memberNumber, int amount) {
     List<Point> availableMemberPoint = getAvailableMemberPoint(memberNumber);
-    PointConsumeResult pointConsumeResults = new PointConsumeResult(amount);
+    PointConsumeResult pointConsumeResult = new PointConsumeResult(amount);
 
     for (Point point : availableMemberPoint) {
       if (amount == 0) break;
       int consume = Math.min(point.getRemain(), amount);
       amount = amount - consume;
       point.setRemain(point.getRemain() - consume);
-      pointConsumeResults.add(point.getSeq(), consume);
+      pointConsumeResult.add(point.getSeq(), consume, point.isSettle());
     }
 
-    return pointConsumeResults;
+    return pointConsumeResult;
+  }
+
+  PointConsumeResult consumeOrderPoint(long memberNumber, long orderNumber, int amount) {
+    Optional<Point> orderPoint = pointRepository
+        .findByMemberNumberAndOrderNumberAndRemainGreaterThan(memberNumber, orderNumber, 0);
+
+    PointConsumeResult pointConsumeResult = new PointConsumeResult(amount);
+    if (orderPoint.isPresent()) {
+      Point point = orderPoint.get();
+      int consume = Math.min(point.getRemain(), amount);
+      point.setRemain(point.getRemain() - consume);
+      pointConsumeResult.add(point.getSeq(), consume, point.isSettle());
+    }
+
+    if (pointConsumeResult.getRemain() > 0) {
+      pointConsumeResult.add(consumeMemberPoint(memberNumber, pointConsumeResult.getRemain()));
+    }
+
+    return pointConsumeResult;
   }
 
   List<Point> getAvailableMemberPoint(long memberNumber) {

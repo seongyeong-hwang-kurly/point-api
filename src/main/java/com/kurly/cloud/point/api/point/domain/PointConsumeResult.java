@@ -20,8 +20,16 @@ public class PointConsumeResult {
     this.requested = requested;
   }
 
-  public void add(long pointSeq, int amount) {
-    consumed.add(new ConsumedPoint(pointSeq, amount));
+  public void add(long pointSeq, int amount, boolean settle) {
+    consumed.add(new ConsumedPoint(pointSeq, amount, settle));
+  }
+
+  public void add(List<ConsumedPoint> anotherConsumed) {
+    consumed.addAll(anotherConsumed);
+  }
+
+  public void add(PointConsumeResult result) {
+    add(result.getConsumed());
   }
 
   public int getTotalConsumed() {
@@ -30,5 +38,9 @@ public class PointConsumeResult {
 
   public int getRemain() {
     return requested - getTotalConsumed();
+  }
+
+  public List<ConsumedPoint> getConsumed() {
+    return consumed;
   }
 }

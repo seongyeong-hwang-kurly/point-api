@@ -1,5 +1,6 @@
 package com.kurly.cloud.point.api.point.service;
 
+import com.kurly.cloud.point.api.point.domain.CancelPublishOrderPointRequest;
 import com.kurly.cloud.point.api.point.domain.HistoryType;
 import com.kurly.cloud.point.api.point.domain.MemberPointHistoryListRequest;
 import com.kurly.cloud.point.api.point.domain.PublishPointRequest;
@@ -161,5 +162,92 @@ class PublishPointServiceTest {
       }
     }
 
+  }
+
+  @Nested
+  @DisplayName("주문 적립 포인트를 발행을 취소 할 때")
+  class DescribeCancelPublishByOrder {
+    long givenOrderNumber() {
+      return 88888888;
+    }
+
+    int givenOrderPointAmount() {
+      return 1000;
+    }
+
+    int givenNonOrderPointAmount() {
+      return 2000;
+    }
+
+    void givenOrderPoint() throws AlreadyPublishedException {
+      publishPointPort.publishByOrder(PublishPointRequest.builder()
+          .point(givenOrderPointAmount())
+          .orderNumber(givenOrderNumber())
+          .memberNumber(givenMemberNumber())
+          .pointRatio(0.7f)
+          .build()
+      );
+    }
+
+    void givenNonOrderPoint() {
+      publishPointPort.publish(PublishPointRequest.builder()
+          .point(givenNonOrderPointAmount())
+          .memberNumber(givenMemberNumber())
+          .historyType(HistoryType.TYPE_12.getValue())
+          .build());
+    }
+
+    MemberPoint subject(int amount) {
+      publishPointPort.cancelPublishByOrder(CancelPublishOrderPointRequest.builder()
+          .actionMemberNumber(givenMemberNumber())
+          .memberNumber(givenMemberNumber())
+          .orderNumber(givenOrderNumber())
+          .point(amount)
+          .build());
+      return memberPointService.getOrCrateMemberPoint(givenMemberNumber());
+    }
+
+    @SpringBootTest
+    @Transactional
+    @Nested
+    @DisplayName("보유햔 적립금이 충분하면")
+    class Context0 {
+      int givenAmount() {
+        return givenOrderPointAmount();
+      }
+
+      @Test
+      @DisplayName("적립된 포인트를 전부 회수(사용) 한다")
+      void test() throws AlreadyPublishedException {
+        givenNonOrderPoint();
+        givenOrderPoint();
+        MemberPoint subject = subject(givenAmount());
+
+        assertThat(subject.getTotalPoint())
+            .isEqualTo(givenOrderPointAmount() + givenNonOrderPointAmount() - givenAmount());
+      }
+    }
+
+    @SpringBootTest
+    @Transactional
+    @Nested
+    @DisplayName("보유햔 적립금이 충분하지 않으면")
+    class Context1 {
+
+      int givenAmount() {
+        return 10000;
+      }
+
+      @Test
+      @DisplayName("모자른 만큼 보유적립금이 대출(마이너스) 처리 된다")
+      void test() throws AlreadyPublishedException {
+        givenNonOrderPoint();
+        givenOrderPoint();
+        MemberPoint subject = subject(givenAmount());
+
+        assertThat(subject.getTotalPoint())
+            .isEqualTo(givenOrderPointAmount() + givenNonOrderPointAmount() - givenAmount());
+      }
+    }
   }
 }

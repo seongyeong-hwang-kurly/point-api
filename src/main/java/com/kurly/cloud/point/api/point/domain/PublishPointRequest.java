@@ -45,7 +45,7 @@ public class PublishPointRequest {
 
   public Point toEntity() {
     return Point.builder()
-        .charge(point)
+        .charge(point < 0 ? 0 : point)
         .remain(point)
         .memberNumber(memberNumber)
         .orderNumber(orderNumber)
