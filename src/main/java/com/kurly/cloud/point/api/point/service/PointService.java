@@ -70,4 +70,19 @@ class PointService {
     availablePoints.sort(ConsumeOrderComparator.getInstance());
     return availablePoints;
   }
+
+  PointConsumeResult repayMemberPoint(Long memberNumber, int amount) {
+    List<Point> debtMemberPoint = pointRepository.findAllDebtMemberPoint(memberNumber);
+    PointConsumeResult pointConsumeResult = new PointConsumeResult(amount);
+
+    for (Point point : debtMemberPoint) {
+      if (amount == 0) break;
+      int repay = Math.min(Math.abs(point.getRemain()), amount);
+      amount = amount - repay;
+      point.setRemain(point.getRemain() + repay);
+      pointConsumeResult.add(point.getSeq(), repay, point.isSettle());
+    }
+
+    return pointConsumeResult;
+  }
 }

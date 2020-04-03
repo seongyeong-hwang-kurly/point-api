@@ -40,7 +40,7 @@ class PublishPointService implements PublishPointPort {
         .actionMemberNumber(request.getActionMemberNumber())
         .build());
 
-    plusMemberPoint(request.getMemberNumber(), request.isSettle(), request.getPoint());
+    MemberPoint memberPoint = plusMemberPoint(request.getMemberNumber(), request.isSettle(), request.getPoint());
 
     memberPointHistoryService.insertHistory(MemberPointHistoryInsertRequest
         .builder()
@@ -54,6 +54,10 @@ class PublishPointService implements PublishPointPort {
         .memo(request.getMemo())
         .orderNumber(request.getOrderNumber())
         .build());
+
+    if (memberPoint.getRepayAmount(request.getPoint()) > 0) {
+      repayPoint(request.getMemberNumber(), memberPoint.getRepayAmount(request.getPoint()));
+    }
   }
 
   @Override public void publishByOrder(PublishPointRequest request) throws AlreadyPublishedException {
@@ -106,9 +110,14 @@ class PublishPointService implements PublishPointPort {
         .build());
   }
 
-  private void loanPoint(CancelPublishOrderPointRequest request, int remain) {
+  /**
+   * 포인트를 대출합니다
+   *
+   * @param request request
+   */
+  private void loanPoint(CancelPublishOrderPointRequest request, int amount) {
     Point point = pointService.publishPoint(PublishPointRequest.builder()
-        .point(-remain)
+        .point(-amount)
         .memberNumber(request.getMemberNumber())
         .historyType(HistoryType.TYPE_102.getValue())
         .detail(request.getDetail())
@@ -123,11 +132,51 @@ class PublishPointService implements PublishPointPort {
         .orderNumber(request.getOrderNumber())
         .historyType(HistoryType.TYPE_102.getValue())
         .pointSeq(point.getSeq())
-        .amount(-remain)
+        .amount(-amount)
         .build()
     );
 
-    minusMemberPoint(request.getMemberNumber(), false, remain);
+    minusMemberPoint(request.getMemberNumber(), false, amount);
+  }
+
+  /**
+   * 대출한 포인트를 상환처리 합니다
+   */
+  private void repayPoint(Long memberNumber, int amount) {
+    // 기 지급 된 포인트에서 상환해야 할 포인트를 가져옴
+    PointConsumeResult pointConsumeResult = pointService.consumeMemberPoint(memberNumber, amount);
+
+    pointConsumeResult.getConsumed().forEach(consumedPoint -> {
+      pointHistoryService.insertHistory(PointHistoryInsertRequest.builder()
+          .amount(-consumedPoint.getConsumed())
+          .pointSeq(consumedPoint.getPointSeq())
+          .historyType(HistoryType.TYPE_105.getValue())
+          .settle(consumedPoint.isSettle())
+          .detail(HistoryType.TYPE_105.buildMessage())
+          .build());
+    });
+
+    memberPointHistoryService.insertHistory(MemberPointHistoryInsertRequest.builder()
+        .freePoint(-amount)
+        .detail(HistoryType.TYPE_105.buildMessage())
+        .type(HistoryType.TYPE_105.getValue())
+        .memberNumber(memberNumber)
+        .hidden(true)
+        .build());
+
+    // 가져온 포인트만큼 빚진 포인트를 상환함
+    PointConsumeResult pointRepayResult =
+        pointService.repayMemberPoint(memberNumber, pointConsumeResult.getTotalConsumed());
+
+    pointRepayResult.getConsumed().forEach(consumedPoint -> {
+      pointHistoryService.insertHistory(PointHistoryInsertRequest.builder()
+          .amount(consumedPoint.getConsumed())
+          .pointSeq(consumedPoint.getPointSeq())
+          .historyType(HistoryType.TYPE_50.getValue())
+          .settle(consumedPoint.isSettle())
+          .detail(HistoryType.TYPE_50.buildMessage())
+          .build());
+    });
   }
 
   private MemberPoint plusMemberPoint(Long memberNumber, boolean settle, Integer point) {
@@ -138,15 +187,10 @@ class PublishPointService implements PublishPointPort {
   }
 
   private MemberPoint minusMemberPoint(Long memberNumber, boolean settle, Integer point) {
-    MemberPoint memberPoint;
-
     if (settle) {
-      memberPoint = memberPointService.minusCashPoint(memberNumber, point);
-    } else {
-      memberPoint = memberPointService.minusFreePoint(memberNumber, point);
+      return memberPointService.minusCashPoint(memberNumber, point);
     }
-
-    return memberPoint;
+    return memberPointService.minusFreePoint(memberNumber, point);
   }
 
 }

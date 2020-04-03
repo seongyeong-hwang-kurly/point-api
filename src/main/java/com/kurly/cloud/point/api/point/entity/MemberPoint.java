@@ -49,18 +49,32 @@ public class MemberPoint {
   LocalDateTime updateTime;
 
   @Transient
-  public void plusPoint(MemberPoint memberPoint, int freePoint, int cashPoint){
-    memberPoint.setTotalPoint(memberPoint.getTotalPoint() + freePoint + cashPoint);
-    memberPoint.setFreePoint(memberPoint.getFreePoint() + freePoint);
-    memberPoint.setCashPoint(memberPoint.getCashPoint() + cashPoint);
-    memberPoint.setUpdateTime(LocalDateTime.now());
+  public void plusPoint(int freePoint, int cashPoint) {
+    setTotalPoint(getTotalPoint() + freePoint + cashPoint);
+    setFreePoint(getFreePoint() + freePoint);
+    setCashPoint(getCashPoint() + cashPoint);
+    setUpdateTime(LocalDateTime.now());
   }
 
   @Transient
-  public void minusPoint(MemberPoint memberPoint, int freePoint, int cashPoint){
-    memberPoint.setTotalPoint(memberPoint.getTotalPoint() - freePoint - cashPoint);
-    memberPoint.setFreePoint(memberPoint.getFreePoint() - freePoint);
-    memberPoint.setCashPoint(memberPoint.getCashPoint() - cashPoint);
-    memberPoint.setUpdateTime(LocalDateTime.now());
+  public void minusPoint(int freePoint, int cashPoint) {
+    setTotalPoint(getTotalPoint() - freePoint - cashPoint);
+    setFreePoint(getFreePoint() - freePoint);
+    setCashPoint(getCashPoint() - cashPoint);
+    setUpdateTime(LocalDateTime.now());
+  }
+
+  @Transient
+  public int getRepayAmount(int publishedAmount) {
+    if (getTotalPoint() >= publishedAmount) return 0;
+
+    int repayAmount;
+    if (getTotalPoint() < 0) { // 아직도 빚이 남아있는 상태
+      repayAmount = publishedAmount;
+    } else {
+      repayAmount = publishedAmount - getTotalPoint();
+    }
+
+    return repayAmount;
   }
 }

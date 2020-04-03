@@ -29,4 +29,7 @@ public interface PointRepository extends JpaRepository<Point, Long> {
 
   Optional<Point> findByMemberNumberAndOrderNumberAndRemainGreaterThan
       (long memberNumber, long orderNumber, int remain);
+
+  @Query("SELECT p FROM Point p WHERE p.memberNumber = :memberNumber AND p.remain < 0")
+  List<Point> findAllDebtMemberPoint(@Param("memberNumber") long memberNumber);
 }

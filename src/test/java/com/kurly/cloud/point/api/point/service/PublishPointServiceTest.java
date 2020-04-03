@@ -48,9 +48,9 @@ class PublishPointServiceTest {
   @Nested
   @DisplayName("주문 적립 포인트를 발행 할 때")
   class DescribePublishByOrder {
-    private PublishPointRequest given() {
+    PublishPointRequest given() {
       return PublishPointRequest.builder()
-          .orderNumber(1585650564881L)
+          .orderNumber(8888888888888L)
           .pointRatio(7)
           .point(1000)
           .memberNumber(givenMemberNumber())
@@ -134,7 +134,7 @@ class PublishPointServiceTest {
   @Nested
   @DisplayName("관리자(시스템)가 포인트를 발행 할 때")
   class DescribePublish {
-    private PublishPointRequest given() {
+    PublishPointRequest given() {
       return PublishPointRequest.builder()
           .point(1000)
           .memberNumber(givenMemberNumber())
@@ -159,6 +159,173 @@ class PublishPointServiceTest {
         assertThat(memberPoint.getTotalPoint()).isEqualTo(request.getPoint());
         assertThat(memberPoint.getFreePoint()).isEqualTo(request.getPoint());
         assertThat(memberPoint.getCashPoint()).isEqualTo(0);
+      }
+    }
+
+  }
+
+  @Nested
+  @DisplayName("대출한 포인트가 있을 때")
+  class DescribeRepay {
+    long givenOrderNumber() {
+      return 88888888;
+    }
+
+    int givenDebtAmount() {
+      return 1000;
+    }
+
+    MemberPoint given() {
+      publishPointPort.cancelPublishByOrder(CancelPublishOrderPointRequest.builder()
+          .actionMemberNumber(givenMemberNumber())
+          .memberNumber(givenMemberNumber())
+          .orderNumber(givenOrderNumber())
+          .point(givenDebtAmount())
+          .build());
+      return memberPointService.getOrCrateMemberPoint(givenMemberNumber());
+    }
+
+    @Nested
+    @DisplayName("무상포인트를 지급하면")
+    class ContextOnPublishFree {
+
+      void subject(int amount) {
+        publishPointPort.publish(PublishPointRequest.builder()
+            .point(amount)
+            .memberNumber(givenMemberNumber())
+            .historyType(HistoryType.TYPE_12.getValue())
+            .build());
+      }
+
+      @SpringBootTest
+      @Transactional
+      @Nested
+      @DisplayName("대출포인트 보다 지급포인트가 많으면")
+      class Context0 {
+        int givenAmount() {
+          return 2000;
+        }
+
+        @Test
+        @DisplayName("포인트를 지급하고 대출포인트만큼 차감한다")
+        void test() {
+          MemberPoint given = given();
+          subject(givenAmount());
+          assertThat(given.getTotalPoint()).isEqualTo(givenAmount() - givenDebtAmount());
+          assertThat(given.getFreePoint()).isEqualTo(givenAmount() - givenDebtAmount());
+        }
+      }
+
+      @SpringBootTest
+      @Transactional
+      @Nested
+      @DisplayName("지급포인트 보다 대출포인트가 많으면")
+      class Context1 {
+        int givenAmount() {
+          return 500;
+        }
+
+        @Test
+        @DisplayName("포인트를 지급하고 전액 차감한다")
+        void test() {
+          MemberPoint given = given();
+          subject(givenAmount());
+          assertThat(given.getTotalPoint()).isEqualTo(givenAmount() - givenDebtAmount());
+          assertThat(given.getFreePoint()).isEqualTo(givenAmount() - givenDebtAmount());
+        }
+      }
+
+      @SpringBootTest
+      @Transactional
+      @Nested
+      @DisplayName("대출포인트와 지급포인트가 같으면")
+      class Context2 {
+        int givenAmount() {
+          return 1000;
+        }
+
+        @Test
+        @DisplayName("포인트를 지급하고 전액 차감한다")
+        void test() {
+          MemberPoint given = given();
+          subject(givenAmount());
+          assertThat(given.getTotalPoint()).isEqualTo(0);
+          assertThat(given.getFreePoint()).isEqualTo(0);
+        }
+      }
+    }
+
+    @Nested
+    @DisplayName("유상포인트를 지급하면")
+    class ContextOnCashPoint {
+
+      void subject(int amount) {
+        publishPointPort.publish(PublishPointRequest.builder()
+            .point(amount)
+            .settle(true)
+            .memberNumber(givenMemberNumber())
+            .historyType(HistoryType.TYPE_12.getValue())
+            .build());
+      }
+
+      @SpringBootTest
+      @Transactional
+      @Nested
+      @DisplayName("대출포인트보다 지급포인트가 많으면")
+      class Context0 {
+        int givenAmount() {
+          return 2000;
+        }
+
+        @Test
+        @DisplayName("포인트를 지급하고 대출포인트만큼 차감한다")
+        void test() {
+          MemberPoint given = given();
+          subject(givenAmount());
+          assertThat(given.getTotalPoint()).isEqualTo(givenAmount() - givenDebtAmount());
+          assertThat(given.getFreePoint()).isEqualTo(0);
+          assertThat(given.getCashPoint()).isEqualTo(givenAmount() - givenDebtAmount());
+        }
+      }
+
+      @SpringBootTest
+      @Transactional
+      @Nested
+      @DisplayName("지급포인트보다 대출포인트가 많으면")
+      class Context1 {
+        int givenAmount() {
+          return 500;
+        }
+
+        @Test
+        @DisplayName("포인트를 지급하고 전액 차감한다")
+        void test() {
+          MemberPoint given = given();
+          subject(givenAmount());
+          assertThat(given.getTotalPoint()).isEqualTo(givenAmount() - givenDebtAmount());
+          assertThat(given.getFreePoint()).isEqualTo(givenAmount() - givenDebtAmount());
+          assertThat(given.getCashPoint()).isEqualTo(0);
+        }
+      }
+
+      @SpringBootTest
+      @Transactional
+      @Nested
+      @DisplayName("대출포인트와 지급포인트가 같으면")
+      class Context2 {
+        int givenAmount() {
+          return 1000;
+        }
+
+        @Test
+        @DisplayName("포인트를 지급하고 전액 차감한다")
+        void test() {
+          MemberPoint given = given();
+          subject(givenAmount());
+          assertThat(given.getTotalPoint()).isEqualTo(0);
+          assertThat(given.getFreePoint()).isEqualTo(0);
+          assertThat(given.getCashPoint()).isEqualTo(0);
+        }
       }
     }
 

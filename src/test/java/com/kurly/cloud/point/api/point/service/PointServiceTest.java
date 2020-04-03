@@ -485,4 +485,79 @@ class PointServiceTest {
     }
 
   }
+
+  @Nested
+  @DisplayName("대출 포인트를 상환 할 때")
+  class DescribeRepayPoint {
+    int givenDebtAmount() {
+      return 1000;
+    }
+
+    void given() {
+      pointService.publishPoint(PublishPointRequest.builder()
+          .point(-givenDebtAmount())
+          .historyType(HistoryType.TYPE_12.getValue())
+          .memberNumber(givenMemberNumber())
+          .unlimitedDate(true)
+          .build());
+    }
+
+    PointConsumeResult subject(int amount) {
+      return pointService.repayMemberPoint(givenMemberNumber(), amount);
+    }
+
+    @SpringBootTest
+    @Transactional
+    @Nested
+    @DisplayName("대출포인트보다 상환포인트가 많으면")
+    class Context0 {
+      int givenAmount() {
+        return 2000;
+      }
+
+      @Test
+      @DisplayName("모두 상환한다")
+      void test() {
+        given();
+        PointConsumeResult subject = subject(givenAmount());
+        assertThat(subject.getTotalConsumed()).isEqualTo(givenDebtAmount());
+      }
+    }
+
+    @SpringBootTest
+    @Transactional
+    @Nested
+    @DisplayName("상환포인트보다 대출포인트가 많으면")
+    class Context1 {
+      int givenAmount() {
+        return 500;
+      }
+
+      @Test
+      @DisplayName("상환포인트 만큼 상환 한다")
+      void test() {
+        given();
+        PointConsumeResult subject = subject(givenAmount());
+        assertThat(subject.getTotalConsumed()).isEqualTo(givenAmount());
+      }
+    }
+
+    @SpringBootTest
+    @Transactional
+    @Nested
+    @DisplayName("대출포인트와 상환포인트가 같으면")
+    class Context2 {
+      int givenAmount() {
+        return 1000;
+      }
+
+      @Test
+      @DisplayName("모두 상환한다")
+      void test() {
+        given();
+        PointConsumeResult subject = subject(givenAmount());
+        assertThat(subject.getTotalConsumed()).isEqualTo(givenDebtAmount());
+      }
+    }
+  }
 }

@@ -36,13 +36,13 @@ public enum HistoryType {
   TYPE_28(28, "기타", ""),
   TYPE_29(29, "기타 (마이컬리 알림 됨)", ""),
   TYPE_30(30, "쇼핑지원금(마이컬리 알림 됨)", ""),
-  TYPE_50(50, "채무 포인트 상환", ""),
+  TYPE_50(50, "채무 포인트 상환", "[적립지급] 마이너스 적립금 상쇄"),
   TYPE_100(100, "주문 시 사용", ""),
   TYPE_101(101, "주문 취소", "[적립취소] 주문({0}) 취소"),
   TYPE_102(102, "기타", ""),
   TYPE_103(103, "소멸", ""),
   TYPE_104(104, "탈퇴 소멸", ""),
-  TYPE_105(105, "마이너스 적립금 상쇄", "");
+  TYPE_105(105, "마이너스 적립금 상쇄", "[적립차감] 이전 차감 시 잔여적립금 부족액에 대한 차감");
 
   private final int value;
   private final String desc;
@@ -61,6 +61,10 @@ public enum HistoryType {
 
   public String buildMessage(Object... params) {
     return MessageFormat.format(msg, params);
+  }
+
+  public String buildMessage() {
+    return msg;
   }
 
 }

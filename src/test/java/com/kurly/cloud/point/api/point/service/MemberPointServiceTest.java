@@ -20,6 +20,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -171,6 +172,170 @@ class MemberPointServiceTest {
         assertThat(subjectMemberPoint.getFreePoint()).isEqualTo(givenMemberPoint.getFreePoint());
         assertThat(subjectMemberPoint.getCashPoint()).isEqualTo(givenMemberPoint.getCashPoint() - givenCashPoint());
         assertThat(subjectMemberPoint.getUpdateTime()).isEqualToIgnoringSeconds(LocalDateTime.now());
+      }
+    }
+  }
+
+  @Nested
+  @DisplayName("회원에게 대출한 포인트가 잇을 때")
+  class DescribeHasDebtPoint {
+    MemberPoint givenMemberPoint() {
+      return memberPointService.createMemberPoint(givenMemberNumber(), givenFreePoint(), givenCashPoint());
+    }
+
+    int givenFreePoint() {
+      return -1000;
+    }
+
+    int givenCashPoint() {
+      return 0;
+    }
+
+    @SpringBootTest
+    @Transactional
+    @Nested
+    @DisplayName("대출한 포인트만큼 무상 적립금이 추가되면")
+    class Context0 {
+      int given() {
+        return 1000;
+      }
+
+      MemberPoint subject(int amount) {
+        return memberPointService.plusFreePoint(givenMemberNumber(), amount);
+      }
+
+      @DisplayName("회원의 총 포인트는 0원이 된다")
+      @Test
+      void test() {
+        MemberPoint memberPoint = givenMemberPoint();
+        subject(given());
+        assertThat(memberPoint.getTotalPoint()).isEqualTo(0);
+        assertThat(memberPoint.getFreePoint()).isEqualTo(0);
+        assertThat(memberPoint.getCashPoint()).isEqualTo(0);
+      }
+    }
+
+    @SpringBootTest
+    @Transactional
+    @Nested
+    @DisplayName("대출한 포인트 보다 적은 무상 적립금이 추가되면")
+    class Context1 {
+      int given() {
+        return 500;
+      }
+
+      MemberPoint subject(int amount) {
+        return memberPointService.plusFreePoint(givenMemberNumber(), amount);
+      }
+
+      @DisplayName("회원의 총 포인트는 0보다 작고 (대출포인트 - 추가포인트)가 된다")
+      @Test
+      void test() {
+        MemberPoint memberPoint = givenMemberPoint();
+        subject(given());
+        assertThat(memberPoint.getTotalPoint()).isLessThan(0);
+        assertThat(memberPoint.getTotalPoint()).isEqualTo(givenFreePoint() + given());
+        assertThat(memberPoint.getFreePoint()).isEqualTo(givenFreePoint() + given());
+        assertThat(memberPoint.getCashPoint()).isEqualTo(0);
+      }
+    }
+
+    @SpringBootTest
+    @Transactional
+    @Nested
+    @DisplayName("대출한 포인트 보다 많은 무상 적립금이 추가되면")
+    class Context2 {
+      int given() {
+        return 3000;
+      }
+
+      MemberPoint subject(int amount) {
+        return memberPointService.plusFreePoint(givenMemberNumber(), amount);
+      }
+
+      @DisplayName("회원의 총 포인트는 0 보다 크고 (추가포인트 - 대출포인트)가 된다")
+      @Test
+      void test() {
+        MemberPoint memberPoint = givenMemberPoint();
+        subject(given());
+        assertThat(memberPoint.getTotalPoint()).isGreaterThan(0);
+        assertThat(memberPoint.getTotalPoint()).isEqualTo(givenFreePoint() + given());
+        assertThat(memberPoint.getFreePoint()).isEqualTo(givenFreePoint() + given());
+        assertThat(memberPoint.getCashPoint()).isEqualTo(0);
+      }
+    }
+
+    @SpringBootTest
+    @Transactional
+    @Nested
+    @DisplayName("대출한 포인트만큼 유상 적립금이 추가되면")
+    class Context3 {
+      int given() {
+        return 1000;
+      }
+
+      MemberPoint subject(int amount) {
+        return memberPointService.plusCashPoint(givenMemberNumber(), amount);
+      }
+
+      @DisplayName("회원의 총 포인트는 0원이 된다")
+      @Test
+      void test() {
+        MemberPoint memberPoint = givenMemberPoint();
+        subject(given());
+        assertThat(memberPoint.getTotalPoint()).isEqualTo(0);
+        assertThat(memberPoint.getFreePoint()).isEqualTo(0);
+        assertThat(memberPoint.getCashPoint()).isEqualTo(0);
+      }
+    }
+
+    @SpringBootTest
+    @Transactional
+    @Nested
+    @DisplayName("대출한 포인트 보다 적은 상 적립금이 추가되면")
+    class Context4 {
+      int given() {
+        return 500;
+      }
+
+      MemberPoint subject(int amount) {
+        return memberPointService.plusCashPoint(givenMemberNumber(), amount);
+      }
+
+      @DisplayName("회원의 총 포인트는 0보다 작고 (대출포인트 - 추가포인트)가 된다")
+      @Test
+      void test() {
+        MemberPoint memberPoint = givenMemberPoint();
+        subject(given());
+        assertThat(memberPoint.getTotalPoint()).isLessThan(0);
+        assertThat(memberPoint.getTotalPoint()).isEqualTo(givenFreePoint() + given());
+        assertThat(memberPoint.getFreePoint()).isEqualTo(givenFreePoint() + given());
+        assertThat(memberPoint.getCashPoint()).isEqualTo(0);
+      }
+    }
+
+    @SpringBootTest
+    @Transactional
+    @Nested
+    @DisplayName("대출한 포인트 보다 많은 유상 적립금이 추가되면")
+    class Context5 {
+      int given() {
+        return 3000;
+      }
+
+      MemberPoint subject(int amount) {
+        return memberPointService.plusCashPoint(givenMemberNumber(), amount);
+      }
+
+      @DisplayName("회원의 총 포인트는 0 보다 크고 (추가포인트 - 대출포인트)가 된다")
+      @Test
+      void test() {
+        MemberPoint memberPoint = givenMemberPoint();
+        subject(given());
+        assertThat(memberPoint.getTotalPoint()).isGreaterThan(0);
+        assertThat(memberPoint.getTotalPoint()).isEqualTo(givenFreePoint() + given());
+        assertThat(memberPoint.getFreePoint()).isEqualTo(0);
+        assertThat(memberPoint.getCashPoint()).isEqualTo(givenFreePoint() + given());
       }
     }
   }
