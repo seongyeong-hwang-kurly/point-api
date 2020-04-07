@@ -45,7 +45,7 @@ public class PublishPointRequest {
 
   public Point toEntity() {
     return Point.builder()
-        .charge(point)
+        .charge(getPoint())
         .remain(point)
         .memberNumber(memberNumber)
         .orderNumber(orderNumber)
@@ -78,5 +78,12 @@ public class PublishPointRequest {
         PointExpireDateCalculator.calculateDefault(LocalDateTime.now())
         :
         PointExpireDateCalculator.withEndOfDate(expireDate);
+  }
+
+  public @Nullable Integer getPoint() {
+    if (Objects.nonNull(point)) {
+      return point < 0 ? 0 : point;
+    }
+    return point;
   }
 }

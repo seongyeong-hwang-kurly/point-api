@@ -42,27 +42,34 @@ class MemberPointService {
         .build());
   }
 
-  MemberPoint plusFreePoint(long memberNumber, int point) {
+  MemberPoint plusFreePoint(long memberNumber, int amount) {
     MemberPoint memberPoint = getOrCrateMemberPoint(memberNumber);
-    memberPoint.plusPoint(memberPoint, point, 0);
+    memberPoint.plusPoint(amount, 0);
     return memberPointRepository.save(memberPoint);
   }
 
-  MemberPoint plusCashPoint(long memberNumber, int point) {
+  MemberPoint plusCashPoint(long memberNumber, int amount) {
     MemberPoint memberPoint = getOrCrateMemberPoint(memberNumber);
-    memberPoint.plusPoint(memberPoint, 0, point);
+
+    if (memberPoint.getFreePoint() < 0) {
+      //이 회원은 포인트를 빚진 상태
+      int repay = Math.min(Math.abs(memberPoint.getFreePoint()), amount);
+      amount = amount - repay;
+      memberPoint.plusPoint(repay, 0);
+    }
+    memberPoint.plusPoint(0, amount);
     return memberPointRepository.save(memberPoint);
   }
 
-  MemberPoint minusFreePoint(long memberNumber, int point) {
+  MemberPoint minusFreePoint(long memberNumber, int amount) {
     MemberPoint memberPoint = getOrCrateMemberPoint(memberNumber);
-    memberPoint.minusPoint(memberPoint, point, 0);
+    memberPoint.minusPoint(amount, 0);
     return memberPointRepository.save(memberPoint);
   }
 
-  MemberPoint minusCashPoint(long memberNumber, int point) {
+  MemberPoint minusCashPoint(long memberNumber, int amount) {
     MemberPoint memberPoint = getOrCrateMemberPoint(memberNumber);
-    memberPoint.minusPoint(memberPoint, 0, point);
+    memberPoint.minusPoint(0, amount);
     return memberPointRepository.save(memberPoint);
   }
 }

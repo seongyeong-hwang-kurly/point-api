@@ -15,9 +15,11 @@ import lombok.Getter;
 public class ConsumedPoint {
   long pointSeq;
   int consumed;
+  boolean settle;
 
-  public ConsumedPoint(long pointSeq, int consumed) {
+  public ConsumedPoint(long pointSeq, int consumed, boolean settle) {
     this.pointSeq = pointSeq;
     this.consumed = consumed;
+    this.settle = settle;
   }
 }
