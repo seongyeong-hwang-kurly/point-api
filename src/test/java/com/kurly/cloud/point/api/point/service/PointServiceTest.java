@@ -370,7 +370,98 @@ class PointServiceTest {
         assertThat(getMemberPoint()).isEqualTo(givenPublishPoint() - givenConsumeAmount());
       }
     }
+  }
 
+  @Nested
+  @DisplayName("회원의 유상 적립금을 사용 할 때")
+  class DescribeConsumeSettleMemberPoint {
+    PointConsumeResult subject(int amount) {
+      return pointService.consumeMemberPoint(givenMemberNumber(), amount, true);
+    }
+
+    int givenConsumeAmount() {
+      return 10000;
+    }
+
+    int getMemberPoint() {
+      return pointService.getAvailableMemberPoint(givenMemberNumber())
+          .stream().mapToInt(Point::getRemain).sum();
+    }
+
+    void publishCashPoint(int amount) {
+      pointService.publishPoint(PublishPointRequest.builder()
+          .memberNumber(givenMemberNumber())
+          .point(amount)
+          .historyType(HistoryType.TYPE_1.getValue())
+          .settle(true)
+          .build());
+    }
+
+    void publishFreePoint(int amount) {
+      pointService.publishPoint(PublishPointRequest.builder()
+          .memberNumber(givenMemberNumber())
+          .point(amount)
+          .historyType(HistoryType.TYPE_1.getValue())
+          .build());
+    }
+
+    @SpringBootTest
+    @Transactional
+    @Nested
+    @DisplayName("사용 가능 한 유상 적립금이 없을 때")
+    class Context0 {
+      @Test
+      @DisplayName("사용 된 적립금이 없어야 한다")
+      void test() {
+        publishFreePoint(givenConsumeAmount());
+        PointConsumeResult pointConsumeResult = subject(givenConsumeAmount());
+        assertThat(pointConsumeResult.getTotalConsumed()).isEqualTo(0);
+      }
+    }
+
+    @SpringBootTest
+    @Transactional
+    @Nested
+    @DisplayName("사용 가능 한 적립금이 일부만 있을 때")
+    class Context1 {
+      int givenPublishPoint() {
+        return 3000;
+      }
+
+      @Test
+      @DisplayName("일부만 사용 하고 남은 무상적립금이 조회 된다")
+      void test() {
+        publishFreePoint(givenPublishPoint());
+        publishCashPoint(givenPublishPoint());
+        PointConsumeResult pointConsumeResult = subject(givenConsumeAmount());
+        assertThat(pointConsumeResult.getTotalConsumed()).isEqualTo(givenPublishPoint());
+        assertThat(pointConsumeResult.getRemain())
+            .isEqualTo(givenConsumeAmount() - givenPublishPoint());
+        assertThat(getMemberPoint()).isEqualTo(givenPublishPoint());
+      }
+    }
+
+    @SpringBootTest
+    @Transactional
+    @Nested
+    @DisplayName("사용 가능 한 적립금이 초과하여 있을 때")
+    class Context2 {
+      int givenPublishPoint() {
+        return 15000;
+      }
+
+      @Test
+      @DisplayName("요청한 포인트를 전부 사용하고 남은 유/무상 포인트가 조회 된다")
+      void test() {
+        publishFreePoint(givenPublishPoint());
+        publishCashPoint(givenPublishPoint());
+        PointConsumeResult pointConsumeResult = subject(givenConsumeAmount());
+        assertThat(pointConsumeResult.getTotalConsumed()).isEqualTo(givenConsumeAmount());
+        assertThat(pointConsumeResult.getRemain()).isEqualTo(0);
+        assertThat(getMemberPoint())
+            .isEqualTo(givenPublishPoint() + givenPublishPoint() - givenConsumeAmount());
+      }
+    }
   }
 
   @Nested

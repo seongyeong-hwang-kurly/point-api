@@ -77,4 +77,9 @@ public class MemberPoint {
 
     return repayAmount;
   }
+
+  @Transient
+  public boolean isEnough(Integer point, boolean settle) {
+    return settle ? getCashPoint() >= point : getTotalPoint() >= point;
+  }
 }

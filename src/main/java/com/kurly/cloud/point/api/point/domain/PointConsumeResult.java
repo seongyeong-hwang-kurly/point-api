@@ -36,6 +36,16 @@ public class PointConsumeResult {
     return consumed.stream().mapToInt(ConsumedPoint::getConsumed).sum();
   }
 
+  public int getTotalFreePointConsumed() {
+    return consumed.stream().filter(consumedPoint -> !consumedPoint.isSettle())
+        .mapToInt(ConsumedPoint::getConsumed).sum();
+  }
+
+  public int getTotalCashPointConsumed() {
+    return consumed.stream().filter(ConsumedPoint::isSettle)
+        .mapToInt(ConsumedPoint::getConsumed).sum();
+  }
+
   public int getRemain() {
     return requested - getTotalConsumed();
   }

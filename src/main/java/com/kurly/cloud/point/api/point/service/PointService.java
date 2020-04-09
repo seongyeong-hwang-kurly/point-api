@@ -31,10 +31,15 @@ class PointService {
   }
 
   PointConsumeResult consumeMemberPoint(long memberNumber, int amount) {
-    List<Point> availableMemberPoint = getAvailableMemberPoint(memberNumber);
+    return this.consumeMemberPoint(memberNumber, amount, false);
+  }
+
+  PointConsumeResult consumeMemberPoint(long memberNumber, int amount, boolean onlySettle) {
+    List<Point> availablePoints = getAvailableMemberPoint(memberNumber, onlySettle);
+
     PointConsumeResult pointConsumeResult = new PointConsumeResult(amount);
 
-    for (Point point : availableMemberPoint) {
+    for (Point point : availablePoints) {
       if (amount == 0) break;
       int consume = Math.min(point.getRemain(), amount);
       amount = amount - consume;
@@ -64,9 +69,21 @@ class PointService {
     return pointConsumeResult;
   }
 
+  List<Point> getAvailableMemberPoint(long memberNumber, boolean onlySettle) {
+    return onlySettle ?
+        getAvailableSettleMemberPoint(memberNumber) : getAvailableMemberPoint(memberNumber);
+  }
+
   List<Point> getAvailableMemberPoint(long memberNumber) {
     List<Point> availablePoints =
         pointRepository.findAllAvailableMemberPoint(memberNumber, LocalDateTime.now());
+    availablePoints.sort(ConsumeOrderComparator.getInstance());
+    return availablePoints;
+  }
+
+  List<Point> getAvailableSettleMemberPoint(long memberNumber) {
+    List<Point> availablePoints =
+        pointRepository.findAllAvailableSettleMemberPoint(memberNumber, LocalDateTime.now());
     availablePoints.sort(ConsumeOrderComparator.getInstance());
     return availablePoints;
   }
