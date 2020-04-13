@@ -223,7 +223,7 @@ class PointHistoryServiceTest {
     @DisplayName("orderNumber로 조회 하면")
     class Context1 {
       List<PointHistory> subject() {
-        return pointHistoryService.getByOrderNumber(givenOrderNumber());
+        return pointHistoryService.getPublishedByOrderNumber(givenOrderNumber());
       }
 
       @Test

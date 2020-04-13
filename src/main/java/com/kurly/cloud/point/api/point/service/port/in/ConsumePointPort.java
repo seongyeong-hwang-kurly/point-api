@@ -1,8 +1,10 @@
 package com.kurly.cloud.point.api.point.service.port.in;
 
+import com.kurly.cloud.point.api.point.domain.CancelOrderConsumePointRequest;
 import com.kurly.cloud.point.api.point.domain.ConsumePointRequest;
 import com.kurly.cloud.point.api.point.domain.OrderConsumePointRequest;
 import com.kurly.cloud.point.api.point.domain.PointConsumeResult;
+import com.kurly.cloud.point.api.point.exception.CancelAmountExceedException;
 import com.kurly.cloud.point.api.point.exception.NotEnoughPointException;
 
 public interface ConsumePointPort {
@@ -19,4 +21,9 @@ public interface ConsumePointPort {
    * @return result
    */
   PointConsumeResult consumeByOrder(OrderConsumePointRequest request) throws NotEnoughPointException;
+
+  /**
+   * 주문시 사용한 포인트를 사용 취소 합니다.
+   */
+  void cancelConsumeByOrder(CancelOrderConsumePointRequest request) throws CancelAmountExceedException;
 }

@@ -1,10 +1,13 @@
 package com.kurly.cloud.point.api.point.service;
 
+import com.kurly.cloud.point.api.point.domain.CancelOrderConsumePointRequest;
 import com.kurly.cloud.point.api.point.domain.ConsumePointRequest;
 import com.kurly.cloud.point.api.point.domain.HistoryType;
 import com.kurly.cloud.point.api.point.domain.OrderConsumePointRequest;
 import com.kurly.cloud.point.api.point.domain.PointConsumeResult;
 import com.kurly.cloud.point.api.point.domain.PublishPointRequest;
+import com.kurly.cloud.point.api.point.entity.MemberPoint;
+import com.kurly.cloud.point.api.point.exception.CancelAmountExceedException;
 import com.kurly.cloud.point.api.point.exception.NotEnoughPointException;
 import com.kurly.cloud.point.api.point.service.port.in.ConsumePointPort;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,6 +32,9 @@ class ConsumePointServiceTest {
 
   @Autowired
   PublishPointService publishPointService;
+
+  @Autowired
+  MemberPointService memberPointService;
 
   long givenMemberNumber() {
     return 999999999;
@@ -320,5 +326,75 @@ class ConsumePointServiceTest {
       }
     }
 
+  }
+
+  @Nested
+  @DisplayName("회원이 주문에 사용한 적립금을 사용 취소 할 때")
+  class DescribeCancelConsumeByOrder {
+
+    int givenFreeAmount() {
+      return 1000;
+    }
+
+    void givenConsumeByOrder() {
+      try {
+        publishFreePoint(givenFreeAmount());
+        consumePointPort.consumeByOrder(OrderConsumePointRequest.builder()
+            .memberNumber(givenMemberNumber())
+            .orderNumber(givenOrderNumber())
+            .point(givenFreeAmount())
+            .build());
+      } catch (NotEnoughPointException e) {
+
+      }
+    }
+
+    void subject(int amount) throws CancelAmountExceedException {
+      consumePointPort.cancelConsumeByOrder(CancelOrderConsumePointRequest.builder()
+          .actionMemberNumber(givenMemberNumber())
+          .memberNumber(givenMemberNumber())
+          .orderNumber(givenOrderNumber())
+          .point(amount)
+          .build());
+    }
+
+    @SpringBootTest
+    @Transactional
+    @Nested
+    @DisplayName("주문에 사용한 적립금보다 많은 적립금을 사용 취소 하면")
+    class Context0 {
+
+      @Test
+      @DisplayName("CancelAmountExceedException이 발생 한다")
+      void test() {
+        givenConsumeByOrder();
+        try {
+          subject(10000);
+          fail("실행되면 안되는 코드");
+        } catch (CancelAmountExceedException e) {
+
+        }
+      }
+    }
+
+    @SpringBootTest
+    @Transactional
+    @Nested
+    @DisplayName("사용 취소 하면")
+    class Context1 {
+
+      @Test
+      @DisplayName("취소한 만큼 적립금이 적립 된다")
+      void test() throws CancelAmountExceedException {
+        givenConsumeByOrder();
+        subject(givenFreeAmount());
+        MemberPoint memberPoint = memberPointService.getOrCrateMemberPoint(givenMemberNumber());
+
+        assertThat(memberPoint.getTotalPoint()).isEqualTo(givenFreeAmount());
+        assertThat(memberPoint.getFreePoint()).isEqualTo(givenFreeAmount());
+        assertThat(memberPoint.getCashPoint()).isEqualTo(0);
+
+      }
+    }
   }
 }

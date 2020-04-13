@@ -1,5 +1,6 @@
 package com.kurly.cloud.point.api.point.service;
 
+import com.kurly.cloud.point.api.point.domain.HistoryType;
 import com.kurly.cloud.point.api.point.domain.PointHistoryInsertRequest;
 import com.kurly.cloud.point.api.point.entity.PointHistory;
 import com.kurly.cloud.point.api.point.repository.PointHistoryRepository;
@@ -23,8 +24,15 @@ class PointHistoryService {
         Sort.by(Sort.Direction.DESC, "regTime"));
   }
 
-  List<PointHistory> getByOrderNumber(long orderNumber) {
-    return pointHistoryRepository.findAllByOrderNumber(orderNumber,
+  List<PointHistory> getPublishedByOrderNumber(long orderNumber) {
+    return pointHistoryRepository.findAllByOrderNumberAndHistoryType(orderNumber,
+        HistoryType.TYPE_1.getValue(),
+        Sort.by(Sort.Direction.DESC, "regTime"));
+  }
+
+  List<PointHistory> getConsumedByOrderNumber(long orderNumber) {
+    return pointHistoryRepository.findAllByOrderNumberAndHistoryType(orderNumber,
+        HistoryType.TYPE_100.getValue(),
         Sort.by(Sort.Direction.DESC, "regTime"));
   }
 }

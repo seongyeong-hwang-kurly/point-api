@@ -19,5 +19,6 @@ import org.springframework.stereotype.Repository;
 public interface PointHistoryRepository extends JpaRepository<PointHistory, Long> {
   List<PointHistory> findAllByPoint_Seq(long pointSeq, Sort sort);
 
-  List<PointHistory> findAllByOrderNumber(long orderNumber, Sort sort);
+  List<PointHistory> findAllByOrderNumberAndHistoryType(long orderNumber, int historyType
+      , Sort sort);
 }

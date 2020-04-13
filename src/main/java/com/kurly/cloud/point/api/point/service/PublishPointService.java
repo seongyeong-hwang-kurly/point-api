@@ -60,10 +60,11 @@ class PublishPointService implements PublishPointPort {
     }
   }
 
+  @Transactional
   @Override public void publishByOrder(PublishPointRequest request) throws AlreadyPublishedException {
     long orderNumber = request.getOrderNumber();
 
-    List<PointHistory> published = pointHistoryService.getByOrderNumber(orderNumber);
+    List<PointHistory> published = pointHistoryService.getPublishedByOrderNumber(orderNumber);
     if (published.size() > 0) {
       throw new AlreadyPublishedException(orderNumber);
     }

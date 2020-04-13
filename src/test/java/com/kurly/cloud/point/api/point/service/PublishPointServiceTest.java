@@ -105,7 +105,7 @@ class PublishPointServiceTest {
             .isEqualTo(PointExpireDateCalculator.calculateDefault(LocalDateTime.now()));
 
         List<PointHistory> byOrderNumber = pointHistoryService
-            .getByOrderNumber(request.getOrderNumber());
+            .getPublishedByOrderNumber(request.getOrderNumber());
         assertThat(byOrderNumber.size()).isEqualTo(1);
 
       }
