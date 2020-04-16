@@ -651,4 +651,72 @@ class PointServiceTest {
       }
     }
   }
+
+  @Nested
+  @DisplayName("회원의 만료포인트를 조회 할 때")
+  class DescribeGetExpiredMemberPoint {
+
+    LocalDateTime givenExpiredDateTime() {
+      return LocalDateTime.of(2020, 1, 1, 0, 0, 0);
+    }
+
+    LocalDateTime givenExpiredTargetDateTime() {
+      return LocalDateTime.of(2020, 1, 2, 0, 0, 0);
+    }
+
+    LocalDateTime givenNonExpiredDateTime() {
+      return LocalDateTime.of(2020, 1, 3, 0, 0, 0);
+    }
+
+    List<Point> subject() {
+      return pointService.getExpiredMemberPoint(givenMemberNumber(), givenExpiredTargetDateTime());
+    }
+
+    @SpringBootTest
+    @Transactional
+    @Nested
+    @DisplayName("만료된 포인트가 있다면")
+    class Context0 {
+      void givenPoint() {
+        pointService.publishPoint(PublishPointRequest.builder()
+            .historyType(HistoryType.TYPE_1.getValue())
+            .expireDate(givenExpiredDateTime())
+            .memberNumber(givenMemberNumber())
+            .point(100)
+            .build());
+      }
+
+      @Test
+      @DisplayName("만료된 포인트가 조회 된다")
+      void test() {
+        givenPoint();
+        List<Point> expiredPoints = subject();
+        assertThat(expiredPoints.size()).isEqualTo(1);
+      }
+    }
+
+    @SpringBootTest
+    @Transactional
+    @Nested
+    @DisplayName("만료된 포인트가 없다면")
+    class Context1 {
+      void givenPoint() {
+        pointService.publishPoint(PublishPointRequest.builder()
+            .historyType(HistoryType.TYPE_1.getValue())
+            .expireDate(givenNonExpiredDateTime())
+            .memberNumber(givenMemberNumber())
+            .point(100)
+            .build());
+      }
+
+      @Test
+      @DisplayName("포인트가 조회되지 않는다")
+      void test() {
+        givenPoint();
+        List<Point> expiredPoints = subject();
+        assertThat(expiredPoints.size()).isEqualTo(0);
+      }
+    }
+
+  }
 }

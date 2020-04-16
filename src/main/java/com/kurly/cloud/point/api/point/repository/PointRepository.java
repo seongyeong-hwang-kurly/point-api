@@ -13,6 +13,7 @@ import com.kurly.cloud.point.api.point.entity.Point;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -40,4 +41,20 @@ public interface PointRepository extends JpaRepository<Point, Long> {
 
   @Query("SELECT p FROM Point p WHERE p.memberNumber = :memberNumber AND p.remain < 0")
   List<Point> findAllDebtMemberPoint(@Param("memberNumber") long memberNumber);
+
+  @Query("SELECT p from Point p WHERE " +
+      " p.memberNumber = :memberNumber AND p.remain > 0 AND " +
+      " p.expireTime <= :expireTime AND p.settle = false AND p.payment = false "
+  )
+  List<Point> findAllExpiredMemberPoint(
+      @Param("memberNumber") long memberNumber,
+      @Param("expireTime") LocalDateTime expireTime
+  );
+
+  @Query("SELECT DISTINCT p.memberNumber FROM Point p " +
+      " WHERE p.payment = false AND p.remain > 0 " +
+      " AND p.expireTime <= :expireTime ")
+  List<Long> findAllMemberNumberHasExpiredPoint(
+      @Param("expireTime") LocalDateTime expireTime,
+      Pageable pageable);
 }

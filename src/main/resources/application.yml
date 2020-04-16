@@ -1,8 +1,15 @@
 spring:
   application:
     name: point-api-service
-
+  batch:
+    job:
+      enabled: false
+  main:
+    allow-bean-definition-overriding: true
 
 filebeat:
   service: pointapi
   domain: point
+
+logging.level:
+  com.kurly: DEBUG

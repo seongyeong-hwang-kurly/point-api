@@ -102,4 +102,8 @@ class PointService {
 
     return pointConsumeResult;
   }
+
+  public List<Point> getExpiredMemberPoint(long memberNumber, LocalDateTime expireTime) {
+    return pointRepository.findAllExpiredMemberPoint(memberNumber, expireTime);
+  }
 }

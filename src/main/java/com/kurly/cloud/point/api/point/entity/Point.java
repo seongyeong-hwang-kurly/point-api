@@ -19,6 +19,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -87,4 +88,9 @@ public class Point {
   @Convert(converter = UnixTimestampConverter.class)
   @Column(name = "expire_time")
   LocalDateTime expireTime;
+
+  @Transient
+  public void expire() {
+    this.remain = 0;
+  }
 }
