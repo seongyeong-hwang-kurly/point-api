@@ -16,7 +16,6 @@ import com.kurly.cloud.point.api.point.entity.MemberPoint;
 import com.kurly.cloud.point.api.point.repository.MemberPointRepository;
 import com.kurly.cloud.point.api.point.service.port.in.PublishPointPort;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.Optional;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -27,8 +26,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobParameter;
-import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -97,10 +95,9 @@ public class PointExpireBatchTest {
       @Test
       void test() throws Exception {
         givenExpiredPoints();
-
-        jobLauncher.run(pointExpireJob, new JobParameters(new HashMap<>() {{
-          put("expireTime", new JobParameter(givenExpireDateTime()));
-        }}));
+        JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
+        jobParametersBuilder.addString("expireTime", givenExpireDateTime());
+        jobLauncher.run(pointExpireJob, jobParametersBuilder.toJobParameters());
 
         for (int i = 0; i < givenSize(); i++) {
           Optional<MemberPoint> memberPoint = memberPointRepository.findById(givenMemberNumber() - i);
