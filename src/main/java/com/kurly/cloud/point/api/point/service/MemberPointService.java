@@ -24,7 +24,7 @@ class MemberPointService {
 
   private final MemberPointRepository memberPointRepository;
 
-  MemberPoint getOrCrateMemberPoint(long memberNumber) {
+  MemberPoint getOrCreateMemberPoint(long memberNumber) {
     Optional<MemberPoint> memberPoint = memberPointRepository.findById(memberNumber);
     return memberPoint.orElseGet(() -> {
       log.debug("회원의 적립금 정보가 존재하지 않아 새로 생성합니다.[{}]", memberNumber);
@@ -43,13 +43,13 @@ class MemberPointService {
   }
 
   MemberPoint plusFreePoint(long memberNumber, int amount) {
-    MemberPoint memberPoint = getOrCrateMemberPoint(memberNumber);
+    MemberPoint memberPoint = getOrCreateMemberPoint(memberNumber);
     memberPoint.plusPoint(amount, 0);
     return memberPointRepository.save(memberPoint);
   }
 
   MemberPoint plusCashPoint(long memberNumber, int amount) {
-    MemberPoint memberPoint = getOrCrateMemberPoint(memberNumber);
+    MemberPoint memberPoint = getOrCreateMemberPoint(memberNumber);
 
     if (memberPoint.getFreePoint() < 0) {
       //이 회원은 포인트를 빚진 상태
@@ -62,13 +62,13 @@ class MemberPointService {
   }
 
   MemberPoint minusFreePoint(long memberNumber, int amount) {
-    MemberPoint memberPoint = getOrCrateMemberPoint(memberNumber);
+    MemberPoint memberPoint = getOrCreateMemberPoint(memberNumber);
     memberPoint.minusPoint(amount, 0);
     return memberPointRepository.save(memberPoint);
   }
 
   MemberPoint minusCashPoint(long memberNumber, int amount) {
-    MemberPoint memberPoint = getOrCrateMemberPoint(memberNumber);
+    MemberPoint memberPoint = getOrCreateMemberPoint(memberNumber);
     memberPoint.minusPoint(0, amount);
     return memberPointRepository.save(memberPoint);
   }

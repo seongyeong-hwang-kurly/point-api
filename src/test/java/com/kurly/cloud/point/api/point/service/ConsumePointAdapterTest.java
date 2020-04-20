@@ -388,7 +388,7 @@ class ConsumePointAdapterTest {
       void test() throws CancelAmountExceedException {
         givenConsumeByOrder();
         subject(givenFreeAmount());
-        MemberPoint memberPoint = memberPointService.getOrCrateMemberPoint(givenMemberNumber());
+        MemberPoint memberPoint = memberPointService.getOrCreateMemberPoint(givenMemberNumber());
 
         assertThat(memberPoint.getTotalPoint()).isEqualTo(givenFreeAmount());
         assertThat(memberPoint.getFreePoint()).isEqualTo(givenFreeAmount());

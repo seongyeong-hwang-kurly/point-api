@@ -30,7 +30,7 @@ class ConsumePointAdapter implements ConsumePointPort {
   @Transactional
   @Override public PointConsumeResult consume(ConsumePointRequest request) throws NotEnoughPointException {
     MemberPoint memberPoint =
-        memberPointService.getOrCrateMemberPoint(request.getMemberNumber());
+        memberPointService.getOrCreateMemberPoint(request.getMemberNumber());
 
     if (!memberPoint.isEnough(request.getPoint(), request.isSettle())) {
       throw new NotEnoughPointException(request.getPoint(), memberPoint.getTotalPoint());

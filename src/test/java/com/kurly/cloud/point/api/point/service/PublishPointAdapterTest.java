@@ -67,7 +67,7 @@ class PublishPointAdapterTest {
       void test() throws AlreadyPublishedException {
         PublishPointRequest request = given();
         publishPointPort.publishByOrder(request);
-        MemberPoint memberPoint = memberPointService.getOrCrateMemberPoint(givenMemberNumber());
+        MemberPoint memberPoint = memberPointService.getOrCreateMemberPoint(givenMemberNumber());
 
         assertThat(memberPoint.getTotalPoint()).isEqualTo(request.getPoint());
         assertThat(memberPoint.getFreePoint()).isEqualTo(request.getPoint());
@@ -155,7 +155,7 @@ class PublishPointAdapterTest {
       void test() {
         PublishPointRequest request = given();
         publishPointPort.publish(request);
-        MemberPoint memberPoint = memberPointService.getOrCrateMemberPoint(givenMemberNumber());
+        MemberPoint memberPoint = memberPointService.getOrCreateMemberPoint(givenMemberNumber());
         assertThat(memberPoint.getTotalPoint()).isEqualTo(request.getPoint());
         assertThat(memberPoint.getFreePoint()).isEqualTo(request.getPoint());
         assertThat(memberPoint.getCashPoint()).isEqualTo(0);
@@ -182,7 +182,7 @@ class PublishPointAdapterTest {
           .orderNumber(givenOrderNumber())
           .point(givenDebtAmount())
           .build());
-      return memberPointService.getOrCrateMemberPoint(givenMemberNumber());
+      return memberPointService.getOrCreateMemberPoint(givenMemberNumber());
     }
 
     @Nested
@@ -371,7 +371,7 @@ class PublishPointAdapterTest {
           .orderNumber(givenOrderNumber())
           .point(amount)
           .build());
-      return memberPointService.getOrCrateMemberPoint(givenMemberNumber());
+      return memberPointService.getOrCreateMemberPoint(givenMemberNumber());
     }
 
     @SpringBootTest

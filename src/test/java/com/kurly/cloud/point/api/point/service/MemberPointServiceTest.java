@@ -344,7 +344,7 @@ class MemberPointServiceTest {
   @DisplayName("적립금 정보를 조회할때")
   class DescribeGetMemberPoint {
     MemberPoint subject() {
-      return memberPointService.getOrCrateMemberPoint(givenMemberNumber());
+      return memberPointService.getOrCreateMemberPoint(givenMemberNumber());
     }
 
     @Nested
