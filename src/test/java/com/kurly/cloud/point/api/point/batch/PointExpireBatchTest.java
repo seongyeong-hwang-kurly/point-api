@@ -91,13 +91,17 @@ public class PointExpireBatchTest {
         return dateTime.format(PointExpireJobConfig.DATE_TIME_FORMATTER);
       }
 
+      void subject() throws Exception {
+        JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
+        jobParametersBuilder.addString("expireTime", givenExpireDateTime());
+        jobLauncher.run(pointExpireJob, jobParametersBuilder.toJobParameters());
+      }
+
       @DisplayName("모두 만료 처리 된다")
       @Test
       void test() throws Exception {
         givenExpiredPoints();
-        JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
-        jobParametersBuilder.addString("expireTime", givenExpireDateTime());
-        jobLauncher.run(pointExpireJob, jobParametersBuilder.toJobParameters());
+        subject();
 
         for (int i = 0; i < givenSize(); i++) {
           Optional<MemberPoint> memberPoint = memberPointRepository.findById(givenMemberNumber() - i);

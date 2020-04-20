@@ -15,8 +15,18 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.Where;
 
+@Builder
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Where(clause = "column='point_ratio'")
 @Entity
 @Table(name = "gd_order_dynamic_column")
@@ -29,7 +39,7 @@ public class OrderDynamicColumn {
   @JoinColumn(name = "ordno", insertable = false, updatable = false)
   Order order;
 
-  @Column(name = "column")
+  @Column(name = "`column`")
   String column;
 
   @Column(name = "value")

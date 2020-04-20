@@ -14,6 +14,7 @@ import com.kurly.cloud.point.api.point.util.PointExpireDateCalculator;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,7 +28,7 @@ public class PublishPointRequest {
   @NotNull
   Long memberNumber;
   long orderNumber;
-  @NotNull
+  @NotNull @Min(1)
   Integer point;
   float pointRatio;
   @NotNull

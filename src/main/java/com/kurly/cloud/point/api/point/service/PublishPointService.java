@@ -1,5 +1,6 @@
 package com.kurly.cloud.point.api.point.service;
 
+import com.kurly.cloud.api.common.util.logging.FileBeatLogger;
 import com.kurly.cloud.point.api.point.domain.CancelPublishOrderPointRequest;
 import com.kurly.cloud.point.api.point.domain.HistoryType;
 import com.kurly.cloud.point.api.point.domain.MemberPointHistoryInsertRequest;
@@ -11,6 +12,7 @@ import com.kurly.cloud.point.api.point.entity.Point;
 import com.kurly.cloud.point.api.point.entity.PointHistory;
 import com.kurly.cloud.point.api.point.exception.AlreadyPublishedException;
 import com.kurly.cloud.point.api.point.service.port.in.PublishPointPort;
+import java.util.HashMap;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -58,6 +60,14 @@ class PublishPointService implements PublishPointPort {
     if (memberPoint.getRepayAmount(request.getPoint()) > 0) {
       repayPoint(request.getMemberNumber(), memberPoint.getRepayAmount(request.getPoint()));
     }
+
+    FileBeatLogger.info(new HashMap<>() {{
+      put("action", "pointPublished");
+      put("memberNumber", request.getMemberNumber());
+      put("amount", request.getPoint());
+      put("type", request.getHistoryType());
+      put("orderNumber", request.getOrderNumber());
+    }});
   }
 
   @Transactional
