@@ -1,9 +1,9 @@
 package com.kurly.cloud.point.api.point.service.port.in;
 
-import com.kurly.cloud.point.api.point.domain.CancelOrderConsumePointRequest;
-import com.kurly.cloud.point.api.point.domain.ConsumePointRequest;
-import com.kurly.cloud.point.api.point.domain.OrderConsumePointRequest;
-import com.kurly.cloud.point.api.point.domain.PointConsumeResult;
+import com.kurly.cloud.point.api.point.domain.consume.CancelOrderConsumePointRequest;
+import com.kurly.cloud.point.api.point.domain.consume.ConsumePointRequest;
+import com.kurly.cloud.point.api.point.domain.consume.OrderConsumePointRequest;
+import com.kurly.cloud.point.api.point.domain.consume.PointConsumeResult;
 import com.kurly.cloud.point.api.point.exception.CancelAmountExceedException;
 import com.kurly.cloud.point.api.point.exception.NotEnoughPointException;
 

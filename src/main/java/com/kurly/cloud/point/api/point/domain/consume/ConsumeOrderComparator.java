@@ -7,7 +7,7 @@
  * 1)
  */
 
-package com.kurly.cloud.point.api.point.domain;
+package com.kurly.cloud.point.api.point.domain.consume;
 
 import com.kurly.cloud.point.api.point.entity.Point;
 import java.util.Comparator;

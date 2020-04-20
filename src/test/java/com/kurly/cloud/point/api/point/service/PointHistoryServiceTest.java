@@ -1,8 +1,8 @@
 package com.kurly.cloud.point.api.point.service;
 
-import com.kurly.cloud.point.api.point.domain.HistoryType;
-import com.kurly.cloud.point.api.point.domain.PointHistoryInsertRequest;
-import com.kurly.cloud.point.api.point.domain.PublishPointRequest;
+import com.kurly.cloud.point.api.point.domain.history.HistoryType;
+import com.kurly.cloud.point.api.point.domain.history.PointHistoryInsertRequest;
+import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
 import com.kurly.cloud.point.api.point.entity.Point;
 import com.kurly.cloud.point.api.point.entity.PointHistory;
 import java.time.LocalDateTime;

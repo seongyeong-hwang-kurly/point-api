@@ -7,7 +7,7 @@
  * 1)
  */
 
-package com.kurly.cloud.point.api.point.domain;
+package com.kurly.cloud.point.api.point.domain.publish;
 
 import com.kurly.cloud.point.api.point.entity.Point;
 import com.kurly.cloud.point.api.point.util.PointExpireDateCalculator;

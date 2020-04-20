@@ -1,12 +1,12 @@
 package com.kurly.cloud.point.api.point.service;
 
 import com.kurly.cloud.api.common.util.logging.FileBeatLogger;
-import com.kurly.cloud.point.api.point.domain.CancelPublishOrderPointRequest;
-import com.kurly.cloud.point.api.point.domain.HistoryType;
-import com.kurly.cloud.point.api.point.domain.MemberPointHistoryInsertRequest;
-import com.kurly.cloud.point.api.point.domain.PointConsumeResult;
-import com.kurly.cloud.point.api.point.domain.PointHistoryInsertRequest;
-import com.kurly.cloud.point.api.point.domain.PublishPointRequest;
+import com.kurly.cloud.point.api.point.domain.consume.PointConsumeResult;
+import com.kurly.cloud.point.api.point.domain.history.HistoryType;
+import com.kurly.cloud.point.api.point.domain.history.MemberPointHistoryInsertRequest;
+import com.kurly.cloud.point.api.point.domain.history.PointHistoryInsertRequest;
+import com.kurly.cloud.point.api.point.domain.publish.CancelPublishOrderPointRequest;
+import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
 import com.kurly.cloud.point.api.point.entity.MemberPoint;
 import com.kurly.cloud.point.api.point.entity.Point;
 import com.kurly.cloud.point.api.point.entity.PointHistory;
@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-class PublishPointService implements PublishPointPort {
+class PublishPointAdapter implements PublishPointPort {
 
   private final PointService pointService;
   private final PointHistoryService pointHistoryService;

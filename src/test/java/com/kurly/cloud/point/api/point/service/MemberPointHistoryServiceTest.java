@@ -9,9 +9,9 @@
 
 package com.kurly.cloud.point.api.point.service;
 
-import com.kurly.cloud.point.api.point.domain.HistoryType;
-import com.kurly.cloud.point.api.point.domain.MemberPointHistoryInsertRequest;
-import com.kurly.cloud.point.api.point.domain.MemberPointHistoryListRequest;
+import com.kurly.cloud.point.api.point.domain.history.HistoryType;
+import com.kurly.cloud.point.api.point.domain.history.MemberPointHistoryInsertRequest;
+import com.kurly.cloud.point.api.point.domain.history.MemberPointHistoryListRequest;
 import com.kurly.cloud.point.api.point.entity.MemberPointHistory;
 import com.kurly.cloud.point.api.point.repository.MemberPointHistoryRepository;
 import com.kurly.cloud.point.api.point.util.PointExpireDateCalculator;

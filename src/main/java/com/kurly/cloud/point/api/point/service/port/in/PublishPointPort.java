@@ -1,7 +1,7 @@
 package com.kurly.cloud.point.api.point.service.port.in;
 
-import com.kurly.cloud.point.api.point.domain.CancelPublishOrderPointRequest;
-import com.kurly.cloud.point.api.point.domain.PublishPointRequest;
+import com.kurly.cloud.point.api.point.domain.publish.CancelPublishOrderPointRequest;
+import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
 import com.kurly.cloud.point.api.point.exception.AlreadyPublishedException;
 
 public interface PublishPointPort {

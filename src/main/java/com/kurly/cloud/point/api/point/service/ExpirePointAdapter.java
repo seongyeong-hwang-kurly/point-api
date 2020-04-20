@@ -1,10 +1,10 @@
 package com.kurly.cloud.point.api.point.service;
 
 import com.kurly.cloud.api.common.util.logging.FileBeatLogger;
-import com.kurly.cloud.point.api.point.domain.HistoryType;
-import com.kurly.cloud.point.api.point.domain.MemberPointHistoryInsertRequest;
 import com.kurly.cloud.point.api.point.domain.PointExpireResult;
-import com.kurly.cloud.point.api.point.domain.PointHistoryInsertRequest;
+import com.kurly.cloud.point.api.point.domain.history.HistoryType;
+import com.kurly.cloud.point.api.point.domain.history.MemberPointHistoryInsertRequest;
+import com.kurly.cloud.point.api.point.domain.history.PointHistoryInsertRequest;
 import com.kurly.cloud.point.api.point.entity.Point;
 import com.kurly.cloud.point.api.point.service.port.in.ExpirePointPort;
 import java.time.LocalDateTime;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ExpirePointService implements ExpirePointPort {
+class ExpirePointAdapter implements ExpirePointPort {
 
   private final MemberPointService memberPointService;
   private final MemberPointHistoryService memberPointHistoryService;

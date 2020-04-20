@@ -1,12 +1,12 @@
 package com.kurly.cloud.point.api.point.service;
 
-import com.kurly.cloud.point.api.point.domain.CancelOrderConsumePointRequest;
-import com.kurly.cloud.point.api.point.domain.ConsumePointRequest;
-import com.kurly.cloud.point.api.point.domain.MemberPointHistoryInsertRequest;
-import com.kurly.cloud.point.api.point.domain.OrderConsumePointRequest;
-import com.kurly.cloud.point.api.point.domain.PointConsumeResult;
-import com.kurly.cloud.point.api.point.domain.PointHistoryInsertRequest;
-import com.kurly.cloud.point.api.point.domain.PublishPointRequest;
+import com.kurly.cloud.point.api.point.domain.consume.CancelOrderConsumePointRequest;
+import com.kurly.cloud.point.api.point.domain.consume.ConsumePointRequest;
+import com.kurly.cloud.point.api.point.domain.consume.OrderConsumePointRequest;
+import com.kurly.cloud.point.api.point.domain.consume.PointConsumeResult;
+import com.kurly.cloud.point.api.point.domain.history.MemberPointHistoryInsertRequest;
+import com.kurly.cloud.point.api.point.domain.history.PointHistoryInsertRequest;
+import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
 import com.kurly.cloud.point.api.point.entity.MemberPoint;
 import com.kurly.cloud.point.api.point.entity.Point;
 import com.kurly.cloud.point.api.point.entity.PointHistory;
@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class ConsumePointService implements ConsumePointPort {
+class ConsumePointAdapter implements ConsumePointPort {
 
   private final PointService pointService;
   private final PointHistoryService pointHistoryService;

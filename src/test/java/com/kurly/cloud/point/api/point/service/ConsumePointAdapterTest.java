@@ -1,11 +1,11 @@
 package com.kurly.cloud.point.api.point.service;
 
-import com.kurly.cloud.point.api.point.domain.CancelOrderConsumePointRequest;
-import com.kurly.cloud.point.api.point.domain.ConsumePointRequest;
-import com.kurly.cloud.point.api.point.domain.HistoryType;
-import com.kurly.cloud.point.api.point.domain.OrderConsumePointRequest;
-import com.kurly.cloud.point.api.point.domain.PointConsumeResult;
-import com.kurly.cloud.point.api.point.domain.PublishPointRequest;
+import com.kurly.cloud.point.api.point.domain.consume.CancelOrderConsumePointRequest;
+import com.kurly.cloud.point.api.point.domain.consume.ConsumePointRequest;
+import com.kurly.cloud.point.api.point.domain.consume.OrderConsumePointRequest;
+import com.kurly.cloud.point.api.point.domain.consume.PointConsumeResult;
+import com.kurly.cloud.point.api.point.domain.history.HistoryType;
+import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
 import com.kurly.cloud.point.api.point.entity.MemberPoint;
 import com.kurly.cloud.point.api.point.exception.CancelAmountExceedException;
 import com.kurly.cloud.point.api.point.exception.NotEnoughPointException;
@@ -25,13 +25,13 @@ import static org.assertj.core.api.Assertions.fail;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-@DisplayName("ConsumePointService class")
-class ConsumePointServiceTest {
+@DisplayName("ConsumePointAdapter class")
+class ConsumePointAdapterTest {
   @Autowired
   ConsumePointPort consumePointPort;
 
   @Autowired
-  PublishPointService publishPointService;
+  PublishPointAdapter publishPointAdapter;
 
   @Autowired
   MemberPointService memberPointService;
@@ -45,7 +45,7 @@ class ConsumePointServiceTest {
   }
 
   void publishCashPoint(int amount) {
-    publishPointService.publish(PublishPointRequest.builder()
+    publishPointAdapter.publish(PublishPointRequest.builder()
         .memberNumber(givenMemberNumber())
         .point(amount)
         .historyType(HistoryType.TYPE_1.getValue())
@@ -54,7 +54,7 @@ class ConsumePointServiceTest {
   }
 
   void publishFreePoint(int amount) {
-    publishPointService.publish(PublishPointRequest.builder()
+    publishPointAdapter.publish(PublishPointRequest.builder()
         .memberNumber(givenMemberNumber())
         .point(amount)
         .historyType(HistoryType.TYPE_1.getValue())

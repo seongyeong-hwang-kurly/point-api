@@ -7,7 +7,7 @@
  * 1)
  */
 
-package com.kurly.cloud.point.api.point.domain;
+package com.kurly.cloud.point.api.point.domain.history;
 
 
 import com.kurly.cloud.point.api.point.entity.MemberPointHistory;
