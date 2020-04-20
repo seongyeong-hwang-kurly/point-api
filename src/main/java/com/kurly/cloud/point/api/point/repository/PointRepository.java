@@ -22,16 +22,16 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PointRepository extends JpaRepository<Point, Long> {
   @Query("SELECT p FROM Point p WHERE " +
-      "p.memberNumber = :memberNumber AND p.remain > 0 AND " +
-      "(p.expireTime = 0L OR p.expireTime >= :expireTime)")
+      " p.memberNumber = :memberNumber AND p.remain > 0 AND " +
+      " (p.expireTime = 0L OR p.expireTime >= :expireTime) ")
   List<Point> findAllAvailableMemberPoint(
       @Param("memberNumber") long memberNumber,
       @Param("expireTime") LocalDateTime expireTime);
 
   @Query("SELECT p FROM Point p WHERE " +
-      "p.memberNumber = :memberNumber AND p.remain > 0 AND " +
-      "p.settle = true AND " +
-      "(p.expireTime = 0L OR p.expireTime >= :expireTime)")
+      " p.memberNumber = :memberNumber AND p.remain > 0 AND " +
+      " p.settle = true AND " +
+      " (p.expireTime = 0L OR p.expireTime >= :expireTime) ")
   List<Point> findAllAvailableSettleMemberPoint(
       @Param("memberNumber") long memberNumber,
       @Param("expireTime") LocalDateTime expireTime);
