@@ -7,19 +7,22 @@
  * 1)
  */
 
-package com.kurly.cloud.point.api.point.domain;
+package com.kurly.cloud.point.api.point.domain.history;
 
+import lombok.Builder;
 import lombok.Getter;
+import org.springframework.data.domain.Sort;
 
 @Getter
-public class ConsumedPoint {
-  long pointSeq;
-  int consumed;
-  boolean settle;
+@Builder
+public class MemberPointHistoryListRequest {
 
-  public ConsumedPoint(long pointSeq, int consumed, boolean settle) {
-    this.pointSeq = pointSeq;
-    this.consumed = consumed;
-    this.settle = settle;
-  }
+  private long memberNumber;
+  private boolean includeHidden;
+
+  int page;
+  @Builder.Default
+  int size = 10;
+  @Builder.Default
+  Sort sort = Sort.by(Sort.Direction.DESC, "regTime");
 }

@@ -7,7 +7,7 @@
  * 1)
  */
 
-package com.kurly.cloud.point.api.point.domain;
+package com.kurly.cloud.point.api.point.domain.consume;
 
 import java.util.ArrayList;
 import java.util.List;

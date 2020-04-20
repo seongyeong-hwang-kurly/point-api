@@ -1,9 +1,9 @@
 package com.kurly.cloud.point.api.point.service;
 
-import com.kurly.cloud.point.api.point.domain.CancelPublishOrderPointRequest;
-import com.kurly.cloud.point.api.point.domain.HistoryType;
-import com.kurly.cloud.point.api.point.domain.MemberPointHistoryListRequest;
-import com.kurly.cloud.point.api.point.domain.PublishPointRequest;
+import com.kurly.cloud.point.api.point.domain.history.HistoryType;
+import com.kurly.cloud.point.api.point.domain.history.MemberPointHistoryListRequest;
+import com.kurly.cloud.point.api.point.domain.publish.CancelPublishOrderPointRequest;
+import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
 import com.kurly.cloud.point.api.point.entity.MemberPoint;
 import com.kurly.cloud.point.api.point.entity.MemberPointHistory;
 import com.kurly.cloud.point.api.point.entity.Point;
@@ -28,8 +28,8 @@ import static org.assertj.core.api.Assertions.fail;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-@DisplayName("PublishPointService class")
-class PublishPointServiceTest {
+@DisplayName("PublishPointAdapter class")
+class PublishPointAdapterTest {
   @Autowired
   PublishPointPort publishPointPort;
   @Autowired

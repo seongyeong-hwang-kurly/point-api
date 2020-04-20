@@ -9,9 +9,9 @@
 
 package com.kurly.cloud.point.api.point.service;
 
-import com.kurly.cloud.point.api.point.domain.ConsumeOrderComparator;
-import com.kurly.cloud.point.api.point.domain.PointConsumeResult;
-import com.kurly.cloud.point.api.point.domain.PublishPointRequest;
+import com.kurly.cloud.point.api.point.domain.consume.ConsumeOrderComparator;
+import com.kurly.cloud.point.api.point.domain.consume.PointConsumeResult;
+import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
 import com.kurly.cloud.point.api.point.entity.Point;
 import com.kurly.cloud.point.api.point.repository.PointRepository;
 import java.time.LocalDateTime;

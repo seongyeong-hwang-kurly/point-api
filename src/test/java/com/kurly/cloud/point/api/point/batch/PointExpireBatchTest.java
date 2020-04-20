@@ -10,8 +10,8 @@
 package com.kurly.cloud.point.api.point.batch;
 
 import com.kurly.cloud.point.api.point.batch.expire.config.PointExpireJobConfig;
-import com.kurly.cloud.point.api.point.domain.HistoryType;
-import com.kurly.cloud.point.api.point.domain.PublishPointRequest;
+import com.kurly.cloud.point.api.point.domain.history.HistoryType;
+import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
 import com.kurly.cloud.point.api.point.entity.MemberPoint;
 import com.kurly.cloud.point.api.point.repository.MemberPointRepository;
 import com.kurly.cloud.point.api.point.service.port.in.PublishPointPort;

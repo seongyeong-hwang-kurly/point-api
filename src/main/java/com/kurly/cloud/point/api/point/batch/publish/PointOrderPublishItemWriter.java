@@ -11,7 +11,7 @@ package com.kurly.cloud.point.api.point.batch.publish;
 
 import com.kurly.cloud.api.common.util.SlackNotifier;
 import com.kurly.cloud.api.common.util.logging.FileBeatLogger;
-import com.kurly.cloud.point.api.point.domain.PublishPointRequest;
+import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
 import com.kurly.cloud.point.api.point.exception.AlreadyPublishedException;
 import com.kurly.cloud.point.api.point.service.port.in.PublishPointPort;
 import java.util.List;

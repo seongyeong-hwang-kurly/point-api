@@ -1,5 +1,6 @@
-package com.kurly.cloud.point.api.point.domain;
+package com.kurly.cloud.point.api.point.domain.consume;
 
+import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;

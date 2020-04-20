@@ -6,7 +6,7 @@ import com.kurly.cloud.point.api.point.batch.publish.PointOrderPublishItemProces
 import com.kurly.cloud.point.api.point.batch.publish.PointOrderPublishItemReader;
 import com.kurly.cloud.point.api.point.batch.publish.PointOrderPublishItemWriter;
 import com.kurly.cloud.point.api.point.batch.publish.PointOrderPublishJobListener;
-import com.kurly.cloud.point.api.point.domain.PublishPointRequest;
+import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
 import java.time.format.DateTimeFormatter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;

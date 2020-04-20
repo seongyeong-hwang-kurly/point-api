@@ -7,41 +7,31 @@
  * 1)
  */
 
-package com.kurly.cloud.point.api.point.domain;
+package com.kurly.cloud.point.api.point.domain.consume;
 
+import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-@Builder
 @Getter
 @Setter
-public class CancelPublishOrderPointRequest {
-  @NotNull
-  Long memberNumber;
+@Builder
+public class CancelOrderConsumePointRequest {
   @NotNull
   Long orderNumber;
   @NotNull
-  Integer point;
+  Long memberNumber;
   @NotNull
-  Long actionMemberNumber;
+  Integer point;
+  long actionMemberNumber;
 
-  public PublishPointRequest toPublishPointRequest() {
-    return PublishPointRequest.builder()
-        .detail(getDetail())
-        .actionMemberNumber(actionMemberNumber)
-        .historyType(getHistoryType())
-        .memberNumber(memberNumber)
-        .point(point)
-        .build();
-  }
-
-  public int getHistoryType() {
-    return HistoryType.TYPE_101.getValue();
+  public Integer getHistoryType() {
+    return HistoryType.TYPE_2.getValue();
   }
 
   public String getDetail() {
-    return HistoryType.TYPE_101.buildMessage(orderNumber);
+    return HistoryType.TYPE_2.buildMessage(orderNumber);
   }
 }

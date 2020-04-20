@@ -1,8 +1,8 @@
 package com.kurly.cloud.point.api.point.service;
 
-import com.kurly.cloud.point.api.point.domain.HistoryType;
 import com.kurly.cloud.point.api.point.domain.PointExpireResult;
-import com.kurly.cloud.point.api.point.domain.PublishPointRequest;
+import com.kurly.cloud.point.api.point.domain.history.HistoryType;
+import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
 import com.kurly.cloud.point.api.point.service.port.in.ExpirePointPort;
 import com.kurly.cloud.point.api.point.service.port.in.PublishPointPort;
 import java.time.LocalDateTime;
@@ -19,8 +19,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-@DisplayName("ExpirePointService class")
-public class ExpirePointServiceTest {
+@DisplayName("ExpirePointAdapter class")
+public class ExpirePointAdapterTest {
 
   @Autowired
   ExpirePointPort expirePointPort;

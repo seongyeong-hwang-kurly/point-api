@@ -1,4 +1,4 @@
-package com.kurly.cloud.point.api.point.domain;
+package com.kurly.cloud.point.api.point.domain.consume;
 
 import javax.validation.constraints.NotNull;
 import lombok.Builder;

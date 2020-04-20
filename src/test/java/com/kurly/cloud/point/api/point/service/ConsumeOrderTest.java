@@ -9,7 +9,7 @@
 
 package com.kurly.cloud.point.api.point.service;
 
-import com.kurly.cloud.point.api.point.domain.ConsumeOrderComparator;
+import com.kurly.cloud.point.api.point.domain.consume.ConsumeOrderComparator;
 import com.kurly.cloud.point.api.point.entity.Point;
 import java.time.LocalDateTime;
 import java.util.Arrays;
