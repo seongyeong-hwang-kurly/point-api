@@ -12,7 +12,7 @@ import com.kurly.cloud.point.api.point.entity.Point;
 import com.kurly.cloud.point.api.point.entity.PointHistory;
 import com.kurly.cloud.point.api.point.exception.CancelAmountExceedException;
 import com.kurly.cloud.point.api.point.exception.NotEnoughPointException;
-import com.kurly.cloud.point.api.point.service.port.in.ConsumePointPort;
+import com.kurly.cloud.point.api.point.port.in.ConsumePointPort;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

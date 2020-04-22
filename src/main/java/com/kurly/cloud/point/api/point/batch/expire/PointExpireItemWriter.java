@@ -11,7 +11,7 @@ package com.kurly.cloud.point.api.point.batch.expire;
 
 import com.kurly.cloud.point.api.point.batch.expire.config.PointExpireJobConfig;
 import com.kurly.cloud.point.api.point.domain.PointExpireResult;
-import com.kurly.cloud.point.api.point.service.port.in.ExpirePointPort;
+import com.kurly.cloud.point.api.point.port.in.ExpirePointPort;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

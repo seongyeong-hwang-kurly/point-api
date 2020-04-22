@@ -6,7 +6,7 @@ import com.kurly.cloud.point.api.point.domain.history.MemberPointHistoryListRequ
 import com.kurly.cloud.point.api.point.entity.MemberPoint;
 import com.kurly.cloud.point.api.point.entity.MemberPointHistory;
 import com.kurly.cloud.point.api.point.entity.Point;
-import com.kurly.cloud.point.api.point.service.port.out.MemberPointPort;
+import com.kurly.cloud.point.api.point.port.out.MemberPointPort;
 import com.kurly.cloud.point.api.point.util.PointExpireDateCalculator;
 import java.time.LocalDateTime;
 import java.util.List;

@@ -13,7 +13,7 @@ import com.kurly.cloud.api.common.util.SlackNotifier;
 import com.kurly.cloud.api.common.util.logging.FileBeatLogger;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
 import com.kurly.cloud.point.api.point.exception.AlreadyPublishedException;
-import com.kurly.cloud.point.api.point.service.port.in.PublishPointPort;
+import com.kurly.cloud.point.api.point.port.in.PublishPointPort;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.StepExecution;

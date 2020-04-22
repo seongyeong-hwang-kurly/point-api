@@ -1,4 +1,4 @@
-package com.kurly.cloud.point.api.point.service.port.out;
+package com.kurly.cloud.point.api.point.port.out;
 
 import com.kurly.cloud.point.api.point.domain.MemberPointSummary;
 import com.kurly.cloud.point.api.point.domain.history.MemberPointHistoryDto;

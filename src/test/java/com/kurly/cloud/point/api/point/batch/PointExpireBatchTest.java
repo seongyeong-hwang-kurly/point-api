@@ -14,7 +14,7 @@ import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
 import com.kurly.cloud.point.api.point.entity.MemberPoint;
 import com.kurly.cloud.point.api.point.repository.MemberPointRepository;
-import com.kurly.cloud.point.api.point.service.port.in.PublishPointPort;
+import com.kurly.cloud.point.api.point.port.in.PublishPointPort;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import javax.persistence.EntityManager;

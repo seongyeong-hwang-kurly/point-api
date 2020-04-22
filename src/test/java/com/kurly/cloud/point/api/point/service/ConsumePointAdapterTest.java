@@ -9,7 +9,7 @@ import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
 import com.kurly.cloud.point.api.point.entity.MemberPoint;
 import com.kurly.cloud.point.api.point.exception.CancelAmountExceedException;
 import com.kurly.cloud.point.api.point.exception.NotEnoughPointException;
-import com.kurly.cloud.point.api.point.service.port.in.ConsumePointPort;
+import com.kurly.cloud.point.api.point.port.in.ConsumePointPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

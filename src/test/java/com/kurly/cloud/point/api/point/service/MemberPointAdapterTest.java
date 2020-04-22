@@ -6,7 +6,7 @@ import com.kurly.cloud.point.api.point.domain.history.MemberPointHistoryDto;
 import com.kurly.cloud.point.api.point.domain.history.MemberPointHistoryInsertRequest;
 import com.kurly.cloud.point.api.point.domain.history.MemberPointHistoryListRequest;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
-import com.kurly.cloud.point.api.point.service.port.in.PublishPointPort;
+import com.kurly.cloud.point.api.point.port.in.PublishPointPort;
 import com.kurly.cloud.point.api.point.util.PointExpireDateCalculator;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.BeforeEach;

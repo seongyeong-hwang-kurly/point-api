@@ -1,4 +1,4 @@
-package com.kurly.cloud.point.api.point.service.port.in;
+package com.kurly.cloud.point.api.point.port.in;
 
 import com.kurly.cloud.point.api.point.domain.PointExpireResult;
 import java.time.LocalDateTime;

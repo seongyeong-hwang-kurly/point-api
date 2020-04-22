@@ -6,7 +6,7 @@ import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.domain.history.MemberPointHistoryInsertRequest;
 import com.kurly.cloud.point.api.point.domain.history.PointHistoryInsertRequest;
 import com.kurly.cloud.point.api.point.entity.Point;
-import com.kurly.cloud.point.api.point.service.port.in.ExpirePointPort;
+import com.kurly.cloud.point.api.point.port.in.ExpirePointPort;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
