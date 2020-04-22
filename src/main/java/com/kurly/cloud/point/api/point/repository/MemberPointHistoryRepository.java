@@ -17,8 +17,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MemberPointHistoryRepository extends JpaRepository<MemberPointHistory, Long> {
-  int deleteByMemberNumber(long memberNumber);
   Page<MemberPointHistory> getAllByMemberNumberAndHidden(long memberNumber, boolean hidden,
                                                          Pageable pageable);
+
   Page<MemberPointHistory> getAllByMemberNumber(long memberNumber, Pageable pageable);
 }

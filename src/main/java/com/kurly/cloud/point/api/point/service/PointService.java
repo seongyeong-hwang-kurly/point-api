@@ -18,6 +18,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -105,5 +107,16 @@ class PointService {
 
   public List<Point> getExpiredMemberPoint(long memberNumber, LocalDateTime expireTime) {
     return pointRepository.findAllExpiredMemberPoint(memberNumber, expireTime);
+  }
+
+  public Optional<LocalDateTime> getMemberPointNextExpireDate(long memberNumber) {
+    Page<LocalDateTime> memberNextExpireTime =
+        pointRepository.getMemberNextExpireTime(memberNumber, PageRequest.of(0, 1));
+
+    if (memberNextExpireTime.hasContent()) {
+      return Optional.of(memberNextExpireTime.getContent().get(0));
+    } else {
+      return Optional.empty();
+    }
   }
 }

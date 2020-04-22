@@ -9,13 +9,14 @@
 
 package com.kurly.cloud.point.api.point.service;
 
-import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.domain.consume.PointConsumeResult;
+import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
 import com.kurly.cloud.point.api.point.entity.Point;
 import com.kurly.cloud.point.api.point.util.PointExpireDateCalculator;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import javax.validation.ConstraintViolationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -718,5 +719,55 @@ class PointServiceTest {
       }
     }
 
+  }
+
+  @Nested
+  @DisplayName("회원의 다음 만료일을 조회 할 때")
+  class DescribeGetMemberPointNextExpireDate {
+
+    LocalDateTime givenExpiredDateTime() {
+      return LocalDateTime.of(2030, 1, 1, 0, 0, 0);
+    }
+
+    Optional<LocalDateTime> subject() {
+      return pointService.getMemberPointNextExpireDate(givenMemberNumber());
+    }
+
+    @SpringBootTest
+    @Transactional
+    @Nested
+    @DisplayName("만료될 포인트가 있다면")
+    class Context0 {
+      void givenPoint() {
+        pointService.publishPoint(PublishPointRequest.builder()
+            .historyType(HistoryType.TYPE_1.getValue())
+            .expireDate(givenExpiredDateTime())
+            .memberNumber(givenMemberNumber())
+            .point(100)
+            .build());
+      }
+
+      @Test
+      @DisplayName("다음 만료일을 포함하는 Optional을 리턴한다")
+      void test() {
+        givenPoint();
+        Optional<LocalDateTime> expireTime = subject();
+        assertThat(expireTime).isNotEmpty();
+        assertThat(expireTime.get()).isEqualToIgnoringHours(givenExpiredDateTime());
+      }
+    }
+
+    @SpringBootTest
+    @Transactional
+    @Nested
+    @DisplayName("만료될 포인트가 없다면")
+    class Context1 {
+      @Test
+      @DisplayName("비어 있는 Optional을 리턴한다")
+      void test() {
+        Optional<LocalDateTime> expireTime = subject();
+        assertThat(expireTime).isEmpty();
+      }
+    }
   }
 }
