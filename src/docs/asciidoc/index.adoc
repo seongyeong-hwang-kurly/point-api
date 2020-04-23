@@ -1,0 +1,188 @@
+= Rest Docs Point API Document
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 3
+:sectlinks:
+:snippets: ../../../build/generated-snippets
+
+== 소개
+
+마켓컬리의 적립금 API
+
+적립금의 지급, 사용에 대한 API를 제공한다
+
+== 공통 사항
+
+API에 관계없이 아래 사항을 지켜주셔야 합니다
+
+=== Domain
+
+|===
+| 환경 | domain
+
+| 개발서버
+| `https://gateway.cloud.dev.kurly.services/point`
+
+| 운영서버
+| `https://gateway.cloud.kurly.services/point`
+|===
+
+=== Header
+
+==== Public API
+
+일반 사용자 또는 CMS 관리자의 호출
+
+|===
+| name | 설명
+
+| `Authorization`
+| `MKAPI` 에서 발급 한 사용자 `JWT` 토큰
+|===
+
+==== Private API
+
+server-to-server 호출
+
+|===
+| name | 설명
+
+| `Authorization`
+| `auth-service` 에서 발급한 `oauth2` 토큰
+|===
+
+=== Response Type
+
+application/json;charset=utf-8 +
+
+=== 공통 Response Body
+
+|===
+| field | Field Type| 설명
+
+| `success`
+| Boolean
+| 성공 여부
+
+| `message`
+| String
+| 메세지
+
+| `data`
+| String
+| 결과 데이터
+|===
+
+== 조회
+
+=== 회원 적립금 이력 조회
+
+회원의 적립금 사용/지급 이력을 조회 합니다
+
+==== HTTP method
+
+==== HTTP request
+
+==== Request Parameters
+
+==== Response fields
+
+==== Response body
+
+=== 회원 적립금 요약 조회
+
+회원의 현재 총적립금, 다음 만료일, 다음 만료 적립금을 조회합니다
+
+==== HTTP method
+
+==== HTTP request
+
+==== Request Parameters
+
+==== Response fields
+
+==== Response body
+
+== 지급
+
+=== 회원 적립금 지급
+
+회원 에게 적립금을 지급합니다
+
+이 API는 관리자 권한을 가진 사용자만 호출 가능합니다
+
+==== HTTP method
+
+==== HTTP request
+
+==== Request Parameters
+
+==== Response fields
+
+==== Response body
+
+=== 회원 적립금 지급 [Bulk]
+
+여러 회원 에게 적립금을 여러 건 지급합니다
+
+이 API는 관리자 권한을 가진 사용자만 호출 가능합니다
+
+==== HTTP method
+
+==== HTTP request
+
+==== Request Parameters
+
+==== Response fields
+
+==== Response body
+
+== 사용
+
+=== 주문 적립금 사용
+
+회원이 주문에 적립금을 사용합니다
+
+==== HTTP method
+
+==== HTTP request
+
+==== Request Parameters
+
+==== Response fields
+
+==== Response body
+
+=== 회원 적립금 사용
+
+회원의 적립금을 사용 합니다
+
+이 API는 관리자 권한을 가진 사용자만 호출 가능합니다
+
+==== HTTP method
+
+==== HTTP request
+
+==== Request Parameters
+
+==== Response fields
+
+==== Response body
+
+=== 회원 적립금 사용 [Bulk]
+
+여러 회원의 적립금을 여러 건 사용합니다
+
+이 API는 관리자 권한을 가진 사용자만 호출 가능합니다
+
+==== HTTP method
+
+==== HTTP request
+
+==== Request Parameters
+
+==== Response fields
+
+==== Response body
