@@ -12,9 +12,12 @@ package com.kurly.cloud.point.api.point.batch.expire;
 import com.kurly.cloud.api.common.util.SlackNotifier;
 import com.kurly.cloud.api.common.util.logging.FileBeatLogger;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -35,11 +38,37 @@ public class PointExpireScheduler {
 
   @Scheduled(cron = "0 0 0 * * *")
   public void execute() {
+    String expireTime = LocalDateTime.now().format(DATE_TIME_FORMATTER);
     try {
+      FileBeatLogger.info(new HashMap<>() {{
+        put("batch", "PointExpireScheduler");
+        put("action", "STARTED");
+        put("param", expireTime);
+      }});
       JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
-      jobParametersBuilder.addString("expireTime", LocalDateTime.now().format(DATE_TIME_FORMATTER));
-      jobLauncher.run(pointExpireJob, jobParametersBuilder.toJobParameters());
+      jobParametersBuilder.addString("expireTime", expireTime);
+      JobExecution run = jobLauncher.run(pointExpireJob, jobParametersBuilder.toJobParameters());
+      if (run.getExitStatus().getExitCode().equals(ExitStatus.FAILED.getExitCode())) {
+        String exitDescription = run.getExitStatus().getExitDescription();
+        SlackNotifier.notify(exitDescription);
+        FileBeatLogger.info(new HashMap<>() {{
+          put("batch", "PointExpireScheduler");
+          put("action", "FAILED");
+          put("param", expireTime);
+        }});
+      } else {
+        FileBeatLogger.info(new HashMap<>() {{
+          put("batch", "PointExpireScheduler");
+          put("action", "COMPLETED");
+          put("param", expireTime);
+        }});
+      }
     } catch (Exception e) {
+      FileBeatLogger.info(new HashMap<>() {{
+        put("batch", "PointExpireScheduler");
+        put("action", "FAILED");
+        put("param", expireTime);
+      }});
       FileBeatLogger.error(e);
       SlackNotifier.notify(e);
     }
