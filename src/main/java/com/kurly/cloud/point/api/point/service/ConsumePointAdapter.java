@@ -1,5 +1,6 @@
 package com.kurly.cloud.point.api.point.service;
 
+import com.kurly.cloud.api.common.util.logging.FileBeatLogger;
 import com.kurly.cloud.point.api.point.domain.consume.CancelOrderConsumePointRequest;
 import com.kurly.cloud.point.api.point.domain.consume.ConsumePointRequest;
 import com.kurly.cloud.point.api.point.domain.consume.OrderConsumePointRequest;
@@ -13,6 +14,7 @@ import com.kurly.cloud.point.api.point.entity.PointHistory;
 import com.kurly.cloud.point.api.point.exception.CancelAmountExceedException;
 import com.kurly.cloud.point.api.point.exception.NotEnoughPointException;
 import com.kurly.cloud.point.api.point.port.in.ConsumePointPort;
+import java.util.HashMap;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -65,6 +67,14 @@ class ConsumePointAdapter implements ConsumePointPort {
         .cashPoint(-pointConsumeResult.getTotalCashPointConsumed())
         .orderNumber(request.getOrderNumber())
         .build());
+
+    FileBeatLogger.info(new HashMap<>() {{
+      put("action", "pointConsumed");
+      put("memberNumber", request.getMemberNumber());
+      put("amount", request.getPoint());
+      put("type", request.getHistoryType());
+      put("orderNumber", request.getOrderNumber());
+    }});
 
     return pointConsumeResult;
   }
@@ -129,6 +139,14 @@ class ConsumePointAdapter implements ConsumePointPort {
         .detail(request.getDetail())
         .orderNumber(request.getOrderNumber())
         .build());
+
+    FileBeatLogger.info(new HashMap<>() {{
+      put("action", "pointConsumeCanceled");
+      put("memberNumber", request.getMemberNumber());
+      put("amount", request.getPoint());
+      put("type", request.getHistoryType());
+      put("orderNumber", request.getOrderNumber());
+    }});
   }
 
   private void minusMemberPoint(Long memberNumber, int freePoint, int cashPoint) {

@@ -119,6 +119,15 @@ class PublishPointAdapter implements PublishPointPort {
         .detail(request.getDetail())
         .orderNumber(request.getOrderNumber())
         .build());
+
+    FileBeatLogger.info(new HashMap<>() {{
+      put("action", "pointPublishCanceled");
+      put("memberNumber", request.getMemberNumber());
+      put("amount", request.getPoint());
+      put("type", request.getHistoryType());
+      put("orderNumber", request.getOrderNumber());
+    }});
+
   }
 
   /**
@@ -148,6 +157,14 @@ class PublishPointAdapter implements PublishPointPort {
     );
 
     minusMemberPoint(request.getMemberNumber(), false, amount);
+
+    FileBeatLogger.info(new HashMap<>() {{
+      put("action", "pointLoaned");
+      put("memberNumber", request.getMemberNumber());
+      put("amount", amount);
+      put("type", request.getHistoryType());
+      put("orderNumber", request.getOrderNumber());
+    }});
   }
 
   /**
@@ -188,6 +205,12 @@ class PublishPointAdapter implements PublishPointPort {
           .detail(HistoryType.TYPE_50.buildMessage())
           .build());
     });
+
+    FileBeatLogger.info(new HashMap<>() {{
+      put("action", "pointRepaid");
+      put("memberNumber", memberNumber);
+      put("amount", amount);
+    }});
   }
 
   private MemberPoint plusMemberPoint(Long memberNumber, boolean settle, Integer point) {
