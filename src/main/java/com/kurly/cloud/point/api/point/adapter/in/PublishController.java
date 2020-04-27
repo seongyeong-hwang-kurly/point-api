@@ -1,8 +1,8 @@
 package com.kurly.cloud.point.api.point.adapter.in;
 
 import com.kurly.cloud.api.common.util.logging.FileBeatLogger;
+import com.kurly.cloud.point.api.point.domain.BulkJobResult;
 import com.kurly.cloud.point.api.point.domain.publish.BulkPublishPointRequest;
-import com.kurly.cloud.point.api.point.domain.publish.BulkPublishPointResult;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
 import com.kurly.cloud.point.api.point.port.in.PublishPointPort;
 import java.util.List;
@@ -32,8 +32,8 @@ public class PublishController {
 
   @Secured("ROLE_ADMIN")
   @PostMapping(value = "/public/v1/publish/bulk", consumes = MediaType.APPLICATION_JSON_VALUE)
-  BulkPublishPointResult bulkPublish(@RequestBody List<@Valid BulkPublishPointRequest> requests) {
-    BulkPublishPointResult result = new BulkPublishPointResult();
+  BulkJobResult bulkPublish(@RequestBody List<@Valid BulkPublishPointRequest> requests) {
+    BulkJobResult result = new BulkJobResult();
     requests.forEach(request -> {
       try {
         publishPointPort.publish(request);
