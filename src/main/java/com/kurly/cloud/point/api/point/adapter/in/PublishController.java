@@ -1,0 +1,48 @@
+package com.kurly.cloud.point.api.point.adapter.in;
+
+import com.kurly.cloud.api.common.util.logging.FileBeatLogger;
+import com.kurly.cloud.point.api.point.domain.publish.BulkPublishPointRequest;
+import com.kurly.cloud.point.api.point.domain.publish.BulkPublishPointResult;
+import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
+import com.kurly.cloud.point.api.point.port.in.PublishPointPort;
+import java.util.List;
+import javax.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+@Validated
+@RequiredArgsConstructor
+@RestController
+public class PublishController {
+
+  private final PublishPointPort publishPointPort;
+
+  @Secured("ROLE_ADMIN")
+  @PostMapping(value = "/public/v1/publish", consumes = MediaType.APPLICATION_JSON_VALUE)
+  ResponseEntity publish(@RequestBody @Valid PublishPointRequest request) {
+    publishPointPort.publish(request);
+    return ResponseEntity.noContent().build();
+  }
+
+  @Secured("ROLE_ADMIN")
+  @PostMapping(value = "/public/v1/publish/bulk", consumes = MediaType.APPLICATION_JSON_VALUE)
+  BulkPublishPointResult bulkPublish(@RequestBody List<@Valid BulkPublishPointRequest> requests) {
+    BulkPublishPointResult result = new BulkPublishPointResult();
+    requests.forEach(request -> {
+      try {
+        publishPointPort.publish(request);
+        result.addSuccess(request.getJobSeq());
+      } catch (Exception e) {
+        result.addFailed(request.getJobSeq());
+        FileBeatLogger.error(e);
+      }
+    });
+    return result;
+  }
+}

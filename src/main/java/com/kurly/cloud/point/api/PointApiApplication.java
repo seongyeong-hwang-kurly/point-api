@@ -9,9 +9,13 @@
 
 package com.kurly.cloud.point.api;
 
+import com.kurly.cloud.api.common.annotation.EnableKurlyJWTAuth;
+import com.kurly.cloud.api.common.annotation.EnableKurlyResourceConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+@EnableKurlyJWTAuth
+@EnableKurlyResourceConfig
 @SpringBootApplication
 public class PointApiApplication {
   public static void main(String[] args) {

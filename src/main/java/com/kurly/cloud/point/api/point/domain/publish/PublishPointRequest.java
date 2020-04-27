@@ -16,14 +16,19 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.lang.Nullable;
 
 @Builder
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class PublishPointRequest {
   @NotNull
   Long memberNumber;
@@ -36,6 +41,7 @@ public class PublishPointRequest {
   boolean payment;
   boolean settle;
   boolean unlimitedDate;
+  @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
   LocalDateTime expireDate;
 
   @Builder.Default
