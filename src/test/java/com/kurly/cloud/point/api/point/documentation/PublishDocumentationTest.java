@@ -79,7 +79,6 @@ public class PublishDocumentationTest {
         .expireDate(LocalDateTime.of(2020, 12, 31, 0, 0, 0))
         .memo("발급사유(내부)")
         .detail("발급사유(고객용)")
-        .actionMemberNumber(givenMemberNumber())
         .hidden(false)
         .build();
   }
@@ -114,8 +113,8 @@ public class PublishDocumentationTest {
                         .optional()
                     , fieldWithPath("memo").type(JsonFieldType.STRING).description("발급 사유명(내부용)").optional()
                     , fieldWithPath("detail").type(JsonFieldType.STRING).description("발급 사유명(고객용)").optional()
-                    , fieldWithPath("actionMemberNumber").type(JsonFieldType.NUMBER).description("발급자 번호").optional()
                     , fieldWithPath("hidden").type(JsonFieldType.BOOLEAN).description("이력 숨김 여부").optional()
+                    , fieldWithPath("actionMemberNumber").ignored()
                     , fieldWithPath("pointRatio").ignored()
                     , fieldWithPath("unlimitedDate").ignored()
                     , fieldWithPath("orderNumber").ignored()
