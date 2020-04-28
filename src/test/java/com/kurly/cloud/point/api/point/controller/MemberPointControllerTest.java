@@ -9,6 +9,8 @@
 
 package com.kurly.cloud.point.api.point.controller;
 
+import com.kurly.cloud.point.api.point.common.CommonTestGiven;
+import com.kurly.cloud.point.api.point.common.ControllerTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,7 +29,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-public class MemberPointControllerTest extends AbstractControllerTest {
+@ControllerTest
+public class MemberPointControllerTest implements CommonTestGiven {
 
   private MockMvc mockMvc;
 
@@ -37,10 +40,6 @@ public class MemberPointControllerTest extends AbstractControllerTest {
         .webAppContextSetup(webApplicationContext)
         .addFilters(new CharacterEncodingFilter("UTF-8", true))
         .build();
-  }
-
-  long givenMemberNumber() {
-    return 999999999;
   }
 
   @WithUserDetails

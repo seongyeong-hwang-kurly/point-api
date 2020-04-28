@@ -1,5 +1,7 @@
 package com.kurly.cloud.point.api.point.service;
 
+import com.kurly.cloud.point.api.point.common.CommonTestGiven;
+import com.kurly.cloud.point.api.point.common.TransactionalTest;
 import com.kurly.cloud.point.api.point.domain.PointExpireResult;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
@@ -13,24 +15,19 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @DisplayName("ExpirePointAdapter class")
-public class ExpirePointAdapterTest {
+public class ExpirePointAdapterTest implements CommonTestGiven {
 
   @Autowired
   ExpirePointPort expirePointPort;
 
   @Autowired
   PublishPointPort publishPointPort;
-
-  long givenMemberNumber() {
-    return 999999999;
-  }
 
   @Nested
   @DisplayName("회원의 포인트를 만료 시킬 때")
@@ -67,8 +64,7 @@ public class ExpirePointAdapterTest {
           .build());
     }
 
-    @Transactional
-    @SpringBootTest
+    @TransactionalTest
     @Nested
     @DisplayName("만료된 포인트가 있다면")
     class Context0 {
@@ -84,8 +80,7 @@ public class ExpirePointAdapterTest {
       }
     }
 
-    @Transactional
-    @SpringBootTest
+    @TransactionalTest
     @Nested
     @DisplayName("만료된 포인트가 없다면")
     class Context1 {

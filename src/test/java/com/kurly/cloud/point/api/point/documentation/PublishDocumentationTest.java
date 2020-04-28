@@ -1,6 +1,7 @@
 package com.kurly.cloud.point.api.point.documentation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.config.SpringSecurityTestConfig;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.domain.publish.BulkPublishPointRequest;
@@ -45,7 +46,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith({SpringExtension.class, RestDocumentationExtension.class})
 @SpringBootTest
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = "gateway.cloud.dev.kurly.services/point", uriPort = 443)
-public class PublishDocumentationTest {
+public class PublishDocumentationTest implements CommonTestGiven {
 
   MockMvc mockMvc;
 
@@ -63,14 +64,6 @@ public class PublishDocumentationTest {
         .apply(documentationConfiguration(restDocumentation))
         .alwaysDo(print())
         .build();
-  }
-
-  long givenMemberNumber() {
-    return 999999999;
-  }
-
-  long givenOrderNumber() {
-    return 888888888;
   }
 
   PublishPointRequest givenPublishRequest() {

@@ -9,6 +9,8 @@
 
 package com.kurly.cloud.point.api.point.service;
 
+import com.kurly.cloud.point.api.point.common.CommonTestGiven;
+import com.kurly.cloud.point.api.point.common.TransactionalTest;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.domain.history.MemberPointHistoryInsertRequest;
 import com.kurly.cloud.point.api.point.domain.history.MemberPointHistoryListRequest;
@@ -26,7 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -34,17 +35,13 @@ import static org.assertj.core.api.Assertions.fail;
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @DisplayName("MemberPointHistoryService class")
-class MemberPointHistoryServiceTest {
+class MemberPointHistoryServiceTest implements CommonTestGiven {
 
   @Autowired
   MemberPointHistoryService memberPointHistoryService;
 
   @Autowired
   MemberPointHistoryRepository memberPointHistoryRepository;
-
-  long givenMemberNumber() {
-    return 999999999;
-  }
 
   @Nested
   @DisplayName("적립금 이력을 입력 할 때")
@@ -102,9 +99,8 @@ class MemberPointHistoryServiceTest {
       }
     }
 
+    @TransactionalTest
     @Nested
-    @SpringBootTest
-    @Transactional
     @DisplayName("올바른 값이 입력 된다면")
     class Context2 {
       MemberPointHistoryInsertRequest givenRequest() {
@@ -182,8 +178,7 @@ class MemberPointHistoryServiceTest {
       insertHistoryWithHidden(true, 10);
     }
 
-    @Transactional
-    @SpringBootTest
+    @TransactionalTest
     @Nested
     @DisplayName("숨겨진 이력을 모두 조회한다면")
     class Context0 {
@@ -202,9 +197,7 @@ class MemberPointHistoryServiceTest {
       }
     }
 
-
-    @Transactional
-    @SpringBootTest
+    @TransactionalTest
     @Nested
     @DisplayName("숨겨진 이력을 제외하고 조회한다면")
     class Context1 {

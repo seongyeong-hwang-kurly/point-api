@@ -1,6 +1,8 @@
 package com.kurly.cloud.point.api.point.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kurly.cloud.point.api.point.common.CommonTestGiven;
+import com.kurly.cloud.point.api.point.common.ControllerTest;
 import com.kurly.cloud.point.api.point.domain.consume.BulkConsumePointRequest;
 import com.kurly.cloud.point.api.point.domain.consume.CancelOrderConsumePointRequest;
 import com.kurly.cloud.point.api.point.domain.consume.ConsumePointRequest;
@@ -24,7 +26,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
@@ -33,10 +34,9 @@ import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Transactional
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-public class ConsumeControllerTest {
+public class ConsumeControllerTest implements CommonTestGiven {
 
   private MockMvc mockMvc;
 
@@ -49,14 +49,6 @@ public class ConsumeControllerTest {
         .webAppContextSetup(webApplicationContext)
         .addFilters(new CharacterEncodingFilter("UTF-8", true))
         .build();
-  }
-
-  long givenMemberNumber() {
-    return 999999999;
-  }
-
-  long givenOrderNumber() {
-    return 888888888;
   }
 
   @Nested
@@ -74,9 +66,10 @@ public class ConsumeControllerTest {
           .build();
     }
 
+    @ControllerTest
     @Nested
     @DisplayName("일반 회원이 호출하면")
-    class Context0 extends AbstractControllerTest {
+    class Context0 {
 
       @WithUserDetails
       @Test
@@ -93,7 +86,8 @@ public class ConsumeControllerTest {
 
     @Nested
     @DisplayName("관리자가 호출하면")
-    class Context1 extends AbstractControllerTest {
+    @ControllerTest
+    class Context1 {
 
       @MockBean
       ConsumePointPort consumePointPort;
@@ -113,7 +107,8 @@ public class ConsumeControllerTest {
 
     @Nested
     @DisplayName("필수값이 없으면")
-    class Context2 extends AbstractControllerTest {
+    @ControllerTest
+    class Context2 {
 
       @WithUserDetails("admin")
       @Test
@@ -131,7 +126,8 @@ public class ConsumeControllerTest {
 
     @Nested
     @DisplayName("포인트가 모자르면")
-    class Context3 extends AbstractControllerTest {
+    @ControllerTest
+    class Context3 {
 
       @WithUserDetails("admin")
       @Test
@@ -149,7 +145,8 @@ public class ConsumeControllerTest {
 
   @Nested
   @DisplayName("적립금 대량 사용을 호출 할 때")
-  class DescribeBulkConsume extends AbstractControllerTest {
+  @ControllerTest
+  class DescribeBulkConsume {
 
     @MockBean
     ConsumePointPort consumePointPort;
@@ -214,7 +211,8 @@ public class ConsumeControllerTest {
 
     @Nested
     @DisplayName("값이 올바르면")
-    class Context0 extends AbstractControllerTest {
+    @ControllerTest
+    class Context0 {
       @MockBean
       ConsumePointPort consumePointPort;
 
@@ -241,7 +239,8 @@ public class ConsumeControllerTest {
 
     @Nested
     @DisplayName("다른사용자의 적립금 사용을 호출하면")
-    class Context1 extends AbstractControllerTest {
+    @ControllerTest
+    class Context1 {
       OrderConsumePointRequest givenRequest() {
         return OrderConsumePointRequest.builder()
             .memberNumber(givenMemberNumber() - 1)
@@ -267,9 +266,11 @@ public class ConsumeControllerTest {
   @Nested
   @DisplayName("적립금 사용취소를 호출 할 때")
   class DescribeCancelConsume {
+
     @Nested
     @DisplayName("값이 올바르면")
-    class Context0 extends AbstractControllerTest {
+    @ControllerTest
+    class Context0 {
       @MockBean
       ConsumePointPort consumePointPort;
 

@@ -1,5 +1,7 @@
 package com.kurly.cloud.point.api.point.service;
 
+import com.kurly.cloud.point.api.point.common.CommonTestGiven;
+import com.kurly.cloud.point.api.point.common.TransactionalTest;
 import com.kurly.cloud.point.api.point.domain.consume.CancelOrderConsumePointRequest;
 import com.kurly.cloud.point.api.point.domain.consume.ConsumePointRequest;
 import com.kurly.cloud.point.api.point.domain.consume.OrderConsumePointRequest;
@@ -18,7 +20,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -26,7 +27,7 @@ import static org.assertj.core.api.Assertions.fail;
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @DisplayName("ConsumePointAdapter class")
-class ConsumePointAdapterTest {
+class ConsumePointAdapterTest implements CommonTestGiven {
   @Autowired
   ConsumePointPort consumePointPort;
 
@@ -35,14 +36,6 @@ class ConsumePointAdapterTest {
 
   @Autowired
   MemberPointService memberPointService;
-
-  long givenMemberNumber() {
-    return 999999999;
-  }
-
-  long givenOrderNumber() {
-    return 888888888;
-  }
 
   void publishCashPoint(int amount) {
     publishPointAdapter.publish(PublishPointRequest.builder()
@@ -83,8 +76,7 @@ class ConsumePointAdapterTest {
       publishCashPoint(getCashAmount());
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("보유한 보인트가 부족하면")
     class Context0 {
@@ -109,8 +101,7 @@ class ConsumePointAdapterTest {
       }
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("보유한 보인트가 충분 하면")
     class Context1 {
@@ -136,8 +127,7 @@ class ConsumePointAdapterTest {
       }
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("보유한 보인트중 일부만 사용하면")
     class Context2 {
@@ -167,8 +157,7 @@ class ConsumePointAdapterTest {
     @Nested
     @DisplayName("유상포인트를 사용할 때")
     class Context3 {
-      @SpringBootTest
-      @Transactional
+      @TransactionalTest
       @Nested
       @DisplayName("전체 포인트가 충분하고 유상포인트가 부족하면")
       class Context0 {
@@ -195,8 +184,7 @@ class ConsumePointAdapterTest {
         }
       }
 
-      @SpringBootTest
-      @Transactional
+      @TransactionalTest
       @Nested
       @DisplayName("유상포인트가 충분하면")
       class Context1 {
@@ -247,8 +235,7 @@ class ConsumePointAdapterTest {
       publishCashPoint(getCashAmount());
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("보유한 보인트가 부족하면")
     class Context0 {
@@ -273,8 +260,7 @@ class ConsumePointAdapterTest {
       }
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("보유한 보인트가 충분 하면")
     class Context1 {
@@ -299,8 +285,7 @@ class ConsumePointAdapterTest {
       }
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("보유한 보인트중 일부만 사용하면")
     class Context2 {
@@ -358,8 +343,7 @@ class ConsumePointAdapterTest {
           .build());
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("주문에 사용한 적립금보다 많은 적립금을 사용 취소 하면")
     class Context0 {
@@ -377,8 +361,7 @@ class ConsumePointAdapterTest {
       }
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("사용 취소 하면")
     class Context1 {

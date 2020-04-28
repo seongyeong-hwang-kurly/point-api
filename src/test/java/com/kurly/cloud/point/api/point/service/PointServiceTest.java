@@ -9,6 +9,8 @@
 
 package com.kurly.cloud.point.api.point.service;
 
+import com.kurly.cloud.point.api.point.common.CommonTestGiven;
+import com.kurly.cloud.point.api.point.common.TransactionalTest;
 import com.kurly.cloud.point.api.point.domain.consume.PointConsumeResult;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
@@ -25,7 +27,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -33,14 +34,10 @@ import static org.assertj.core.api.Assertions.fail;
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @DisplayName("PointService class")
-class PointServiceTest {
+class PointServiceTest implements CommonTestGiven {
 
   @Autowired
   PointService pointService;
-
-  long givenMemberNumber() {
-    return 999999999;
-  }
 
   @Nested
   @DisplayName("적립금을 회원에게 지급 할 때")
@@ -116,8 +113,7 @@ class PointServiceTest {
       }
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("모든값이 존재한다면")
     class Context3 {
@@ -151,8 +147,7 @@ class PointServiceTest {
       }
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("만료일을 지정하면")
     class Context4 {
@@ -176,8 +171,7 @@ class PointServiceTest {
       }
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("만료일의 제한이 없다면")
     class Context5 {
@@ -220,8 +214,7 @@ class PointServiceTest {
       return pointService.getAvailableMemberPoint(givenMemberNumber());
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("만료일 이전의 포인트가 있으면")
     class Context0 {
@@ -239,8 +232,7 @@ class PointServiceTest {
       }
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("만료일이 무제한인 포인트가 있으면")
     class Context1 {
@@ -258,8 +250,7 @@ class PointServiceTest {
       }
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("만료일이 지난 포인트가 있으면")
     class Context2 {
@@ -276,8 +267,7 @@ class PointServiceTest {
       }
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("포인트의 잔액이 없으면")
     class Context3 {
@@ -331,8 +321,7 @@ class PointServiceTest {
       }
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("사용 가능 한 적립금이 일부만 있을 때")
     class Context1 {
@@ -352,8 +341,7 @@ class PointServiceTest {
       }
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("사용 가능 한 적립금이 초과하여 있을 때")
     class Context2 {
@@ -406,8 +394,7 @@ class PointServiceTest {
           .build());
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("사용 가능 한 유상 적립금이 없을 때")
     class Context0 {
@@ -420,8 +407,7 @@ class PointServiceTest {
       }
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("사용 가능 한 적립금이 일부만 있을 때")
     class Context1 {
@@ -442,8 +428,7 @@ class PointServiceTest {
       }
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("사용 가능 한 적립금이 초과하여 있을 때")
     class Context2 {
@@ -468,10 +453,6 @@ class PointServiceTest {
   @Nested
   @DisplayName("특정 주문 적립금 우선 사용 할 때")
   class DescribeConsumeOrderPoint {
-    long givenOrderNumber() {
-      return 88888888;
-    }
-
     int givenOrderPointAmount() {
       return 1000;
     }
@@ -501,8 +482,7 @@ class PointServiceTest {
       return pointService.consumeOrderPoint(givenMemberNumber(), givenOrderNumber(), amount);
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("특정 주문 적립금이 충분하면")
     class Context0 {
@@ -525,8 +505,7 @@ class PointServiceTest {
       }
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("특정 주문 적립금이 부족하고 총 적립금이 충분하면")
     class Context1 {
@@ -550,8 +529,7 @@ class PointServiceTest {
       }
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("총 적립금이 부족하면")
     class Context2 {
@@ -598,8 +576,7 @@ class PointServiceTest {
       return pointService.repayMemberPoint(givenMemberNumber(), amount);
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("대출포인트보다 상환포인트가 많으면")
     class Context0 {
@@ -616,8 +593,7 @@ class PointServiceTest {
       }
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("상환포인트보다 대출포인트가 많으면")
     class Context1 {
@@ -634,8 +610,7 @@ class PointServiceTest {
       }
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("대출포인트와 상환포인트가 같으면")
     class Context2 {
@@ -673,8 +648,7 @@ class PointServiceTest {
       return pointService.getExpiredMemberPoint(givenMemberNumber(), givenExpiredTargetDateTime());
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("만료된 포인트가 있다면")
     class Context0 {
@@ -696,8 +670,7 @@ class PointServiceTest {
       }
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("만료된 포인트가 없다면")
     class Context1 {
@@ -733,8 +706,7 @@ class PointServiceTest {
       return pointService.getMemberPointNextExpireDate(givenMemberNumber());
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("만료될 포인트가 있다면")
     class Context0 {
@@ -757,8 +729,7 @@ class PointServiceTest {
       }
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("만료될 포인트가 없다면")
     class Context1 {

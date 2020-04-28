@@ -9,6 +9,8 @@
 
 package com.kurly.cloud.point.api.point.service;
 
+import com.kurly.cloud.point.api.point.common.CommonTestGiven;
+import com.kurly.cloud.point.api.point.common.TransactionalTest;
 import com.kurly.cloud.point.api.point.entity.MemberPoint;
 import com.kurly.cloud.point.api.point.repository.MemberPointRepository;
 import java.time.LocalDateTime;
@@ -20,23 +22,18 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @DisplayName("MemberPointService class")
-class MemberPointServiceTest {
+class MemberPointServiceTest implements CommonTestGiven {
   @Autowired
   MemberPointService memberPointService;
 
   @Autowired
   MemberPointRepository memberPointRepository;
-
-  long givenMemberNumber() {
-    return 999999999;
-  }
 
   @AfterEach
   void clear() {
@@ -191,8 +188,7 @@ class MemberPointServiceTest {
       return 0;
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("대출한 포인트만큼 무상 적립금이 추가되면")
     class Context0 {
@@ -215,8 +211,7 @@ class MemberPointServiceTest {
       }
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("대출한 적립금 보다 적은 무상 적립금이 추가되면")
     class Context1 {
@@ -240,8 +235,7 @@ class MemberPointServiceTest {
       }
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("대출한 적립금 보다 많은 무상 적립금이 추가되면")
     class Context2 {
@@ -265,8 +259,7 @@ class MemberPointServiceTest {
       }
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("대출한 포인트만큼 유상 적립금이 추가되면")
     class Context3 {
@@ -289,10 +282,9 @@ class MemberPointServiceTest {
       }
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
-    @DisplayName("대출한 적립금 보다 적은 상 적립금이 추가되면")
+    @DisplayName("대출한 적립금 보다 적은 적립금이 추가되면")
     class Context4 {
       int given() {
         return 500;
@@ -314,8 +306,7 @@ class MemberPointServiceTest {
       }
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("대출한 적립금 보다 많은 유상 적립금이 추가되면")
     class Context5 {

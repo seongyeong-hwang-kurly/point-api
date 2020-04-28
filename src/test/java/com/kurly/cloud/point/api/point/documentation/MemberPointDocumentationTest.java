@@ -9,6 +9,7 @@
 
 package com.kurly.cloud.point.api.point.documentation;
 
+import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.config.SpringSecurityTestConfig;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
@@ -51,7 +52,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 @SpringBootTest
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = "gateway.cloud.dev.kurly.services/point", uriPort = 443)
-public class MemberPointDocumentationTest {
+public class MemberPointDocumentationTest implements CommonTestGiven {
 
   MockMvc mockMvc;
 
@@ -78,10 +79,6 @@ public class MemberPointDocumentationTest {
         .expireDate(LocalDateTime.now())
         .detail("지급")
         .build());
-  }
-
-  long givenMemberNumber() {
-    return 999999999;
   }
 
   @WithUserDetails

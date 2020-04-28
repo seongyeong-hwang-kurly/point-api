@@ -1,6 +1,8 @@
 package com.kurly.cloud.point.api.point.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kurly.cloud.point.api.point.common.CommonTestGiven;
+import com.kurly.cloud.point.api.point.common.ControllerTest;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.domain.publish.BulkPublishPointRequest;
 import com.kurly.cloud.point.api.point.domain.publish.CancelPublishOrderPointRequest;
@@ -33,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-public class PublishControllerTest {
+public class PublishControllerTest implements CommonTestGiven {
 
   private MockMvc mockMvc;
 
@@ -46,14 +48,6 @@ public class PublishControllerTest {
         .webAppContextSetup(webApplicationContext)
         .addFilters(new CharacterEncodingFilter("UTF-8", true))
         .build();
-  }
-
-  long givenMemberNumber() {
-    return 999999999;
-  }
-
-  long givenOrderNumber() {
-    return 888888888;
   }
 
   @Nested
@@ -70,7 +64,8 @@ public class PublishControllerTest {
 
     @Nested
     @DisplayName("일반 회원이 호출하면")
-    class Context0 extends AbstractControllerTest {
+    @ControllerTest
+    class Context0 {
 
       @WithUserDetails
       @Test
@@ -87,7 +82,8 @@ public class PublishControllerTest {
 
     @Nested
     @DisplayName("관리자가 호출하면")
-    class Context1 extends AbstractControllerTest {
+    @ControllerTest
+    class Context1 {
 
       @WithUserDetails("admin")
       @Test
@@ -104,7 +100,8 @@ public class PublishControllerTest {
 
     @Nested
     @DisplayName("필수값이 없으면")
-    class Context2 extends AbstractControllerTest {
+    @ControllerTest
+    class Context2 {
 
       @WithUserDetails("admin")
       @Test
@@ -123,7 +120,8 @@ public class PublishControllerTest {
 
   @Nested
   @DisplayName("적립금 대량 발급을 호출 할 때")
-  class DescribeBulkPublish extends AbstractControllerTest {
+  @ControllerTest
+  class DescribeBulkPublish {
 
     @Autowired
     ObjectMapper objectMapper;
@@ -198,7 +196,8 @@ public class PublishControllerTest {
 
     @Nested
     @DisplayName("값이 올바르면")
-    class Context0 extends AbstractControllerTest {
+    @ControllerTest
+    class Context0 {
 
       @MockBean
       PublishPointPort publishPointPort;

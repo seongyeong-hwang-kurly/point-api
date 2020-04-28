@@ -12,6 +12,7 @@ package com.kurly.cloud.point.api.point.batch;
 import com.kurly.cloud.point.api.order.entity.Order;
 import com.kurly.cloud.point.api.order.entity.OrderDynamicColumn;
 import com.kurly.cloud.point.api.point.batch.publish.config.PointOrderPublishJobConfig;
+import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.entity.MemberPoint;
 import com.kurly.cloud.point.api.point.repository.MemberPointRepository;
 import com.kurly.cloud.point.api.point.util.PointCalculator;
@@ -38,7 +39,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @DisplayName("PointOrderPublishBatch class")
-public class PointOrderPublishBatchTest {
+public class PointOrderPublishBatchTest implements CommonTestGiven {
   @Autowired
   JobLauncher jobLauncher;
 
@@ -54,14 +55,6 @@ public class PointOrderPublishBatchTest {
 
   @Autowired
   MemberPointRepository memberPointRepository;
-
-  long givenMemberNumber() {
-    return 999999999;
-  }
-
-  long givenOrderNumber() {
-    return 888888888;
-  }
 
   @Nested
   @DisplayName("적립금 지급 배치를 실행 할 때")

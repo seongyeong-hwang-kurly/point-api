@@ -1,5 +1,7 @@
 package com.kurly.cloud.point.api.point.service;
 
+import com.kurly.cloud.point.api.point.common.CommonTestGiven;
+import com.kurly.cloud.point.api.point.common.TransactionalTest;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.domain.history.PointHistoryInsertRequest;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
@@ -15,7 +17,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -23,17 +24,13 @@ import static org.assertj.core.api.Assertions.fail;
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @DisplayName("PointHistoryService class")
-class PointHistoryServiceTest {
+class PointHistoryServiceTest implements CommonTestGiven {
 
   @Autowired
   PointHistoryService pointHistoryService;
 
   @Autowired
   PointService pointService;
-
-  long givenMemberNumber() {
-    return 999999999;
-  }
 
   @Nested
   @DisplayName("적립금 이력을 입력 할 때")
@@ -111,8 +108,7 @@ class PointHistoryServiceTest {
       }
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("올바른 값이 입력 된다면")
     class Context3 {
@@ -153,9 +149,6 @@ class PointHistoryServiceTest {
   @Nested
   @DisplayName("적립금 이력을 조회 할 때")
   class DescribeGetHistory {
-    long givenOrderNumber() {
-      return 999999999;
-    }
 
     void 조회되지않아야하는이력() {
       Point point = pointService.publishPoint(PublishPointRequest.builder()
@@ -196,8 +189,7 @@ class PointHistoryServiceTest {
       return 조회되어야하는이력();
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("pointSeq로 조회 하면")
     class Context0 {
@@ -217,8 +209,7 @@ class PointHistoryServiceTest {
     }
 
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("orderNumber로 조회 하면")
     class Context1 {

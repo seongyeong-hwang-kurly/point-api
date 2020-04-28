@@ -10,11 +10,12 @@
 package com.kurly.cloud.point.api.point.batch;
 
 import com.kurly.cloud.point.api.point.batch.expire.config.PointExpireJobConfig;
+import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
 import com.kurly.cloud.point.api.point.entity.MemberPoint;
-import com.kurly.cloud.point.api.point.repository.MemberPointRepository;
 import com.kurly.cloud.point.api.point.port.in.PublishPointPort;
+import com.kurly.cloud.point.api.point.repository.MemberPointRepository;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import javax.persistence.EntityManager;
@@ -38,7 +39,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @DisplayName("PointExpireBatch class")
-public class PointExpireBatchTest {
+public class PointExpireBatchTest implements CommonTestGiven {
   @Autowired
   JobLauncher jobLauncher;
 
@@ -54,10 +55,6 @@ public class PointExpireBatchTest {
 
   @Autowired
   EntityManagerFactory entityManagerFactory;
-
-  long givenMemberNumber() {
-    return 999999999;
-  }
 
   int givenSize() {
     return 15;

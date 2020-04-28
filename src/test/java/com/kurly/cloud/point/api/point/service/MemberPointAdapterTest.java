@@ -1,5 +1,7 @@
 package com.kurly.cloud.point.api.point.service;
 
+import com.kurly.cloud.point.api.point.common.CommonTestGiven;
+import com.kurly.cloud.point.api.point.common.TransactionalTest;
 import com.kurly.cloud.point.api.point.domain.MemberPointSummary;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.domain.history.MemberPointHistoryDto;
@@ -18,14 +20,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @DisplayName("MemberPointAdapter class")
-class MemberPointAdapterTest {
+class MemberPointAdapterTest implements CommonTestGiven {
 
   @Autowired
   MemberPointAdapter memberPointAdapter;
@@ -35,10 +36,6 @@ class MemberPointAdapterTest {
 
   @Autowired
   PublishPointPort publishPointPort;
-
-  long givenMemberNumber() {
-    return 999999999;
-  }
 
   @Nested
   @DisplayName("회원 적립금 이력을 조회 할 때")
@@ -72,8 +69,7 @@ class MemberPointAdapterTest {
       insertHistoryWithHidden(true, 10);
     }
 
-    @Transactional
-    @SpringBootTest
+    @TransactionalTest
     @Nested
     @DisplayName("숨겨진 이력을 포함하도록 요청하면")
     class Context0 {
@@ -108,9 +104,7 @@ class MemberPointAdapterTest {
 
     }
 
-
-    @Transactional
-    @SpringBootTest
+    @TransactionalTest
     @Nested
     @DisplayName("숨겨진 이력을 제외하고 조회한다면")
     class Context1 {
@@ -141,8 +135,7 @@ class MemberPointAdapterTest {
       return 1000;
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("포인트가 없으면")
     class Context0 {
@@ -158,8 +151,7 @@ class MemberPointAdapterTest {
       }
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("유상포인트가 있으면")
     class Context1 {
@@ -193,8 +185,7 @@ class MemberPointAdapterTest {
     @DisplayName("만료될 포인트가 있으면")
     class Context2 {
 
-      @SpringBootTest
-      @Transactional
+      @TransactionalTest
       @Nested
       @DisplayName("다음 만료일이 시스템 만료일과 같으면")
       class Context2_Context0 {
@@ -226,8 +217,7 @@ class MemberPointAdapterTest {
         }
       }
 
-      @SpringBootTest
-      @Transactional
+      @TransactionalTest
       @Nested
       @DisplayName("다음 만료일이 시스템 만료일 이전이면")
       class Context2_Context1 {
@@ -262,8 +252,7 @@ class MemberPointAdapterTest {
         }
       }
 
-      @SpringBootTest
-      @Transactional
+      @TransactionalTest
       @Nested
       @DisplayName("다음 만료일이 시스템 만료일과 이후이면")
       class Context2_Context2 {
@@ -295,8 +284,7 @@ class MemberPointAdapterTest {
         }
       }
 
-      @SpringBootTest
-      @Transactional
+      @TransactionalTest
       @Nested
       @DisplayName("다음 만료일에 만료될 포인트가 여러건 있다면")
       class Context2_Context3 {

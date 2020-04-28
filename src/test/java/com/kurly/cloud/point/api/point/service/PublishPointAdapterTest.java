@@ -1,5 +1,7 @@
 package com.kurly.cloud.point.api.point.service;
 
+import com.kurly.cloud.point.api.point.common.CommonTestGiven;
+import com.kurly.cloud.point.api.point.common.TransactionalTest;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.domain.history.MemberPointHistoryListRequest;
 import com.kurly.cloud.point.api.point.domain.publish.CancelPublishOrderPointRequest;
@@ -21,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -29,7 +30,7 @@ import static org.assertj.core.api.Assertions.fail;
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @DisplayName("PublishPointAdapter class")
-class PublishPointAdapterTest {
+class PublishPointAdapterTest implements CommonTestGiven {
   @Autowired
   PublishPointPort publishPointPort;
   @Autowired
@@ -40,10 +41,6 @@ class PublishPointAdapterTest {
   MemberPointService memberPointService;
   @Autowired
   MemberPointHistoryService memberPointHistoryService;
-
-  long givenMemberNumber() {
-    return 999999999;
-  }
 
   @Nested
   @DisplayName("주문 적립 포인트를 발행 할 때")
@@ -57,8 +54,7 @@ class PublishPointAdapterTest {
           .build();
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("올바른 값이 입력되면")
     class Context0 {
@@ -111,8 +107,7 @@ class PublishPointAdapterTest {
       }
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("중복발행을 시도 하면")
     class Context1 {
@@ -145,8 +140,7 @@ class PublishPointAdapterTest {
           .build();
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("올바른 값이 입력되면")
     class Context0 {
@@ -167,9 +161,6 @@ class PublishPointAdapterTest {
   @Nested
   @DisplayName("대출한 포인트가 있을 때")
   class DescribeRepay {
-    long givenOrderNumber() {
-      return 88888888;
-    }
 
     int givenDebtAmount() {
       return 1000;
@@ -197,8 +188,7 @@ class PublishPointAdapterTest {
             .build());
       }
 
-      @SpringBootTest
-      @Transactional
+      @TransactionalTest
       @Nested
       @DisplayName("대출포인트 보다 지급포인트가 많으면")
       class Context0 {
@@ -216,8 +206,7 @@ class PublishPointAdapterTest {
         }
       }
 
-      @SpringBootTest
-      @Transactional
+      @TransactionalTest
       @Nested
       @DisplayName("지급포인트 보다 대출포인트가 많으면")
       class Context1 {
@@ -235,8 +224,7 @@ class PublishPointAdapterTest {
         }
       }
 
-      @SpringBootTest
-      @Transactional
+      @TransactionalTest
       @Nested
       @DisplayName("대출포인트와 지급포인트가 같으면")
       class Context2 {
@@ -268,8 +256,7 @@ class PublishPointAdapterTest {
             .build());
       }
 
-      @SpringBootTest
-      @Transactional
+      @TransactionalTest
       @Nested
       @DisplayName("대출포인트보다 지급포인트가 많으면")
       class Context0 {
@@ -288,8 +275,7 @@ class PublishPointAdapterTest {
         }
       }
 
-      @SpringBootTest
-      @Transactional
+      @TransactionalTest
       @Nested
       @DisplayName("지급포인트보다 대출포인트가 많으면")
       class Context1 {
@@ -308,8 +294,7 @@ class PublishPointAdapterTest {
         }
       }
 
-      @SpringBootTest
-      @Transactional
+      @TransactionalTest
       @Nested
       @DisplayName("대출포인트와 지급포인트가 같으면")
       class Context2 {
@@ -334,10 +319,6 @@ class PublishPointAdapterTest {
   @Nested
   @DisplayName("주문 적립 포인트를 발행을 취소 할 때")
   class DescribeCancelPublishByOrder {
-    long givenOrderNumber() {
-      return 88888888;
-    }
-
     int givenOrderPointAmount() {
       return 1000;
     }
@@ -374,8 +355,7 @@ class PublishPointAdapterTest {
       return memberPointService.getOrCreateMemberPoint(givenMemberNumber());
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("보유햔 적립금이 충분하면")
     class Context0 {
@@ -395,8 +375,7 @@ class PublishPointAdapterTest {
       }
     }
 
-    @SpringBootTest
-    @Transactional
+    @TransactionalTest
     @Nested
     @DisplayName("보유햔 적립금이 충분하지 않으면")
     class Context1 {
