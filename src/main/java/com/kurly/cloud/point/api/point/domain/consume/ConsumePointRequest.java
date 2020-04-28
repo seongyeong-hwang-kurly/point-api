@@ -1,13 +1,17 @@
 package com.kurly.cloud.point.api.point.domain.consume;
 
 import javax.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Builder
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class ConsumePointRequest {
   @NotNull
   Long memberNumber;

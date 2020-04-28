@@ -88,6 +88,7 @@ class ConsumePointAdapter implements ConsumePointPort {
         .point(request.getPoint())
         .actionMemberNumber(request.getMemberNumber())
         .historyType(request.getHistoryType())
+        .settle(request.isSettle())
         .detail(request.getDetail())
         .build());
   }

@@ -16,6 +16,7 @@ public class OrderConsumePointRequest {
   Long orderNumber;
   @NotNull
   Integer point;
+  boolean settle;
 
   public Integer getHistoryType() {
     return HistoryType.TYPE_100.getValue();

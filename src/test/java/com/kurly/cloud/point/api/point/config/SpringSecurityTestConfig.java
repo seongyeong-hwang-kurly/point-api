@@ -27,14 +27,14 @@ public class SpringSecurityTestConfig {
     KurlyUserPrincipal user = KurlyUserPrincipal.builder()
         .uuid("user")
         .level(1)
-        .no(1L)
+        .no(999999999L)
         .authorities(Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")))
         .build();
 
     KurlyUserPrincipal admin = KurlyUserPrincipal.builder()
         .uuid("admin")
         .level(100)
-        .no(2L)
+        .no(999999998L)
         .authorities(Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN")))
         .build();
 
