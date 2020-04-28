@@ -24,12 +24,6 @@ class PointHistoryService {
         Sort.by(Sort.Direction.DESC, "regTime"));
   }
 
-  List<PointHistory> getPublishedByOrderNumber(long orderNumber) {
-    return pointHistoryRepository.findAllByOrderNumberAndHistoryType(orderNumber,
-        HistoryType.TYPE_1.getValue(),
-        Sort.by(Sort.Direction.DESC, "regTime"));
-  }
-
   List<PointHistory> getConsumedByOrderNumber(long orderNumber) {
     return pointHistoryRepository.findAllByOrderNumberAndHistoryType(orderNumber,
         HistoryType.TYPE_100.getValue(),

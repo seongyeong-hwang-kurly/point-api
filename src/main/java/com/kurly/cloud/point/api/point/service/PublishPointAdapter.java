@@ -9,11 +9,10 @@ import com.kurly.cloud.point.api.point.domain.publish.CancelPublishOrderPointReq
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
 import com.kurly.cloud.point.api.point.entity.MemberPoint;
 import com.kurly.cloud.point.api.point.entity.Point;
-import com.kurly.cloud.point.api.point.entity.PointHistory;
 import com.kurly.cloud.point.api.point.exception.AlreadyPublishedException;
 import com.kurly.cloud.point.api.point.port.in.PublishPointPort;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -74,8 +73,8 @@ class PublishPointAdapter implements PublishPointPort {
   @Override public void publishByOrder(PublishPointRequest request) throws AlreadyPublishedException {
     long orderNumber = request.getOrderNumber();
 
-    List<PointHistory> published = pointHistoryService.getPublishedByOrderNumber(orderNumber);
-    if (published.size() > 0) {
+    Optional<Point> published = pointService.getPublishedByOrderNumber(orderNumber);
+    if (published.isPresent()) {
       throw new AlreadyPublishedException(orderNumber);
     }
     String msg = HistoryType.TYPE_1.buildMessage(String.valueOf(orderNumber), request.getPointRatio());

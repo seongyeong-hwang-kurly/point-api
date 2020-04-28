@@ -40,6 +40,50 @@ class PointServiceTest implements CommonTestGiven {
   PointService pointService;
 
   @Nested
+  @DisplayName("주문 적립금을 조회 할 때")
+  class DescribegetPublishedByOrderNumber {
+    Optional<Point> subject() {
+      return pointService.getPublishedByOrderNumber(givenOrderNumber());
+    }
+
+    @Nested
+    @DisplayName("주문 적립금이 없으면")
+    class Context0 {
+      @Test
+      @DisplayName("비어 있는 Optional을 리턴한다")
+      void test() {
+        Optional<Point> subject = subject();
+        assertThat(subject).isEmpty();
+      }
+    }
+
+    @TransactionalTest
+    @Nested
+    @DisplayName("주문 적립금이 있으면")
+    class Context1 {
+
+      void givenOrderPoint() {
+        pointService.publishPoint(PublishPointRequest.builder()
+            .orderNumber(givenOrderNumber())
+            .memberNumber(givenMemberNumber())
+            .point(1000)
+            .historyType(HistoryType.TYPE_1.getValue())
+            .build());
+      }
+
+      @Test
+      @DisplayName("적립된 적립금을 포함하는 Optional을 리턴한다")
+      void test() {
+        givenOrderPoint();
+        Optional<Point> subject = subject();
+        assertThat(subject).isNotEmpty();
+        assertThat(subject.get().getOrderNumber()).isEqualTo(givenOrderNumber());
+        assertThat(subject.get().getMemberNumber()).isEqualTo(givenMemberNumber());
+      }
+    }
+  }
+
+  @Nested
   @DisplayName("적립금을 회원에게 지급 할 때")
   class DescribePublishPoint {
     Point subject(PublishPointRequest request) {

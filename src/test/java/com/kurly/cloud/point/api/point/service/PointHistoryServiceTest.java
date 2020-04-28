@@ -207,25 +207,5 @@ class PointHistoryServiceTest implements CommonTestGiven {
         assertThat(subject.get(0).getPoint().getSeq()).isEqualTo(given.getSeq());
       }
     }
-
-
-    @TransactionalTest
-    @Nested
-    @DisplayName("orderNumber로 조회 하면")
-    class Context1 {
-      List<PointHistory> subject() {
-        return pointHistoryService.getPublishedByOrderNumber(givenOrderNumber());
-      }
-
-      @Test
-      @DisplayName("이력을 1건 리턴 한다")
-      void test() {
-        given();
-        List<PointHistory> subject = subject();
-        assertThat(subject.size()).isEqualTo(1);
-        assertThat(subject.get(0).getOrderNumber()).isEqualTo(givenOrderNumber());
-      }
-    }
-
   }
 }

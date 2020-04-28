@@ -81,6 +81,8 @@ include::history.adoc[]
 
 include::summary.adoc[]
 
+include::order-published-amount.adoc[]
+
 == 지급
 
 include::publish.adoc[]

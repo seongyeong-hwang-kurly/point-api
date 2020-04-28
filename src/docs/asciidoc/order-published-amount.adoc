@@ -1,0 +1,23 @@
+=== 주문 적립금 조회
+
+주문으로 적립된 적립금의 정보를 조회 합니다.
+
+==== HTTP method
+
+GET
+
+==== HTTP request
+
+include::{snippets}/point/order-published-amount/http-request.adoc[]
+
+==== Path Parameters
+
+include::{snippets}/point/order-published-amount/path-parameters.adoc[]
+
+==== Response fields
+
+include::{snippets}/point/order-published-amount/response-fields-data.adoc[]
+
+==== Response body
+
+include::{snippets}/point/order-published-amount/response-body.adoc[]

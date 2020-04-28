@@ -9,7 +9,6 @@ import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
 import com.kurly.cloud.point.api.point.entity.MemberPoint;
 import com.kurly.cloud.point.api.point.entity.MemberPointHistory;
 import com.kurly.cloud.point.api.point.entity.Point;
-import com.kurly.cloud.point.api.point.entity.PointHistory;
 import com.kurly.cloud.point.api.point.exception.AlreadyPublishedException;
 import com.kurly.cloud.point.api.point.port.in.PublishPointPort;
 import com.kurly.cloud.point.api.point.util.PointExpireDateCalculator;
@@ -100,9 +99,7 @@ class PublishPointAdapterTest implements CommonTestGiven {
         assertThat(point.getExpireTime())
             .isEqualTo(PointExpireDateCalculator.calculateDefault(LocalDateTime.now()));
 
-        List<PointHistory> byOrderNumber = pointHistoryService
-            .getPublishedByOrderNumber(request.getOrderNumber());
-        assertThat(byOrderNumber.size()).isEqualTo(1);
+        assertThat(pointService.getPublishedByOrderNumber(request.getOrderNumber())).isNotEmpty();
 
       }
     }

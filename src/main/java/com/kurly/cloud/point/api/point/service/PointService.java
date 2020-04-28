@@ -11,6 +11,7 @@ package com.kurly.cloud.point.api.point.service;
 
 import com.kurly.cloud.point.api.point.domain.consume.ConsumeOrderComparator;
 import com.kurly.cloud.point.api.point.domain.consume.PointConsumeResult;
+import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
 import com.kurly.cloud.point.api.point.entity.Point;
 import com.kurly.cloud.point.api.point.repository.PointRepository;
@@ -118,5 +119,10 @@ class PointService {
     } else {
       return Optional.empty();
     }
+  }
+
+  public Optional<Point> getPublishedByOrderNumber(long orderNumber) {
+    return pointRepository
+        .findByOrderNumberAndHistoryType(orderNumber, HistoryType.TYPE_1.getValue());
   }
 }
