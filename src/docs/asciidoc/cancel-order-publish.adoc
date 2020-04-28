@@ -1,0 +1,25 @@
+=== 회원 적립금 주문 지급 취소
+
+주문으로 인해 적립된 적립금을 적립취소 합니다
+
+회원의 적립금이 충분하지 않으면 `마이너스 적립금` 이 발생됩니다
+
+==== HTTP method
+
+POST
+
+==== HTTP request
+
+include::{snippets}/point/cancel-order-publish/http-request.adoc[]
+
+==== Request Fields
+
+include::{snippets}/point/cancel-order-publish/request-fields.adoc[]
+
+==== Response fields
+
+이 API 는 `Http Status Code 204` 를 반환합니다
+
+==== Response body
+
+include::{snippets}/point/cancel-order-publish/response-body.adoc[]

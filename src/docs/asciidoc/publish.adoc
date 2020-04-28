@@ -1,0 +1,25 @@
+=== 회원 적립금 지급
+
+회원 에게 적립금을 지급합니다
+
+이 API는 관리자 권한을 가진 사용자만 호출 가능합니다
+
+==== HTTP method
+
+POST
+
+==== HTTP request
+
+include::{snippets}/point/publish/http-request.adoc[]
+
+==== Request Fields
+
+include::{snippets}/point/publish/request-fields.adoc[]
+
+==== Response fields
+
+이 API 는 `Http Status Code 204` 를 반환합니다
+
+==== Response body
+
+include::{snippets}/point/publish/response-body.adoc[]

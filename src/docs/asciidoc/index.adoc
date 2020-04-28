@@ -77,240 +77,24 @@ application/json;charset=utf-8 +
 
 == 조회
 
-=== 회원 적립금 이력 조회
+include::history.adoc[]
 
-회원의 적립금 사용/지급 이력을 조회 합니다
-
-==== HTTP method
-
-GET
-
-==== HTTP request
-
-include::{snippets}/point/history/http-request.adoc[]
-
-==== Path Parameters
-
-include::{snippets}/point/history/path-parameters.adoc[]
-
-==== Request Parameters
-
-include::{snippets}/point/history/request-parameters.adoc[]
-
-==== Response fields
-
-include::{snippets}/point/history/response-fields-data.adoc[]
-
-==== Response body
-
-include::{snippets}/point/history/response-body.adoc[]
-
-=== 회원 적립금 요약 조회
-
-회원의 현재 총적립금, 다음 만료일, 다음 만료 적립금을 조회합니다
-
-==== HTTP method
-
-GET
-
-==== HTTP request
-
-include::{snippets}/point/summary/http-request.adoc[]
-
-==== Path Parameters
-
-include::{snippets}/point/summary/path-parameters.adoc[]
-
-==== Response fields
-
-include::{snippets}/point/summary/response-fields-data.adoc[]
-
-==== Response body
-
-include::{snippets}/point/summary/response-body.adoc[]
+include::summary.adoc[]
 
 == 지급
 
-=== 회원 적립금 지급
+include::publish.adoc[]
 
-회원 에게 적립금을 지급합니다
+include::bulk-publish.adoc[]
 
-이 API는 관리자 권한을 가진 사용자만 호출 가능합니다
-
-==== HTTP method
-
-POST
-
-==== HTTP request
-
-include::{snippets}/point/publish/http-request.adoc[]
-
-==== Request Fields
-
-include::{snippets}/point/publish/request-fields.adoc[]
-
-==== Response fields
-
-이 API 는 `Http Status Code 204` 를 반환합니다
-
-==== Response body
-
-include::{snippets}/point/publish/response-body.adoc[]
-
-=== 회원 적립금 지급 [Bulk]
-
-여러 회원 에게 적립금을 여러 건 지급합니다
-
-이 API는 관리자 권한을 가진 사용자만 호출 가능합니다
-
-==== HTTP method
-
-POST
-
-==== HTTP request
-
-include::{snippets}/point/bulk-publish/http-request.adoc[]
-
-==== Request Fields
-
-지급 API와 동일하며 아래 값이 추가로 필요합니다
-
-include::{snippets}/point/bulk-publish/request-fields.adoc[]
-
-==== Response fields
-
-include::{snippets}/point/bulk-publish/response-fields-data.adoc[]
-
-==== Response body
-
-include::{snippets}/point/bulk-publish/response-body.adoc[]
-
-=== 회원 적립금 주문 지급 취소
-
-주문으로 인해 적립된 적립금을 적립취소 합니다
-
-회원의 적립금이 충분하지 않으면 `마이너스 적립금` 이 발생됩니다
-
-==== HTTP method
-
-POST
-
-==== HTTP request
-
-include::{snippets}/point/cancel-order-publish/http-request.adoc[]
-
-==== Request Fields
-
-include::{snippets}/point/cancel-order-publish/request-fields.adoc[]
-
-==== Response fields
-
-이 API 는 `Http Status Code 204` 를 반환합니다
-
-==== Response body
-
-include::{snippets}/point/cancel-order-publish/response-body.adoc[]
+include::cancel-order-publish.adoc[]
 
 == 사용
 
-=== 주문 적립금 사용
+include::order-consume.adoc[]
 
-회원이 주문에 적립금을 사용합니다
+include::consume.adoc[]
 
-==== HTTP method
+include::bulk-consume.adoc[]
 
-POST
-
-==== HTTP request
-
-include::{snippets}/point/order-consume/http-request.adoc[]
-
-==== Request Fields
-
-include::{snippets}/point/order-consume/request-fields.adoc[]
-
-==== Response fields
-
-이 API 는 `Http Status Code 204` 를 반환합니다
-
-==== Response body
-
-include::{snippets}/point/order-consume/response-body.adoc[]
-
-=== 회원 적립금 사용
-
-회원의 적립금을 사용 합니다
-
-이 API는 관리자 권한을 가진 사용자만 호출 가능합니다
-
-==== HTTP method
-
-POST
-
-==== HTTP request
-
-include::{snippets}/point/consume/http-request.adoc[]
-
-==== Request Fields
-
-include::{snippets}/point/consume/request-fields.adoc[]
-
-==== Response fields
-
-이 API 는 `Http Status Code 204` 를 반환합니다
-
-==== Response body
-
-include::{snippets}/point/consume/response-body.adoc[]
-
-=== 회원 적립금 사용 [Bulk]
-
-여러 회원의 적립금을 여러 건 사용합니다
-
-이 API는 관리자 권한을 가진 사용자만 호출 가능합니다
-
-==== HTTP method
-
-POST
-
-==== HTTP request
-
-include::{snippets}/point/bulk-consume/http-request.adoc[]
-
-==== Request Fields
-
-사용 API와 동일하며 아래 값이 추가로 필요합니다
-
-include::{snippets}/point/bulk-consume/request-fields.adoc[]
-
-==== Response fields
-
-include::{snippets}/point/bulk-consume/response-fields-data.adoc[]
-
-==== Response body
-
-include::{snippets}/point/bulk-consume/response-body.adoc[]
-
-=== 주문 적립금 사용 취소
-
-회원이 주문에 사용한 적립금을 사용 취소 합니다
-
-==== HTTP method
-
-POST
-
-==== HTTP request
-
-include::{snippets}/point/cancel-consume/http-request.adoc[]
-
-==== Request Fields
-
-include::{snippets}/point/cancel-consume/request-fields.adoc[]
-
-==== Response fields
-
-이 API 는 `Http Status Code 204` 를 반환합니다
-
-==== Response body
-
-include::{snippets}/point/cancel-consume/response-body.adoc[]
+include::cancel-consume.adoc[]

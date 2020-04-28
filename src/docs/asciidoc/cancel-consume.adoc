@@ -1,0 +1,23 @@
+=== 주문 적립금 사용 취소
+
+회원이 주문에 사용한 적립금을 사용 취소 합니다
+
+==== HTTP method
+
+POST
+
+==== HTTP request
+
+include::{snippets}/point/cancel-consume/http-request.adoc[]
+
+==== Request Fields
+
+include::{snippets}/point/cancel-consume/request-fields.adoc[]
+
+==== Response fields
+
+이 API 는 `Http Status Code 204` 를 반환합니다
+
+==== Response body
+
+include::{snippets}/point/cancel-consume/response-body.adoc[]

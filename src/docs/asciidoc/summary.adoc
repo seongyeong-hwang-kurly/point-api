@@ -1,0 +1,23 @@
+=== 회원 적립금 요약 조회
+
+회원의 현재 총적립금, 다음 만료일, 다음 만료 적립금을 조회합니다
+
+==== HTTP method
+
+GET
+
+==== HTTP request
+
+include::{snippets}/point/summary/http-request.adoc[]
+
+==== Path Parameters
+
+include::{snippets}/point/summary/path-parameters.adoc[]
+
+==== Response fields
+
+include::{snippets}/point/summary/response-fields-data.adoc[]
+
+==== Response body
+
+include::{snippets}/point/summary/response-body.adoc[]

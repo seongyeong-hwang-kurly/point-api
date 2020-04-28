@@ -1,0 +1,27 @@
+=== 회원 적립금 이력 조회
+
+회원의 적립금 사용/지급 이력을 조회 합니다
+
+==== HTTP method
+
+GET
+
+==== HTTP request
+
+include::{snippets}/point/history/http-request.adoc[]
+
+==== Path Parameters
+
+include::{snippets}/point/history/path-parameters.adoc[]
+
+==== Request Parameters
+
+include::{snippets}/point/history/request-parameters.adoc[]
+
+==== Response fields
+
+include::{snippets}/point/history/response-fields-data.adoc[]
+
+==== Response body
+
+include::{snippets}/point/history/response-body.adoc[]
