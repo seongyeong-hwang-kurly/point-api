@@ -207,7 +207,8 @@ class MemberPointAdapterTest {
               .actionMemberNumber(givenMemberNumber())
               .detail("")
               .memo("")
-              .expireDate(PointExpireDateCalculator.calculateDefault(LocalDateTime.now()))
+              .expireDate(PointExpireDateCalculator
+                  .calculateDefault(LocalDateTime.now().minusYears(1)))
               .build());
         }
 
@@ -219,7 +220,8 @@ class MemberPointAdapterTest {
 
           assertThat(memberPointSummary.getAmount()).isEqualTo(givenPointAmount());
           assertThat(memberPointSummary.getNextExpireDate())
-              .isEqualTo(PointExpireDateCalculator.calculateDefault(LocalDateTime.now()));
+              .isEqualTo(PointExpireDateCalculator
+                  .calculateDefault(LocalDateTime.now().minusYears(1)));
           assertThat(memberPointSummary.getNextExpireAmount()).isEqualTo(givenPointAmount());
         }
       }
@@ -231,7 +233,8 @@ class MemberPointAdapterTest {
       class Context2_Context1 {
 
         LocalDateTime givenExpireDate() {
-          return PointExpireDateCalculator.calculateDefault(LocalDateTime.now()).minusDays(1);
+          return PointExpireDateCalculator
+              .calculateDefault(LocalDateTime.now().minusYears(1)).minusDays(1);
         }
 
         void givenPoint() {
@@ -311,7 +314,8 @@ class MemberPointAdapterTest {
                 .actionMemberNumber(givenMemberNumber())
                 .detail("")
                 .memo("")
-                .expireDate(PointExpireDateCalculator.calculateDefault(LocalDateTime.now()))
+                .expireDate(PointExpireDateCalculator
+                    .calculateDefault(LocalDateTime.now().minusYears(1)))
                 .build());
           }
         }
@@ -348,7 +352,8 @@ class MemberPointAdapterTest {
           assertThat(memberPointSummary.getAmount())
               .isEqualTo(givenPointAmount() * givenCount() + givenPointAmount() + givenPointAmount());
           assertThat(memberPointSummary.getNextExpireDate())
-              .isEqualTo(PointExpireDateCalculator.calculateDefault(LocalDateTime.now()));
+              .isEqualTo(PointExpireDateCalculator
+                  .calculateDefault(LocalDateTime.now().minusYears(1)));
           assertThat(memberPointSummary.getNextExpireAmount())
               .isEqualTo(givenPointAmount() * givenCount());
         }

@@ -38,7 +38,7 @@ class MemberPointAdapter implements MemberPointPort {
     Optional<LocalDateTime> memberPointNextExpireDate =
         pointService.getMemberPointNextExpireDate(memberNumber);
     LocalDateTime nextSystemExpireDate =
-        PointExpireDateCalculator.calculateDefault(LocalDateTime.now());
+        PointExpireDateCalculator.calculateDefault(LocalDateTime.now().minusYears(1));
 
     if (memberPointNextExpireDate.isEmpty() ||
         nextSystemExpireDate.isBefore(memberPointNextExpireDate.get())) {

@@ -83,13 +83,27 @@ application/json;charset=utf-8 +
 
 ==== HTTP method
 
+GET
+
 ==== HTTP request
+
+include::{snippets}/point/history/http-request.adoc[]
+
+==== Path Parameters
+
+include::{snippets}/point/history/path-parameters.adoc[]
 
 ==== Request Parameters
 
+include::{snippets}/point/history/request-parameters.adoc[]
+
 ==== Response fields
 
+include::{snippets}/point/history/response-fields-data.adoc[]
+
 ==== Response body
+
+include::{snippets}/point/history/response-body.adoc[]
 
 === 회원 적립금 요약 조회
 
@@ -97,13 +111,23 @@ application/json;charset=utf-8 +
 
 ==== HTTP method
 
+GET
+
 ==== HTTP request
 
-==== Request Parameters
+include::{snippets}/point/summary/http-request.adoc[]
+
+==== Path Parameters
+
+include::{snippets}/point/summary/path-parameters.adoc[]
 
 ==== Response fields
 
+include::{snippets}/point/summary/response-fields-data.adoc[]
+
 ==== Response body
+
+include::{snippets}/point/summary/response-body.adoc[]
 
 == 지급
 

@@ -9,12 +9,18 @@
 
 package com.kurly.cloud.point.api.point.domain.history;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.domain.Sort;
 
+@Setter
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class MemberPointHistoryListRequest {
 
   long memberNumber;

@@ -9,6 +9,7 @@
 
 package com.kurly.cloud.point.api.point.domain.history;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kurly.cloud.point.api.point.entity.MemberPointHistory;
 import java.time.LocalDateTime;
 import lombok.Builder;
@@ -22,7 +23,9 @@ public class MemberPointHistoryDto {
   long orderNumber;
   int point;
   String detail;
+  @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
   LocalDateTime regDateTime;
+  @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
   LocalDateTime expireDateTime;
 
   public static MemberPointHistoryDto fromEntity(MemberPointHistory memberPointHistory) {
