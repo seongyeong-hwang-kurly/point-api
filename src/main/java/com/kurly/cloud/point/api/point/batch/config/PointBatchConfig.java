@@ -4,9 +4,9 @@ import org.springframework.batch.core.configuration.annotation.DefaultBatchConfi
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean;
-import org.springframework.batch.support.transaction.ResourcelessTransactionManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.PlatformTransactionManager;
 
@@ -24,7 +24,7 @@ public class PointBatchConfig extends DefaultBatchConfigurer {
 
   @Bean("batchTransactionManager")
   @Override public PlatformTransactionManager getTransactionManager() {
-    return new ResourcelessTransactionManager();
+    return new JpaTransactionManager();
   }
 
 }
