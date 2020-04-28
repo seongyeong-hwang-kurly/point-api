@@ -3,6 +3,7 @@ package com.kurly.cloud.point.api.point.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.domain.publish.BulkPublishPointRequest;
+import com.kurly.cloud.point.api.point.domain.publish.CancelPublishOrderPointRequest;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
 import com.kurly.cloud.point.api.point.port.in.PublishPointPort;
 import java.util.ArrayList;
@@ -49,6 +50,10 @@ public class PublishControllerTest {
 
   long givenMemberNumber() {
     return 999999999;
+  }
+
+  long givenOrderNumber() {
+    return 888888888;
   }
 
   @Nested
@@ -176,6 +181,39 @@ public class PublishControllerTest {
               "{\"success\":true,\"message\":null,\"data\":{\"succeed\":[1,2,3],\"failed\":[]}}"
           ))
           .andExpect(status().is(200));
+    }
+  }
+
+  @Nested
+  @DisplayName("포인트 주문 발급 취소를 호출 할 때")
+  class DescribeCancelOrderPublish {
+
+    CancelPublishOrderPointRequest givenRequest() {
+      return CancelPublishOrderPointRequest.builder()
+          .memberNumber(givenMemberNumber())
+          .orderNumber(givenOrderNumber())
+          .point(1000)
+          .build();
+    }
+
+    @Nested
+    @DisplayName("값이 올바르면")
+    class Context0 extends AbstractControllerTest {
+
+      @MockBean
+      PublishPointPort publishPointPort;
+
+      @WithUserDetails("admin")
+      @Test
+      @DisplayName("포인트 발급을 취소하고 204를 반환한다")
+      void test() throws Exception {
+        mockMvc
+            .perform(MockMvcRequestBuilders.post("/public/v1/publish/order-cancel")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(givenRequest())))
+            .andDo(MockMvcResultHandlers.print())
+            .andExpect(status().isNoContent());
+      }
     }
   }
 }

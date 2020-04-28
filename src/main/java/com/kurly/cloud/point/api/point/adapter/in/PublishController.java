@@ -4,6 +4,7 @@ import com.kurly.cloud.api.common.config.KurlyUserPrincipal;
 import com.kurly.cloud.api.common.util.logging.FileBeatLogger;
 import com.kurly.cloud.point.api.point.domain.BulkJobResult;
 import com.kurly.cloud.point.api.point.domain.publish.BulkPublishPointRequest;
+import com.kurly.cloud.point.api.point.domain.publish.CancelPublishOrderPointRequest;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
 import com.kurly.cloud.point.api.point.port.in.PublishPointPort;
 import java.util.List;
@@ -28,8 +29,8 @@ public class PublishController {
   @Secured("ROLE_ADMIN")
   @PostMapping(value = "/public/v1/publish", consumes = MediaType.APPLICATION_JSON_VALUE)
   ResponseEntity publish(@RequestBody @Valid PublishPointRequest request,
-                         @AuthenticationPrincipal KurlyUserPrincipal kurlyUserPrincipal) {
-    request.setActionMemberNumber(kurlyUserPrincipal.getNo());
+                         @AuthenticationPrincipal KurlyUserPrincipal principal) {
+    request.setActionMemberNumber(principal.getNo());
     publishPointPort.publish(request);
     return ResponseEntity.noContent().build();
   }
@@ -37,11 +38,11 @@ public class PublishController {
   @Secured("ROLE_ADMIN")
   @PostMapping(value = "/public/v1/publish/bulk", consumes = MediaType.APPLICATION_JSON_VALUE)
   BulkJobResult bulkPublish(@RequestBody List<@Valid BulkPublishPointRequest> requests,
-                            @AuthenticationPrincipal KurlyUserPrincipal kurlyUserPrincipal) {
+                            @AuthenticationPrincipal KurlyUserPrincipal principal) {
     BulkJobResult result = new BulkJobResult();
     requests.forEach(request -> {
       try {
-        request.setActionMemberNumber(kurlyUserPrincipal.getNo());
+        request.setActionMemberNumber(principal.getNo());
         publishPointPort.publish(request);
         result.addSuccess(request.getJobSeq());
       } catch (Exception e) {
@@ -50,5 +51,14 @@ public class PublishController {
       }
     });
     return result;
+  }
+
+  @Secured("ROLE_ADMIN")
+  @PostMapping(value = "/public/v1/publish/order-cancel")
+  ResponseEntity cancelPublish(CancelPublishOrderPointRequest request,
+                               @AuthenticationPrincipal KurlyUserPrincipal principal) {
+    request.setActionMemberNumber(principal.getNo());
+    publishPointPort.cancelPublishByOrder(request);
+    return ResponseEntity.noContent().build();
   }
 }

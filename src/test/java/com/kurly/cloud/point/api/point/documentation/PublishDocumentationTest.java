@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurly.cloud.point.api.point.config.SpringSecurityTestConfig;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.domain.publish.BulkPublishPointRequest;
+import com.kurly.cloud.point.api.point.domain.publish.CancelPublishOrderPointRequest;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
 import com.kurly.cloud.point.api.point.port.in.PublishPointPort;
 import java.time.LocalDateTime;
@@ -66,6 +67,10 @@ public class PublishDocumentationTest {
 
   long givenMemberNumber() {
     return 999999999;
+  }
+
+  long givenOrderNumber() {
+    return 888888888;
   }
 
   PublishPointRequest givenPublishRequest() {
@@ -173,6 +178,42 @@ public class PublishDocumentationTest {
                     beneathPath("data").withSubsectionId("data")
                     , fieldWithPath("succeed").type(JsonFieldType.ARRAY).description("성공한 작업 번호")
                     , fieldWithPath("failed").type(JsonFieldType.ARRAY).description("실패한 작업 번호")
+                )
+            )
+        );
+  }
+
+  CancelPublishOrderPointRequest givenCancelOrderRequest() {
+    return CancelPublishOrderPointRequest.builder()
+        .memberNumber(givenMemberNumber())
+        .orderNumber(givenOrderNumber())
+        .point(1000)
+        .build();
+  }
+
+  @WithUserDetails("admin")
+  @Test
+  @DisplayName("RestDoc - 포인트 주문 발급 취소")
+  void cancelOrderPublish() throws Exception {
+    ResultActions resultActions = mockMvc.perform(
+        RestDocumentationRequestBuilders.post("/public/v1/publish/order-cancel")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(givenCancelOrderRequest()))
+    );
+
+    resultActions
+        .andExpect(status().isNoContent())
+        .andDo(
+            document("point/{method-name}"
+                , ApiDocumentUtils.getDocumentRequest()
+                , ApiDocumentUtils.getDocumentResponse()
+                , requestFields(
+                    fieldWithPath("memberNumber").type(JsonFieldType.NUMBER).description("회원번호")
+                    , fieldWithPath("point").type(JsonFieldType.NUMBER).description("적립 금액")
+                    , fieldWithPath("orderNumber").type(JsonFieldType.NUMBER).description("주문 번호")
+                    , fieldWithPath("actionMemberNumber").ignored()
+                    , fieldWithPath("historyType").ignored()
+                    , fieldWithPath("detail").ignored()
                 )
             )
         );

@@ -11,13 +11,17 @@ package com.kurly.cloud.point.api.point.domain.publish;
 
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import javax.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Builder
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class CancelPublishOrderPointRequest {
   @NotNull
   Long memberNumber;
@@ -25,18 +29,7 @@ public class CancelPublishOrderPointRequest {
   Long orderNumber;
   @NotNull
   Integer point;
-  @NotNull
   Long actionMemberNumber;
-
-  public PublishPointRequest toPublishPointRequest() {
-    return PublishPointRequest.builder()
-        .detail(getDetail())
-        .actionMemberNumber(actionMemberNumber)
-        .historyType(getHistoryType())
-        .memberNumber(memberNumber)
-        .point(point)
-        .build();
-  }
 
   public int getHistoryType() {
     return HistoryType.TYPE_101.getValue();
