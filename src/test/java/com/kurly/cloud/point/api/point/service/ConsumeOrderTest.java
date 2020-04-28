@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ConsumeOrderTest {
   @Test
-  @DisplayName("포인트 사용 우선 순위 반영을 위한 정렬 검증")
+  @DisplayName("적립금 사용 우선 순위 반영을 위한 정렬 검증")
   void test() {
     Point.PointBuilder builder = Point.builder();
 

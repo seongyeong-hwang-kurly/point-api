@@ -57,7 +57,7 @@ public class PublishControllerTest {
   }
 
   @Nested
-  @DisplayName("포인트 발급을 호출 할 때")
+  @DisplayName("적립금 발급을 호출 할 때")
   class DescribePublish {
 
     PublishPointRequest givenRequest() {
@@ -122,7 +122,7 @@ public class PublishControllerTest {
   }
 
   @Nested
-  @DisplayName("포인트 대량 발급을 호출 할 때")
+  @DisplayName("적립금 대량 발급을 호출 할 때")
   class DescribeBulkPublish extends AbstractControllerTest {
 
     @Autowired
@@ -185,7 +185,7 @@ public class PublishControllerTest {
   }
 
   @Nested
-  @DisplayName("포인트 주문 발급 취소를 호출 할 때")
+  @DisplayName("적립금 주문 발급 취소를 호출 할 때")
   class DescribeCancelOrderPublish {
 
     CancelPublishOrderPointRequest givenRequest() {
@@ -205,7 +205,7 @@ public class PublishControllerTest {
 
       @WithUserDetails("admin")
       @Test
-      @DisplayName("포인트 발급을 취소하고 204를 반환한다")
+      @DisplayName("적립금 발급을 취소하고 204를 반환한다")
       void test() throws Exception {
         mockMvc
             .perform(MockMvcRequestBuilders.post("/public/v1/publish/order-cancel")

@@ -218,7 +218,7 @@ class MemberPointServiceTest {
     @SpringBootTest
     @Transactional
     @Nested
-    @DisplayName("대출한 포인트 보다 적은 무상 적립금이 추가되면")
+    @DisplayName("대출한 적립금 보다 적은 무상 적립금이 추가되면")
     class Context1 {
       int given() {
         return 500;
@@ -243,7 +243,7 @@ class MemberPointServiceTest {
     @SpringBootTest
     @Transactional
     @Nested
-    @DisplayName("대출한 포인트 보다 많은 무상 적립금이 추가되면")
+    @DisplayName("대출한 적립금 보다 많은 무상 적립금이 추가되면")
     class Context2 {
       int given() {
         return 3000;
@@ -292,7 +292,7 @@ class MemberPointServiceTest {
     @SpringBootTest
     @Transactional
     @Nested
-    @DisplayName("대출한 포인트 보다 적은 상 적립금이 추가되면")
+    @DisplayName("대출한 적립금 보다 적은 상 적립금이 추가되면")
     class Context4 {
       int given() {
         return 500;
@@ -317,7 +317,7 @@ class MemberPointServiceTest {
     @SpringBootTest
     @Transactional
     @Nested
-    @DisplayName("대출한 포인트 보다 많은 유상 적립금이 추가되면")
+    @DisplayName("대출한 적립금 보다 많은 유상 적립금이 추가되면")
     class Context5 {
       int given() {
         return 3000;

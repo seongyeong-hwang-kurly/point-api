@@ -11,7 +11,7 @@ import org.springframework.batch.item.ExecutionContext;
 @Slf4j
 public class PointOrderPublishJobListener implements JobExecutionListener {
   @Override public void beforeJob(JobExecution jobExecution) {
-    log.debug("주문 포인트 적립 배치를 시작합니다");
+    log.debug("주문 적립금 적립 배치를 시작합니다");
   }
 
   @Override public void afterJob(JobExecution jobExecution) {
@@ -19,7 +19,7 @@ public class PointOrderPublishJobListener implements JobExecutionListener {
     Date startTime = jobExecution.getStartTime();
     Date endTime = jobExecution.getEndTime();
     long totalExecutionTimeInSeconds = (endTime.getTime() - startTime.getTime()) / 1000;
-    log.debug("주문 포인트 적립 배치를 완료하였습니다");
+    log.debug("주문 적립금 적립 배치를 완료하였습니다");
     log.debug(MessageFormat.format("시작시간 : {0}", sdf.format(startTime)));
     log.debug(MessageFormat.format("종료시간 : {0}", sdf.format(endTime)));
     log.debug(MessageFormat.format("걸린시간 : {0}초", totalExecutionTimeInSeconds));
@@ -28,7 +28,7 @@ public class PointOrderPublishJobListener implements JobExecutionListener {
     long totalPublishCount = executionContext.getLong("totalPublishCount", 0);
     long totalPublishPointAmount = executionContext.getLong("totalPublishPointAmount", 0);
 
-    log.debug(MessageFormat.format("적립 된 총 포인트 개수 : {0}", totalPublishCount));
-    log.debug(MessageFormat.format("적립 된 총 포인트 수량 : {0}", totalPublishPointAmount));
+    log.debug(MessageFormat.format("적립 된 총 적립금 개수 : {0}", totalPublishCount));
+    log.debug(MessageFormat.format("적립 된 총 적립금 수량 : {0}", totalPublishPointAmount));
   }
 }

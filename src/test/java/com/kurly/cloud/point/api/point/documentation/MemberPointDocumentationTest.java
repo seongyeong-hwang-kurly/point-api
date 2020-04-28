@@ -86,7 +86,7 @@ public class MemberPointDocumentationTest {
 
   @WithUserDetails
   @Test
-  @DisplayName("RestDoc - 포인트 이력 조회")
+  @DisplayName("RestDoc - 적립금 이력 조회")
   void history() throws Exception {
     ResultActions resultActions = mockMvc.perform(
         RestDocumentationRequestBuilders
@@ -116,7 +116,7 @@ public class MemberPointDocumentationTest {
                     , fieldWithPath("content[].orderNumber").type(JsonFieldType.NUMBER)
                         .description("연관 주문번호")
                     , fieldWithPath("content[].point").type(JsonFieldType.NUMBER)
-                        .description("포인트")
+                        .description("적립금")
                     , fieldWithPath("content[].detail").type(JsonFieldType.STRING)
                         .description("이력 내용")
                     , fieldWithPath("content[].regDateTime").type(JsonFieldType.STRING)
@@ -139,7 +139,7 @@ public class MemberPointDocumentationTest {
 
   @WithUserDetails
   @Test
-  @DisplayName("RestDoc - 포인트 요약 조회")
+  @DisplayName("RestDoc - 적립금 요약 조회")
   void summary() throws Exception {
     ResultActions resultActions = mockMvc.perform(
         RestDocumentationRequestBuilders

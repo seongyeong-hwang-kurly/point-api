@@ -93,7 +93,7 @@ public class ConsumeDocumentationTest {
 
   @WithUserDetails("admin")
   @Test
-  @DisplayName("RestDoc - 포인트 사용")
+  @DisplayName("RestDoc - 적립금 사용")
   void consume() throws Exception {
     ResultActions resultActions = mockMvc.perform(
         RestDocumentationRequestBuilders.post("/public/v1/consume")
@@ -139,7 +139,7 @@ public class ConsumeDocumentationTest {
 
   @WithUserDetails("admin")
   @Test
-  @DisplayName("RestDoc - 포인트 대량 사용")
+  @DisplayName("RestDoc - 적립금 대량 사용")
   void bulkConsume() throws Exception {
     ResultActions resultActions = mockMvc.perform(
         RestDocumentationRequestBuilders.post("/public/v1/consume/bulk")
@@ -184,7 +184,7 @@ public class ConsumeDocumentationTest {
 
   @WithUserDetails
   @Test
-  @DisplayName("RestDoc - 주문 포인트 사용")
+  @DisplayName("RestDoc - 주문 적립금 사용")
   void orderConsume() throws Exception {
     ResultActions resultActions = mockMvc.perform(
         RestDocumentationRequestBuilders.post("/public/v1/consume/order")
@@ -221,7 +221,7 @@ public class ConsumeDocumentationTest {
 
   @WithUserDetails("admin")
   @Test
-  @DisplayName("RestDoc - 주문 포인트 사용 취소")
+  @DisplayName("RestDoc - 주문 적립금 사용 취소")
   void cancelConsume() throws Exception {
     ResultActions resultActions = mockMvc.perform(
         RestDocumentationRequestBuilders.post("/public/v1/consume/cancel")

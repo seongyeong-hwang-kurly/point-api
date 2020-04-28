@@ -60,7 +60,7 @@ public class ConsumeControllerTest {
   }
 
   @Nested
-  @DisplayName("포인트 사용을 호출 할 때")
+  @DisplayName("적립금 사용을 호출 할 때")
   class DescribeConsume {
 
     ConsumePointRequest givenRequest() {
@@ -148,7 +148,7 @@ public class ConsumeControllerTest {
   }
 
   @Nested
-  @DisplayName("포인트 대량 사용을 호출 할 때")
+  @DisplayName("적립금 대량 사용을 호출 할 때")
   class DescribeBulkConsume extends AbstractControllerTest {
 
     @MockBean
@@ -209,7 +209,7 @@ public class ConsumeControllerTest {
   }
 
   @Nested
-  @DisplayName("주문 포인트 사용을 호출 할 때")
+  @DisplayName("주문 적립금 사용을 호출 할 때")
   class DescribeOrderConsume {
 
     @Nested
@@ -240,7 +240,7 @@ public class ConsumeControllerTest {
     }
 
     @Nested
-    @DisplayName("다른사용자의 포인트 사용을 호출하면")
+    @DisplayName("다른사용자의 적립금 사용을 호출하면")
     class Context1 extends AbstractControllerTest {
       OrderConsumePointRequest givenRequest() {
         return OrderConsumePointRequest.builder()
@@ -265,7 +265,7 @@ public class ConsumeControllerTest {
   }
 
   @Nested
-  @DisplayName("포인트 사용취소를 호출 할 때")
+  @DisplayName("적립금 사용취소를 호출 할 때")
   class DescribeCancelConsume {
     @Nested
     @DisplayName("값이 올바르면")

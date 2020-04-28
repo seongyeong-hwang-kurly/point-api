@@ -16,7 +16,7 @@ import org.springframework.util.comparator.Comparators;
 
 /**
  * 포인트를 먼저 소모해야 하는 순으로 정렬한다 <br/>
- * 1순위 유효기간 (유효기간이 없는 포인트(null)는 최후순위) <br/>
+ * 1순위 유효기간 (유효기간이 없는 적립금(null)는 최후순위) <br/>
  * 2순위 결제하지 않은 유상적립금 <br/>
  * 3순위 결제한 유상적립금
  */

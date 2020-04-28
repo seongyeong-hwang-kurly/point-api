@@ -23,7 +23,7 @@ import org.springframework.batch.item.ExecutionContext;
 public class PointExpireJobListener implements JobExecutionListener {
 
   public void beforeJob(JobExecution jobExecution) {
-    log.debug("포인트 만료 배치를 시작합니다");
+    log.debug("적립금 만료 배치를 시작합니다");
   }
 
   public void afterJob(JobExecution jobExecution) {
@@ -31,7 +31,7 @@ public class PointExpireJobListener implements JobExecutionListener {
     Date startTime = jobExecution.getStartTime();
     Date endTime = jobExecution.getEndTime();
     long totalExecutionTimeInSeconds = (endTime.getTime() - startTime.getTime()) / 1000;
-    log.debug("포인트 만료 배치를 완료하였습니다");
+    log.debug("적립금 만료 배치를 완료하였습니다");
     log.debug(MessageFormat.format("시작시간 : {0}", sdf.format(startTime)));
     log.debug(MessageFormat.format("종료시간 : {0}", sdf.format(endTime)));
     log.debug(MessageFormat.format("걸린시간 : {0}초", totalExecutionTimeInSeconds));
@@ -42,8 +42,8 @@ public class PointExpireJobListener implements JobExecutionListener {
     long totalExpiredPointAmount = executionContext.getLong("totalExpiredPointAmount", 0);
 
     log.debug(MessageFormat.format("만료 처리 된 총 회원 수 : {0}", totalMemberCount));
-    log.debug(MessageFormat.format("만료 처리 된 총 포인트 수 : {0}", totalExpiredPointCount));
-    log.debug(MessageFormat.format("만료 처리 된 총 포인트 : {0}", totalExpiredPointAmount));
+    log.debug(MessageFormat.format("만료 처리 된 총 적립금 수 : {0}", totalExpiredPointCount));
+    log.debug(MessageFormat.format("만료 처리 된 총 적립금 : {0}", totalExpiredPointAmount));
 
     FileBeatLogger.info(new HashMap<>() {{
       put("action", "pointExpiredSummary");
@@ -53,5 +53,5 @@ public class PointExpireJobListener implements JobExecutionListener {
       put("totalExecutionTimeInSeconds", totalExecutionTimeInSeconds);
     }});
   }
-  
+
 }

@@ -72,7 +72,7 @@ public class PublishPointRequest {
 
   public String getDetail() {
     if (Objects.isNull(detail)) {
-      detail = MessageFormat.format("{0} 포인트 적립", isPayment() ? "유료" : "무료");
+      detail = MessageFormat.format("{0} 적립금 적립", isPayment() ? "유료" : "무료");
     }
     return detail;
   }

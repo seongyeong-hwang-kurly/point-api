@@ -90,7 +90,7 @@ public class PublishDocumentationTest {
 
   @WithUserDetails("admin")
   @Test
-  @DisplayName("RestDoc - 포인트 발급")
+  @DisplayName("RestDoc - 적립금 발급")
   void publish() throws Exception {
     ResultActions resultActions = mockMvc.perform(
         RestDocumentationRequestBuilders.post("/public/v1/publish")
@@ -143,7 +143,7 @@ public class PublishDocumentationTest {
 
   @WithUserDetails("admin")
   @Test
-  @DisplayName("RestDoc - 포인트 대량 발급")
+  @DisplayName("RestDoc - 적립금 대량 발급")
   void bulkPublish() throws Exception {
     ResultActions resultActions = mockMvc.perform(
         RestDocumentationRequestBuilders.post("/public/v1/publish/bulk")
@@ -193,7 +193,7 @@ public class PublishDocumentationTest {
 
   @WithUserDetails("admin")
   @Test
-  @DisplayName("RestDoc - 포인트 주문 발급 취소")
+  @DisplayName("RestDoc - 적립금 주문 발급 취소")
   void cancelOrderPublish() throws Exception {
     ResultActions resultActions = mockMvc.perform(
         RestDocumentationRequestBuilders.post("/public/v1/publish/order-cancel")

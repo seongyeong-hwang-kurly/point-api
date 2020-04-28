@@ -45,7 +45,7 @@ public class MemberPointControllerTest extends AbstractControllerTest {
 
   @WithUserDetails
   @Test
-  @DisplayName("회원 포인트 이력을 조회 한다")
+  @DisplayName("회원 적립금 이력을 조회 한다")
   void test() throws Exception {
     mockMvc
         .perform(MockMvcRequestBuilders.get("/public/v1/history/{memberNumber}", givenMemberNumber()))
@@ -55,7 +55,7 @@ public class MemberPointControllerTest extends AbstractControllerTest {
 
   @WithUserDetails
   @Test
-  @DisplayName("회원 포인트 요약을 조회 한다")
+  @DisplayName("회원 적립금 요약을 조회 한다")
   void test1() throws Exception {
     mockMvc
         .perform(MockMvcRequestBuilders.get("/public/v1/summary/{memberNumber}", givenMemberNumber()))
