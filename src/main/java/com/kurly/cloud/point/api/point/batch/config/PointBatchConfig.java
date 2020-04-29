@@ -1,5 +1,7 @@
 package com.kurly.cloud.point.api.point.batch.config;
 
+import javax.persistence.EntityManagerFactory;
+import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.configuration.annotation.DefaultBatchConfigurer;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.repository.JobRepository;
@@ -13,7 +15,10 @@ import org.springframework.transaction.PlatformTransactionManager;
 @Configuration
 @EnableBatchProcessing
 @EnableScheduling
+@RequiredArgsConstructor
 public class PointBatchConfig extends DefaultBatchConfigurer {
+
+  private final EntityManagerFactory entityManagerFactory;
 
   @Override protected JobRepository createJobRepository() throws Exception {
     MapJobRepositoryFactoryBean factory = new MapJobRepositoryFactoryBean();
@@ -24,7 +29,7 @@ public class PointBatchConfig extends DefaultBatchConfigurer {
 
   @Bean("batchTransactionManager")
   @Override public PlatformTransactionManager getTransactionManager() {
-    return new JpaTransactionManager();
+    return new JpaTransactionManager(entityManagerFactory);
   }
 
 }
