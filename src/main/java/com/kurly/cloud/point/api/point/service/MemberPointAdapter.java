@@ -14,6 +14,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,12 +24,14 @@ class MemberPointAdapter implements MemberPointPort {
   final MemberPointService memberPointService;
   final MemberPointHistoryService memberPointHistoryService;
 
+  @Transactional(readOnly = true)
   @Override public Page<MemberPointHistoryDto> getMemberHistoryList(
       MemberPointHistoryListRequest request) {
     Page<MemberPointHistory> pointHistories = memberPointHistoryService.getHistoryList(request);
     return pointHistories.map(MemberPointHistoryDto::fromEntity);
   }
 
+  @Transactional(readOnly = true)
   @Override public MemberPointSummary getMemberPointSummary(long memberNumber) {
     MemberPoint memberPoint = memberPointService.getOrCreateMemberPoint(memberNumber);
     if (memberPoint.getTotalPoint() == 0) {
