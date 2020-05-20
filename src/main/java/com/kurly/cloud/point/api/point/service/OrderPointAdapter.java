@@ -14,6 +14,7 @@ import com.kurly.cloud.point.api.point.port.out.OrderPointPort;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +22,7 @@ public class OrderPointAdapter implements OrderPointPort {
 
   private final PointService pointService;
 
+  @Transactional(readOnly = true)
   @Override public Optional<Point> getOrderPublished(long orderNumber) {
     return pointService.getPublishedByOrderNumber(orderNumber);
   }
