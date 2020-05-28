@@ -2,6 +2,7 @@ package com.kurly.cloud.point.api.point.port.in;
 
 import com.kurly.cloud.point.api.point.domain.publish.CancelPublishOrderPointRequest;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
+import com.kurly.cloud.point.api.point.entity.Point;
 import com.kurly.cloud.point.api.point.exception.AlreadyPublishedException;
 
 public interface PublishPointPort {
@@ -10,14 +11,14 @@ public interface PublishPointPort {
    *
    * @param request request
    */
-  void publish(PublishPointRequest request);
+  Point publish(PublishPointRequest request);
 
   /**
    * 주문 적립 포인트를 사용자에게 발급(지급) 합니다.
    *
    * @param request request
    */
-  void publishByOrder(PublishPointRequest request) throws AlreadyPublishedException;
+  Point publishByOrder(PublishPointRequest request) throws AlreadyPublishedException;
 
   /**
    * 발급 된 주문 적립 포인트를 취소합니다 <br/>

@@ -27,7 +27,7 @@ class PublishPointAdapter implements PublishPointPort {
   private final MemberPointHistoryService memberPointHistoryService;
 
   @Transactional
-  @Override public void publish(PublishPointRequest request) {
+  @Override public Point publish(PublishPointRequest request) {
     Point point = pointService.publishPoint(request);
 
     pointHistoryService.insertHistory(PointHistoryInsertRequest.builder()
@@ -41,7 +41,8 @@ class PublishPointAdapter implements PublishPointPort {
         .actionMemberNumber(request.getActionMemberNumber())
         .build());
 
-    MemberPoint memberPoint = plusMemberPoint(request.getMemberNumber(), request.isSettle(), request.getPoint());
+    MemberPoint memberPoint =
+        plusMemberPoint(request.getMemberNumber(), request.isSettle(), request.getPoint());
 
     memberPointHistoryService.insertHistory(MemberPointHistoryInsertRequest
         .builder()
@@ -67,22 +68,26 @@ class PublishPointAdapter implements PublishPointPort {
       put("type", request.getHistoryType());
       put("orderNumber", request.getOrderNumber());
     }});
+
+    return point;
   }
 
   @Transactional
-  @Override public void publishByOrder(PublishPointRequest request) throws AlreadyPublishedException {
+  @Override public Point publishByOrder(PublishPointRequest request)
+      throws AlreadyPublishedException {
     long orderNumber = request.getOrderNumber();
 
     Optional<Point> published = pointService.getPublishedByOrderNumber(orderNumber);
     if (published.isPresent()) {
       throw new AlreadyPublishedException(orderNumber);
     }
-    String msg = HistoryType.TYPE_1.buildMessage(String.valueOf(orderNumber), request.getPointRatio());
+    String msg =
+        HistoryType.TYPE_1.buildMessage(String.valueOf(orderNumber), request.getPointRatio());
 
     request.setDetail(msg);
     request.setHistoryType(HistoryType.TYPE_1.getValue());
 
-    publish(request);
+    return publish(request);
   }
 
   @Transactional

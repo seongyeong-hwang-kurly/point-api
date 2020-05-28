@@ -42,17 +42,6 @@ API에 관계없이 아래 사항을 지켜주셔야 합니다
 | `MKAPI` 에서 발급 한 사용자 `JWT` 토큰
 |===
 
-==== Private API
-
-server-to-server 호출
-
-|===
-| name | 설명
-
-| `Authorization`
-| `auth-service` 에서 발급한 `oauth2` 토큰
-|===
-
 === Response Type
 
 application/json;charset=utf-8 +

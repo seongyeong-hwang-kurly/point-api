@@ -2,10 +2,12 @@ package com.kurly.cloud.point.api.point.adapter.in;
 
 import com.kurly.cloud.api.common.config.KurlyUserPrincipal;
 import com.kurly.cloud.api.common.util.logging.FileBeatLogger;
+import com.kurly.cloud.point.api.point.adapter.in.dto.PublishResultDto;
 import com.kurly.cloud.point.api.point.domain.BulkJobResult;
 import com.kurly.cloud.point.api.point.domain.publish.BulkPublishPointRequest;
 import com.kurly.cloud.point.api.point.domain.publish.CancelPublishOrderPointRequest;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
+import com.kurly.cloud.point.api.point.entity.Point;
 import com.kurly.cloud.point.api.point.port.in.PublishPointPort;
 import java.util.List;
 import javax.validation.Valid;
@@ -28,11 +30,10 @@ public class PublishController {
 
   @Secured("ROLE_ADMIN")
   @PostMapping(value = "/public/v1/publish", consumes = MediaType.APPLICATION_JSON_VALUE)
-  ResponseEntity publish(@RequestBody @Valid PublishPointRequest request,
-                         @AuthenticationPrincipal KurlyUserPrincipal principal) {
+  PublishResultDto publish(@RequestBody @Valid PublishPointRequest request,
+                           @AuthenticationPrincipal KurlyUserPrincipal principal) {
     request.setActionMemberNumber(principal.getNo());
-    publishPointPort.publish(request);
-    return ResponseEntity.noContent().build();
+    return PublishResultDto.fromEntity(publishPointPort.publish(request));
   }
 
   @Secured("ROLE_ADMIN")
@@ -43,8 +44,8 @@ public class PublishController {
     requests.forEach(request -> {
       try {
         request.setActionMemberNumber(principal.getNo());
-        publishPointPort.publish(request);
-        result.addSuccess(request.getJobSeq());
+        Point publish = publishPointPort.publish(request);
+        result.addSuccess(request.getJobSeq(), publish.getSeq());
       } catch (Exception e) {
         result.addFailed(request.getJobSeq());
         FileBeatLogger.error(e);

@@ -9,6 +9,15 @@
 
 package com.kurly.cloud.point.api.point.documentation;
 
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.payload.PayloadDocumentation.beneathPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.config.SpringSecurityTestConfig;
@@ -40,15 +49,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.restdocs.payload.PayloadDocumentation.beneathPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Import(SpringSecurityTestConfig.class)
 @ExtendWith({SpringExtension.class, RestDocumentationExtension.class})
@@ -109,7 +109,8 @@ public class ConsumeDocumentationTest implements CommonTestGiven {
                         .description("주문번호").optional()
                     , fieldWithPath("settle").type(JsonFieldType.BOOLEAN)
                         .description("유상여부 - true이면 유상포인트만 사용합니다").optional()
-                    , fieldWithPath("memo").type(JsonFieldType.STRING).description("사용 사유명(내부용)").optional()
+                    , fieldWithPath("memo").type(JsonFieldType.STRING).description("사용 사유명(내부용)")
+                        .optional()
                     , fieldWithPath("actionMemberNumber").ignored()
                 )
             )
@@ -162,6 +163,7 @@ public class ConsumeDocumentationTest implements CommonTestGiven {
                     beneathPath("data").withSubsectionId("data")
                     , fieldWithPath("succeed").type(JsonFieldType.ARRAY).description("성공한 작업 번호")
                     , fieldWithPath("failed").type(JsonFieldType.ARRAY).description("실패한 작업 번호")
+                    , fieldWithPath("resultIds").ignored()
                 )
             )
         );
