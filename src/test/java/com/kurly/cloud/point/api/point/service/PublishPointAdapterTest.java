@@ -1,5 +1,8 @@
 package com.kurly.cloud.point.api.point.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.TransactionalTest;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
@@ -23,9 +26,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @DisplayName("PublishPointAdapter class")
@@ -42,7 +42,7 @@ class PublishPointAdapterTest implements CommonTestGiven {
   MemberPointHistoryService memberPointHistoryService;
 
   @Nested
-  @DisplayName("주문 적립 포인트를 발행 할 때")
+  @DisplayName("주문 적립 적립금을 발행 할 때")
   class DescribePublishByOrder {
     PublishPointRequest given() {
       return PublishPointRequest.builder()
@@ -58,7 +58,7 @@ class PublishPointAdapterTest implements CommonTestGiven {
     @DisplayName("올바른 값이 입력되면")
     class Context0 {
       @Test
-      @DisplayName("주문번호로 무상 포인트가 발행된다")
+      @DisplayName("주문번호로 무상 적립금이 발행된다")
       void test() throws AlreadyPublishedException {
         PublishPointRequest request = given();
         publishPointPort.publishByOrder(request);
@@ -85,7 +85,8 @@ class PublishPointAdapterTest implements CommonTestGiven {
         assertThat(memberPointHistory.getExpireTime())
             .isEqualTo(PointExpireDateCalculator.calculateDefault(LocalDateTime.now()));
 
-        List<Point> availableMemberPoint = pointService.getAvailableMemberPoint(givenMemberNumber());
+        List<Point> availableMemberPoint =
+            pointService.getAvailableMemberPoint(givenMemberNumber());
         assertThat(availableMemberPoint.size()).isEqualTo(1);
 
         Point point = availableMemberPoint.get(0);
@@ -124,7 +125,7 @@ class PublishPointAdapterTest implements CommonTestGiven {
   }
 
   @Nested
-  @DisplayName("관리자(시스템)가 포인트를 발행 할 때")
+  @DisplayName("관리자(시스템)가 적립금을 발행 할 때")
   class DescribePublish {
     PublishPointRequest given() {
       return PublishPointRequest.builder()
@@ -142,7 +143,7 @@ class PublishPointAdapterTest implements CommonTestGiven {
     @DisplayName("올바른 값이 입력되면")
     class Context0 {
       @Test
-      @DisplayName("포인트가 발행된다")
+      @DisplayName("적립금이 발행된다")
       void test() {
         PublishPointRequest request = given();
         publishPointPort.publish(request);
@@ -156,7 +157,7 @@ class PublishPointAdapterTest implements CommonTestGiven {
   }
 
   @Nested
-  @DisplayName("대출한 포인트가 있을 때")
+  @DisplayName("대출한 적립금이 있을 때")
   class DescribeRepay {
 
     int givenDebtAmount() {
@@ -174,7 +175,7 @@ class PublishPointAdapterTest implements CommonTestGiven {
     }
 
     @Nested
-    @DisplayName("무상포인트를 지급하면")
+    @DisplayName("무상적립금을 지급하면")
     class ContextOnPublishFree {
 
       void subject(int amount) {
@@ -187,14 +188,14 @@ class PublishPointAdapterTest implements CommonTestGiven {
 
       @TransactionalTest
       @Nested
-      @DisplayName("대출포인트 보다 지급포인트가 많으면")
+      @DisplayName("대출적립금 보다 지급적립금이 많으면")
       class Context0 {
         int givenAmount() {
           return 2000;
         }
 
         @Test
-        @DisplayName("포인트를 지급하고 대출포인트만큼 차감한다")
+        @DisplayName("적립금을 지급하고 대출적립금만큼 차감한다")
         void test() {
           MemberPoint given = given();
           subject(givenAmount());
@@ -205,14 +206,14 @@ class PublishPointAdapterTest implements CommonTestGiven {
 
       @TransactionalTest
       @Nested
-      @DisplayName("지급포인트 보다 대출포인트가 많으면")
+      @DisplayName("지급적립금 보다 대출적립금이 많으면")
       class Context1 {
         int givenAmount() {
           return 500;
         }
 
         @Test
-        @DisplayName("포인트를 지급하고 전액 차감한다")
+        @DisplayName("적립금을 지급하고 전액 차감한다")
         void test() {
           MemberPoint given = given();
           subject(givenAmount());
@@ -223,14 +224,14 @@ class PublishPointAdapterTest implements CommonTestGiven {
 
       @TransactionalTest
       @Nested
-      @DisplayName("대출포인트와 지급포인트가 같으면")
+      @DisplayName("대출적립금과 지급적립금이 같으면")
       class Context2 {
         int givenAmount() {
           return 1000;
         }
 
         @Test
-        @DisplayName("포인트를 지급하고 전액 차감한다")
+        @DisplayName("적립금을 지급하고 전액 차감한다")
         void test() {
           MemberPoint given = given();
           subject(givenAmount());
@@ -241,7 +242,7 @@ class PublishPointAdapterTest implements CommonTestGiven {
     }
 
     @Nested
-    @DisplayName("유상포인트를 지급하면")
+    @DisplayName("유상적립금을 지급하면")
     class ContextOnCashPoint {
 
       void subject(int amount) {
@@ -255,14 +256,14 @@ class PublishPointAdapterTest implements CommonTestGiven {
 
       @TransactionalTest
       @Nested
-      @DisplayName("대출포인트보다 지급포인트가 많으면")
+      @DisplayName("대출적립금보다 지급적립금이 많으면")
       class Context0 {
         int givenAmount() {
           return 2000;
         }
 
         @Test
-        @DisplayName("포인트를 지급하고 대출포인트만큼 차감한다")
+        @DisplayName("적립금을 지급하고 대출적립금만큼 차감한다")
         void test() {
           MemberPoint given = given();
           subject(givenAmount());
@@ -274,14 +275,14 @@ class PublishPointAdapterTest implements CommonTestGiven {
 
       @TransactionalTest
       @Nested
-      @DisplayName("지급포인트보다 대출포인트가 많으면")
+      @DisplayName("지급적립금보다 대출적립금이 많으면")
       class Context1 {
         int givenAmount() {
           return 500;
         }
 
         @Test
-        @DisplayName("포인트를 지급하고 전액 차감한다")
+        @DisplayName("적립금을 지급하고 전액 차감한다")
         void test() {
           MemberPoint given = given();
           subject(givenAmount());
@@ -293,14 +294,14 @@ class PublishPointAdapterTest implements CommonTestGiven {
 
       @TransactionalTest
       @Nested
-      @DisplayName("대출포인트와 지급포인트가 같으면")
+      @DisplayName("대출적립금과 지급적립금이 같으면")
       class Context2 {
         int givenAmount() {
           return 1000;
         }
 
         @Test
-        @DisplayName("포인트를 지급하고 전액 차감한다")
+        @DisplayName("적립금을 지급하고 전액 차감한다")
         void test() {
           MemberPoint given = given();
           subject(givenAmount());
@@ -314,7 +315,7 @@ class PublishPointAdapterTest implements CommonTestGiven {
   }
 
   @Nested
-  @DisplayName("주문 적립 포인트를 발행을 취소 할 때")
+  @DisplayName("주문 적립 적립금을 발행을 취소 할 때")
   class DescribeCancelPublishByOrder {
     int givenOrderPointAmount() {
       return 1000;
@@ -361,7 +362,7 @@ class PublishPointAdapterTest implements CommonTestGiven {
       }
 
       @Test
-      @DisplayName("적립된 포인트를 전부 회수(사용) 한다")
+      @DisplayName("적립된 적립금을 전부 회수(사용) 한다")
       void test() throws AlreadyPublishedException {
         givenNonOrderPoint();
         givenOrderPoint();

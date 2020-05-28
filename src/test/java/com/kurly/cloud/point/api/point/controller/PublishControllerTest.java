@@ -89,7 +89,7 @@ public class PublishControllerTest implements CommonTestGiven {
 
       @WithUserDetails("admin")
       @Test
-      @DisplayName("포인트를 발급하고 응답코드는 200를 반환한다")
+      @DisplayName("적립금을 발급하고 응답코드는 200를 반환한다")
       void test() throws Exception {
         mockMvc
             .perform(MockMvcRequestBuilders.post("/public/v1/publish")

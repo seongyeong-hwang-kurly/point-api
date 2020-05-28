@@ -9,6 +9,9 @@
 
 package com.kurly.cloud.point.api.point.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.TransactionalTest;
 import com.kurly.cloud.point.api.point.domain.consume.PointConsumeResult;
@@ -27,9 +30,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -260,14 +260,14 @@ class PointServiceTest implements CommonTestGiven {
 
     @TransactionalTest
     @Nested
-    @DisplayName("만료일 이전의 포인트가 있으면")
+    @DisplayName("만료일 이전의 적립금이 있으면")
     class Context0 {
       void given() {
         publishPoint(1000, false, LocalDateTime.now().plusDays(1));
       }
 
       @Test
-      @DisplayName("해당 포인트를 반환 한다")
+      @DisplayName("해당 적립금을 반환 한다")
       void test() {
         given();
         List<Point> subject = subject();
@@ -278,14 +278,14 @@ class PointServiceTest implements CommonTestGiven {
 
     @TransactionalTest
     @Nested
-    @DisplayName("만료일이 무제한인 포인트가 있으면")
+    @DisplayName("만료일이 무제한인 적립금이 있으면")
     class Context1 {
       void given() {
         publishPoint(1000, true, null);
       }
 
       @Test
-      @DisplayName("해당 포인트를 반환 한다")
+      @DisplayName("해당 적립금을 반환 한다")
       void test() {
         given();
         List<Point> subject = subject();
@@ -296,14 +296,14 @@ class PointServiceTest implements CommonTestGiven {
 
     @TransactionalTest
     @Nested
-    @DisplayName("만료일이 지난 포인트가 있으면")
+    @DisplayName("만료일이 지난 적립금이 있으면")
     class Context2 {
       void given() {
         publishPoint(1000, false, LocalDateTime.now().minusDays(1));
       }
 
       @Test
-      @DisplayName("포인트를 반환하지 않는다")
+      @DisplayName("적립금을 반환하지 않는다")
       void test() {
         given();
         List<Point> subject = subject();
@@ -313,7 +313,7 @@ class PointServiceTest implements CommonTestGiven {
 
     @TransactionalTest
     @Nested
-    @DisplayName("포인트의 잔액이 없으면")
+    @DisplayName("적립금의 잔액이 없으면")
     class Context3 {
       void given() {
         publishPoint(0, false, LocalDateTime.now().minusDays(1));
@@ -321,7 +321,7 @@ class PointServiceTest implements CommonTestGiven {
       }
 
       @Test
-      @DisplayName("포인트를 반환하지 않는다")
+      @DisplayName("적립금을 반환하지 않는다")
       void test() {
         given();
         List<Point> subject = subject();
@@ -394,7 +394,7 @@ class PointServiceTest implements CommonTestGiven {
       }
 
       @Test
-      @DisplayName("요청한 포인트를 전부 사용하고 남은포인트가 조회 된다")
+      @DisplayName("요청한 적립금을 전부 사용하고 남은적립금이 조회 된다")
       void test() {
         publishPoint(givenPublishPoint());
         PointConsumeResult pointConsumeResult = subject(givenConsumeAmount());
@@ -481,7 +481,7 @@ class PointServiceTest implements CommonTestGiven {
       }
 
       @Test
-      @DisplayName("요청한 포인트를 전부 사용하고 남은 유/무상 포인트가 조회 된다")
+      @DisplayName("요청한 적립금을 전부 사용하고 남은 유/무상 적립금이 조회 된다")
       void test() {
         publishFreePoint(givenPublishPoint());
         publishCashPoint(givenPublishPoint());
@@ -601,7 +601,7 @@ class PointServiceTest implements CommonTestGiven {
   }
 
   @Nested
-  @DisplayName("대출 포인트를 상환 할 때")
+  @DisplayName("대출 적립금을 상환 할 때")
   class DescribeRepayPoint {
     int givenDebtAmount() {
       return 1000;
@@ -622,7 +622,7 @@ class PointServiceTest implements CommonTestGiven {
 
     @TransactionalTest
     @Nested
-    @DisplayName("대출포인트보다 상환포인트가 많으면")
+    @DisplayName("대출적립금보다 상환적립금이 많으면")
     class Context0 {
       int givenAmount() {
         return 2000;
@@ -639,14 +639,14 @@ class PointServiceTest implements CommonTestGiven {
 
     @TransactionalTest
     @Nested
-    @DisplayName("상환포인트보다 대출포인트가 많으면")
+    @DisplayName("상환적립금보다 대출적립금이 많으면")
     class Context1 {
       int givenAmount() {
         return 500;
       }
 
       @Test
-      @DisplayName("상환포인트 만큼 상환 한다")
+      @DisplayName("상환적립금 만큼 상환 한다")
       void test() {
         given();
         PointConsumeResult subject = subject(givenAmount());
@@ -656,7 +656,7 @@ class PointServiceTest implements CommonTestGiven {
 
     @TransactionalTest
     @Nested
-    @DisplayName("대출포인트와 상환포인트가 같으면")
+    @DisplayName("대출적립금과 상환적립금이 같으면")
     class Context2 {
       int givenAmount() {
         return 1000;
@@ -673,7 +673,7 @@ class PointServiceTest implements CommonTestGiven {
   }
 
   @Nested
-  @DisplayName("회원의 만료포인트를 조회 할 때")
+  @DisplayName("회원의 만료적립금을 조회 할 때")
   class DescribeGetExpiredMemberPoint {
 
     LocalDateTime givenExpiredDateTime() {
@@ -694,7 +694,7 @@ class PointServiceTest implements CommonTestGiven {
 
     @TransactionalTest
     @Nested
-    @DisplayName("만료된 포인트가 있다면")
+    @DisplayName("만료된 적립금이 있다면")
     class Context0 {
       void givenPoint() {
         pointService.publishPoint(PublishPointRequest.builder()
@@ -706,7 +706,7 @@ class PointServiceTest implements CommonTestGiven {
       }
 
       @Test
-      @DisplayName("만료된 포인트가 조회 된다")
+      @DisplayName("만료된 적립금이 조회 된다")
       void test() {
         givenPoint();
         List<Point> expiredPoints = subject();
@@ -716,7 +716,7 @@ class PointServiceTest implements CommonTestGiven {
 
     @TransactionalTest
     @Nested
-    @DisplayName("만료된 포인트가 없다면")
+    @DisplayName("만료된 적립금이 없다면")
     class Context1 {
       void givenPoint() {
         pointService.publishPoint(PublishPointRequest.builder()
@@ -728,7 +728,7 @@ class PointServiceTest implements CommonTestGiven {
       }
 
       @Test
-      @DisplayName("포인트가 조회되지 않는다")
+      @DisplayName("적립금이 조회되지 않는다")
       void test() {
         givenPoint();
         List<Point> expiredPoints = subject();
@@ -752,7 +752,7 @@ class PointServiceTest implements CommonTestGiven {
 
     @TransactionalTest
     @Nested
-    @DisplayName("만료될 포인트가 있다면")
+    @DisplayName("만료될 적립금이 있다면")
     class Context0 {
       void givenPoint() {
         pointService.publishPoint(PublishPointRequest.builder()
@@ -775,7 +775,7 @@ class PointServiceTest implements CommonTestGiven {
 
     @TransactionalTest
     @Nested
-    @DisplayName("만료될 포인트가 없다면")
+    @DisplayName("만료될 적립금이 없다면")
     class Context1 {
       @Test
       @DisplayName("비어 있는 Optional을 리턴한다")

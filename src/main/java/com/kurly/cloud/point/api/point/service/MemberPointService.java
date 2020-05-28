@@ -52,7 +52,7 @@ class MemberPointService {
     MemberPoint memberPoint = getOrCreateMemberPoint(memberNumber);
 
     if (memberPoint.getFreePoint() < 0) {
-      //이 회원은 포인트를 빚진 상태
+      //이 회원은 적립금을 빚진 상태
       int repay = Math.min(Math.abs(memberPoint.getFreePoint()), amount);
       amount = amount - repay;
       memberPoint.plusPoint(repay, 0);

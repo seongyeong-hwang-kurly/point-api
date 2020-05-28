@@ -9,6 +9,8 @@
 
 package com.kurly.cloud.point.api.point.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.TransactionalTest;
 import com.kurly.cloud.point.api.point.entity.MemberPoint;
@@ -22,8 +24,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -59,7 +59,8 @@ class MemberPointServiceTest implements CommonTestGiven {
       }
 
       MemberPoint subject() {
-        return memberPointService.createMemberPoint(givenMemberNumber(), givenFreePoint(), givenCashPoint());
+        return memberPointService
+            .createMemberPoint(givenMemberNumber(), givenFreePoint(), givenCashPoint());
       }
 
       @Test
@@ -80,7 +81,8 @@ class MemberPointServiceTest implements CommonTestGiven {
   class DescribePlusMinusPoint {
 
     MemberPoint givenMemberPoint() {
-      return memberPointService.createMemberPoint(givenMemberNumber(), givenFreePoint(), givenCashPoint());
+      return memberPointService
+          .createMemberPoint(givenMemberNumber(), givenFreePoint(), givenCashPoint());
     }
 
     int givenFreePoint() {
@@ -102,12 +104,17 @@ class MemberPointServiceTest implements CommonTestGiven {
       @DisplayName("무상 적립금과 총적립금이 증가 한다")
       void test() {
         MemberPoint givenMemberPoint = givenMemberPoint();
-        MemberPoint subjectMemberPoint = subject(givenMemberPoint.getMemberNumber(), givenFreePoint());
-        assertThat(subjectMemberPoint.getMemberNumber()).isEqualTo(givenMemberPoint.getMemberNumber());
-        assertThat(subjectMemberPoint.getTotalPoint()).isEqualTo(givenMemberPoint.getTotalPoint() + givenFreePoint());
-        assertThat(subjectMemberPoint.getFreePoint()).isEqualTo(givenMemberPoint.getFreePoint() + givenFreePoint());
+        MemberPoint subjectMemberPoint =
+            subject(givenMemberPoint.getMemberNumber(), givenFreePoint());
+        assertThat(subjectMemberPoint.getMemberNumber())
+            .isEqualTo(givenMemberPoint.getMemberNumber());
+        assertThat(subjectMemberPoint.getTotalPoint())
+            .isEqualTo(givenMemberPoint.getTotalPoint() + givenFreePoint());
+        assertThat(subjectMemberPoint.getFreePoint())
+            .isEqualTo(givenMemberPoint.getFreePoint() + givenFreePoint());
         assertThat(subjectMemberPoint.getCashPoint()).isEqualTo(givenMemberPoint.getCashPoint());
-        assertThat(subjectMemberPoint.getUpdateTime()).isEqualToIgnoringSeconds(LocalDateTime.now());
+        assertThat(subjectMemberPoint.getUpdateTime())
+            .isEqualToIgnoringSeconds(LocalDateTime.now());
       }
     }
 
@@ -122,12 +129,17 @@ class MemberPointServiceTest implements CommonTestGiven {
       @DisplayName("유상 적립금과 총적립금이 증가 한다")
       void test() {
         MemberPoint givenMemberPoint = givenMemberPoint();
-        MemberPoint subjectMemberPoint = subject(givenMemberPoint.getMemberNumber(), givenCashPoint());
-        assertThat(subjectMemberPoint.getMemberNumber()).isEqualTo(givenMemberPoint.getMemberNumber());
-        assertThat(subjectMemberPoint.getTotalPoint()).isEqualTo(givenMemberPoint.getTotalPoint() + givenCashPoint());
+        MemberPoint subjectMemberPoint =
+            subject(givenMemberPoint.getMemberNumber(), givenCashPoint());
+        assertThat(subjectMemberPoint.getMemberNumber())
+            .isEqualTo(givenMemberPoint.getMemberNumber());
+        assertThat(subjectMemberPoint.getTotalPoint())
+            .isEqualTo(givenMemberPoint.getTotalPoint() + givenCashPoint());
         assertThat(subjectMemberPoint.getFreePoint()).isEqualTo(givenMemberPoint.getFreePoint());
-        assertThat(subjectMemberPoint.getCashPoint()).isEqualTo(givenMemberPoint.getCashPoint() + givenCashPoint());
-        assertThat(subjectMemberPoint.getUpdateTime()).isEqualToIgnoringSeconds(LocalDateTime.now());
+        assertThat(subjectMemberPoint.getCashPoint())
+            .isEqualTo(givenMemberPoint.getCashPoint() + givenCashPoint());
+        assertThat(subjectMemberPoint.getUpdateTime())
+            .isEqualToIgnoringSeconds(LocalDateTime.now());
       }
     }
 
@@ -142,12 +154,17 @@ class MemberPointServiceTest implements CommonTestGiven {
       @DisplayName("무상 적립금과 총적립금이 감소 한다")
       void test() {
         MemberPoint givenMemberPoint = givenMemberPoint();
-        MemberPoint subjectMemberPoint = subject(givenMemberPoint.getMemberNumber(), givenFreePoint());
-        assertThat(subjectMemberPoint.getMemberNumber()).isEqualTo(givenMemberPoint.getMemberNumber());
-        assertThat(subjectMemberPoint.getTotalPoint()).isEqualTo(givenMemberPoint.getTotalPoint() - givenFreePoint());
-        assertThat(subjectMemberPoint.getFreePoint()).isEqualTo(givenMemberPoint.getFreePoint() - givenFreePoint());
+        MemberPoint subjectMemberPoint =
+            subject(givenMemberPoint.getMemberNumber(), givenFreePoint());
+        assertThat(subjectMemberPoint.getMemberNumber())
+            .isEqualTo(givenMemberPoint.getMemberNumber());
+        assertThat(subjectMemberPoint.getTotalPoint())
+            .isEqualTo(givenMemberPoint.getTotalPoint() - givenFreePoint());
+        assertThat(subjectMemberPoint.getFreePoint())
+            .isEqualTo(givenMemberPoint.getFreePoint() - givenFreePoint());
         assertThat(subjectMemberPoint.getCashPoint()).isEqualTo(givenMemberPoint.getCashPoint());
-        assertThat(subjectMemberPoint.getUpdateTime()).isEqualToIgnoringSeconds(LocalDateTime.now());
+        assertThat(subjectMemberPoint.getUpdateTime())
+            .isEqualToIgnoringSeconds(LocalDateTime.now());
       }
     }
 
@@ -163,21 +180,27 @@ class MemberPointServiceTest implements CommonTestGiven {
       @DisplayName("유상 적립금과 총적립금이 감소 한다")
       void test() {
         MemberPoint givenMemberPoint = givenMemberPoint();
-        MemberPoint subjectMemberPoint = subject(givenMemberPoint.getMemberNumber(), givenCashPoint());
-        assertThat(subjectMemberPoint.getMemberNumber()).isEqualTo(givenMemberPoint.getMemberNumber());
-        assertThat(subjectMemberPoint.getTotalPoint()).isEqualTo(givenMemberPoint.getTotalPoint() - givenCashPoint());
+        MemberPoint subjectMemberPoint =
+            subject(givenMemberPoint.getMemberNumber(), givenCashPoint());
+        assertThat(subjectMemberPoint.getMemberNumber())
+            .isEqualTo(givenMemberPoint.getMemberNumber());
+        assertThat(subjectMemberPoint.getTotalPoint())
+            .isEqualTo(givenMemberPoint.getTotalPoint() - givenCashPoint());
         assertThat(subjectMemberPoint.getFreePoint()).isEqualTo(givenMemberPoint.getFreePoint());
-        assertThat(subjectMemberPoint.getCashPoint()).isEqualTo(givenMemberPoint.getCashPoint() - givenCashPoint());
-        assertThat(subjectMemberPoint.getUpdateTime()).isEqualToIgnoringSeconds(LocalDateTime.now());
+        assertThat(subjectMemberPoint.getCashPoint())
+            .isEqualTo(givenMemberPoint.getCashPoint() - givenCashPoint());
+        assertThat(subjectMemberPoint.getUpdateTime())
+            .isEqualToIgnoringSeconds(LocalDateTime.now());
       }
     }
   }
 
   @Nested
-  @DisplayName("회원에게 대출한 포인트가 잇을 때")
+  @DisplayName("회원에게 대출한 적립금이 잇을 때")
   class DescribeHasDebtPoint {
     MemberPoint givenMemberPoint() {
-      return memberPointService.createMemberPoint(givenMemberNumber(), givenFreePoint(), givenCashPoint());
+      return memberPointService
+          .createMemberPoint(givenMemberNumber(), givenFreePoint(), givenCashPoint());
     }
 
     int givenFreePoint() {
@@ -190,7 +213,7 @@ class MemberPointServiceTest implements CommonTestGiven {
 
     @TransactionalTest
     @Nested
-    @DisplayName("대출한 포인트만큼 무상 적립금이 추가되면")
+    @DisplayName("대출한 적립금만큼 무상 적립금이 추가되면")
     class Context0 {
       int given() {
         return 1000;
@@ -200,7 +223,7 @@ class MemberPointServiceTest implements CommonTestGiven {
         return memberPointService.plusFreePoint(givenMemberNumber(), amount);
       }
 
-      @DisplayName("회원의 총 포인트는 0원이 된다")
+      @DisplayName("회원의 총 적립금은 0원이 된다")
       @Test
       void test() {
         MemberPoint memberPoint = givenMemberPoint();
@@ -223,7 +246,7 @@ class MemberPointServiceTest implements CommonTestGiven {
         return memberPointService.plusFreePoint(givenMemberNumber(), amount);
       }
 
-      @DisplayName("회원의 총 포인트는 0보다 작고 (대출포인트 - 추가포인트)가 된다")
+      @DisplayName("회원의 총 적립금은 0보다 작고 (대출적립금 - 추가적립금)가 된다")
       @Test
       void test() {
         MemberPoint memberPoint = givenMemberPoint();
@@ -247,7 +270,7 @@ class MemberPointServiceTest implements CommonTestGiven {
         return memberPointService.plusFreePoint(givenMemberNumber(), amount);
       }
 
-      @DisplayName("회원의 총 포인트는 0 보다 크고 (추가포인트 - 대출포인트)가 된다")
+      @DisplayName("회원의 총 적립금은 0 보다 크고 (추가적립금 - 대출적립금)가 된다")
       @Test
       void test() {
         MemberPoint memberPoint = givenMemberPoint();
@@ -261,7 +284,7 @@ class MemberPointServiceTest implements CommonTestGiven {
 
     @TransactionalTest
     @Nested
-    @DisplayName("대출한 포인트만큼 유상 적립금이 추가되면")
+    @DisplayName("대출한 적립금만큼 유상 적립금이 추가되면")
     class Context3 {
       int given() {
         return 1000;
@@ -271,7 +294,7 @@ class MemberPointServiceTest implements CommonTestGiven {
         return memberPointService.plusCashPoint(givenMemberNumber(), amount);
       }
 
-      @DisplayName("회원의 총 포인트는 0원이 된다")
+      @DisplayName("회원의 총 적립금은 0원이 된다")
       @Test
       void test() {
         MemberPoint memberPoint = givenMemberPoint();
@@ -294,7 +317,7 @@ class MemberPointServiceTest implements CommonTestGiven {
         return memberPointService.plusCashPoint(givenMemberNumber(), amount);
       }
 
-      @DisplayName("회원의 총 포인트는 0보다 작고 (대출포인트 - 추가포인트)가 된다")
+      @DisplayName("회원의 총 적립금은 0보다 작고 (대출적립금 - 추가적립금)가 된다")
       @Test
       void test() {
         MemberPoint memberPoint = givenMemberPoint();
@@ -318,7 +341,7 @@ class MemberPointServiceTest implements CommonTestGiven {
         return memberPointService.plusCashPoint(givenMemberNumber(), amount);
       }
 
-      @DisplayName("회원의 총 포인트는 0 보다 크고 (추가포인트 - 대출포인트)가 된다")
+      @DisplayName("회원의 총 적립금은 0 보다 크고 (추가적립금 - 대출적립금)가 된다")
       @Test
       void test() {
         MemberPoint memberPoint = givenMemberPoint();
@@ -370,7 +393,8 @@ class MemberPointServiceTest implements CommonTestGiven {
         assertThat(subjectMemberPoint.getTotalPoint()).isEqualTo(givenMemberPoint.getTotalPoint());
         assertThat(subjectMemberPoint.getFreePoint()).isEqualTo(givenMemberPoint.getFreePoint());
         assertThat(subjectMemberPoint.getCashPoint()).isEqualTo(givenMemberPoint.getCashPoint());
-        assertThat(subjectMemberPoint.getUpdateTime()).isEqualToIgnoringSeconds(givenMemberPoint.getUpdateTime());
+        assertThat(subjectMemberPoint.getUpdateTime())
+            .isEqualToIgnoringSeconds(givenMemberPoint.getUpdateTime());
       }
     }
   }

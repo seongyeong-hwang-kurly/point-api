@@ -109,7 +109,7 @@ class PublishPointAdapter implements PublishPointPort {
       minusMemberPoint(request.getMemberNumber(), consumed.isSettle(), consumed.getConsumed());
     });
 
-    //회원이 가진 포인트가 모자른 경우 포인트를 빌려온다 (컬리에게 빚을 짐)
+    //회원이 가진 적립금이 모자른 경우 적립금을 빌려온다 (컬리에게 빚을 짐)
     if (pointConsumeResult.getRemain() > 0) {
       loanPoint(request, pointConsumeResult.getRemain());
     }
@@ -135,7 +135,7 @@ class PublishPointAdapter implements PublishPointPort {
   }
 
   /**
-   * 포인트를 대출합니다
+   * 적립금을 대출합니다
    *
    * @param request request
    */
@@ -172,10 +172,10 @@ class PublishPointAdapter implements PublishPointPort {
   }
 
   /**
-   * 대출한 포인트를 상환처리 합니다
+   * 대출한 적립금을 상환처리 합니다
    */
   private void repayPoint(Long memberNumber, int amount) {
-    // 기 지급 된 포인트에서 상환해야 할 포인트를 가져옴
+    // 기 지급 된 적립금에서 상환해야 할 적립금을 가져옴
     PointConsumeResult pointConsumeResult = pointService.consumeMemberPoint(memberNumber, amount);
 
     pointConsumeResult.getConsumed().forEach(consumedPoint -> {
@@ -196,7 +196,7 @@ class PublishPointAdapter implements PublishPointPort {
         .hidden(true)
         .build());
 
-    // 가져온 포인트만큼 빚진 포인트를 상환함
+    // 가져온 적립금만큼 빚진 적립금을 상환함
     PointConsumeResult pointRepayResult =
         pointService.repayMemberPoint(memberNumber, pointConsumeResult.getTotalConsumed());
 
