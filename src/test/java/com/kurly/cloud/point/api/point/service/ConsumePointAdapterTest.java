@@ -1,5 +1,8 @@
 package com.kurly.cloud.point.api.point.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.TransactionalTest;
 import com.kurly.cloud.point.api.point.domain.consume.CancelOrderConsumePointRequest;
@@ -20,9 +23,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -115,7 +115,7 @@ class ConsumePointAdapterTest implements CommonTestGiven {
             .build();
       }
 
-      @DisplayName("포인트를 사용처리 한다")
+      @DisplayName("적립금을 사용처리 한다")
       @Test
       void test() throws NotEnoughPointException {
         PointConsumeResult subject = subject(givenRequest());
@@ -141,25 +141,26 @@ class ConsumePointAdapterTest implements CommonTestGiven {
             .build();
       }
 
-      @DisplayName("무상포인트를 먼저 사용하고 유상포인트를 사용 한다")
+      @DisplayName("무상적립금을 먼저 사용하고 유상적립금을 사용 한다")
       @Test
       void test() throws NotEnoughPointException {
         PointConsumeResult subject = subject(givenRequest());
 
         assertThat(subject.getTotalConsumed()).isEqualTo(getCashAmount());
         assertThat(subject.getTotalFreePointConsumed()).isEqualTo(getFreeAmount());
-        assertThat(subject.getTotalCashPointConsumed()).isEqualTo(getCashAmount() - getFreeAmount());
+        assertThat(subject.getTotalCashPointConsumed())
+            .isEqualTo(getCashAmount() - getFreeAmount());
         assertThat(subject.getRemain()).isEqualTo(0);
 
       }
     }
 
     @Nested
-    @DisplayName("유상포인트를 사용할 때")
+    @DisplayName("유상적립금을 사용할 때")
     class Context3 {
       @TransactionalTest
       @Nested
-      @DisplayName("전체 포인트가 충분하고 유상포인트가 부족하면")
+      @DisplayName("전체 적립금이 충분하고 유상적립금이 부족하면")
       class Context0 {
 
         ConsumePointRequest givenRequest() {
@@ -186,7 +187,7 @@ class ConsumePointAdapterTest implements CommonTestGiven {
 
       @TransactionalTest
       @Nested
-      @DisplayName("유상포인트가 충분하면")
+      @DisplayName("유상적립금이 충분하면")
       class Context1 {
 
         ConsumePointRequest givenRequest() {
@@ -199,7 +200,7 @@ class ConsumePointAdapterTest implements CommonTestGiven {
               .build();
         }
 
-        @DisplayName("유상포인트를 사용 하고 무상포인트는 사용하지 않는다")
+        @DisplayName("유상적립금을 사용 하고 무상적립금은 사용하지 않는다")
         @Test
         void test() throws NotEnoughPointException {
           PointConsumeResult subject = subject(givenRequest());
@@ -273,7 +274,7 @@ class ConsumePointAdapterTest implements CommonTestGiven {
             .build();
       }
 
-      @DisplayName("포인트를 사용처리 한다")
+      @DisplayName("적립금을 사용처리 한다")
       @Test
       void test() throws NotEnoughPointException {
         PointConsumeResult subject = subject(givenRequest());
@@ -298,14 +299,15 @@ class ConsumePointAdapterTest implements CommonTestGiven {
             .build();
       }
 
-      @DisplayName("무상포인트를 먼저 사용하고 유상포인트를 사용 한다")
+      @DisplayName("무상적립금을 먼저 사용하고 유상적립금을 사용 한다")
       @Test
       void test() throws NotEnoughPointException {
         PointConsumeResult subject = subject(givenRequest());
 
         assertThat(subject.getTotalConsumed()).isEqualTo(getCashAmount());
         assertThat(subject.getTotalFreePointConsumed()).isEqualTo(getFreeAmount());
-        assertThat(subject.getTotalCashPointConsumed()).isEqualTo(getCashAmount() - getFreeAmount());
+        assertThat(subject.getTotalCashPointConsumed())
+            .isEqualTo(getCashAmount() - getFreeAmount());
         assertThat(subject.getRemain()).isEqualTo(0);
 
       }

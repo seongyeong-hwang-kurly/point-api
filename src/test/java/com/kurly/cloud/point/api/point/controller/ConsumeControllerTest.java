@@ -1,5 +1,10 @@
 package com.kurly.cloud.point.api.point.controller;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.ControllerTest;
@@ -28,11 +33,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -94,7 +94,7 @@ public class ConsumeControllerTest implements CommonTestGiven {
 
       @WithUserDetails("admin")
       @Test
-      @DisplayName("포인트를 사용하고 응답코드는 204를 반환한다")
+      @DisplayName("적립금을 사용하고 응답코드는 204를 반환한다")
       void test() throws Exception {
         mockMvc
             .perform(MockMvcRequestBuilders.post("/public/v1/consume")
@@ -125,7 +125,7 @@ public class ConsumeControllerTest implements CommonTestGiven {
     }
 
     @Nested
-    @DisplayName("포인트가 모자르면")
+    @DisplayName("적립금이 모자르면")
     @ControllerTest
     class Context3 {
 
@@ -226,7 +226,7 @@ public class ConsumeControllerTest implements CommonTestGiven {
 
       @WithUserDetails
       @Test
-      @DisplayName("포인트를 사용하고 응답코드는 204를 반환한다")
+      @DisplayName("적립금을 사용하고 응답코드는 204를 반환한다")
       void test() throws Exception {
         mockMvc
             .perform(MockMvcRequestBuilders.post("/public/v1/consume/order")
@@ -284,7 +284,7 @@ public class ConsumeControllerTest implements CommonTestGiven {
 
       @WithUserDetails("admin")
       @Test
-      @DisplayName("포인트를 사용취소 하고 응답코드는 204를 반환한다")
+      @DisplayName("적립금을 사용취소 하고 응답코드는 204를 반환한다")
       void test() throws Exception {
         mockMvc
             .perform(MockMvcRequestBuilders.post("/public/v1/consume/cancel")

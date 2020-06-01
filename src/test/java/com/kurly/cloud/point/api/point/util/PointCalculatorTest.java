@@ -1,15 +1,15 @@
 package com.kurly.cloud.point.api.point.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 @DisplayName("PointCalculator class")
 class PointCalculatorTest {
   @Nested
-  @DisplayName("주문 적립률에 따른 포인트를 계산할때")
+  @DisplayName("주문 적립률에 따른 적립금을 계산할때")
   class DescribeCalculateOrderPoint {
     @Nested
     @DisplayName("적립금액이 소수점 단위로 계산되면")

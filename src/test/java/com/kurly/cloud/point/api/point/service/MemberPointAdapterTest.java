@@ -1,5 +1,7 @@
 package com.kurly.cloud.point.api.point.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.TransactionalTest;
 import com.kurly.cloud.point.api.point.domain.MemberPointSummary;
@@ -20,8 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -137,7 +137,7 @@ class MemberPointAdapterTest implements CommonTestGiven {
 
     @TransactionalTest
     @Nested
-    @DisplayName("포인트가 없으면")
+    @DisplayName("적립금이 없으면")
     class Context0 {
       @Test
       @DisplayName("만료일은 시스템 기본 만료금액은 0으로 리턴한다")
@@ -153,7 +153,7 @@ class MemberPointAdapterTest implements CommonTestGiven {
 
     @TransactionalTest
     @Nested
-    @DisplayName("유상포인트가 있으면")
+    @DisplayName("유상적립금이 있으면")
     class Context1 {
 
       void givenPoint() {
@@ -182,7 +182,7 @@ class MemberPointAdapterTest implements CommonTestGiven {
     }
 
     @Nested
-    @DisplayName("만료될 포인트가 있으면")
+    @DisplayName("만료될 적립금이 있으면")
     class Context2 {
 
       @TransactionalTest
@@ -204,7 +204,7 @@ class MemberPointAdapterTest implements CommonTestGiven {
         }
 
         @Test
-        @DisplayName("다음 시스템 만료일에 만료예정 포인트를 리턴한다")
+        @DisplayName("다음 시스템 만료일에 만료예정 적립금을 리턴한다")
         void test() {
           givenPoint();
           MemberPointSummary memberPointSummary = subject();
@@ -240,7 +240,7 @@ class MemberPointAdapterTest implements CommonTestGiven {
         }
 
         @Test
-        @DisplayName("해당 포인트의 만료일과 만료 예정금액을 리턴한다")
+        @DisplayName("해당 적립금의 만료일과 만료 예정금액을 리턴한다")
         void test() {
           givenPoint();
           MemberPointSummary memberPointSummary = subject();
@@ -286,7 +286,7 @@ class MemberPointAdapterTest implements CommonTestGiven {
 
       @TransactionalTest
       @Nested
-      @DisplayName("다음 만료일에 만료될 포인트가 여러건 있다면")
+      @DisplayName("다음 만료일에 만료될 적립금이 여러건 있다면")
       class Context2_Context3 {
 
         int givenCount() {
@@ -326,19 +326,21 @@ class MemberPointAdapterTest implements CommonTestGiven {
               .actionMemberNumber(givenMemberNumber())
               .detail("")
               .memo("")
-              .expireDate(PointExpireDateCalculator.calculateDefault(LocalDateTime.now()).plusDays(1))
+              .expireDate(
+                  PointExpireDateCalculator.calculateDefault(LocalDateTime.now()).plusDays(1))
               .build());
         }
 
         @Test
-        @DisplayName("만료 될 포인트의 합산을 리턴한다")
+        @DisplayName("만료 될 적립금의 합산을 리턴한다")
         void test() {
           givenPoint();
           givenNonExpirePoint();
           MemberPointSummary memberPointSummary = subject();
 
           assertThat(memberPointSummary.getAmount())
-              .isEqualTo(givenPointAmount() * givenCount() + givenPointAmount() + givenPointAmount());
+              .isEqualTo(
+                  givenPointAmount() * givenCount() + givenPointAmount() + givenPointAmount());
           assertThat(memberPointSummary.getNextExpireDate())
               .isEqualTo(PointExpireDateCalculator
                   .calculateDefault(LocalDateTime.now().minusYears(1)));

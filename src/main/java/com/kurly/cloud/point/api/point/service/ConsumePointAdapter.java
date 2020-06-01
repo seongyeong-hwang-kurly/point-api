@@ -30,7 +30,8 @@ class ConsumePointAdapter implements ConsumePointPort {
   private final MemberPointHistoryService memberPointHistoryService;
 
   @Transactional
-  @Override public PointConsumeResult consume(ConsumePointRequest request) throws NotEnoughPointException {
+  @Override public PointConsumeResult consume(ConsumePointRequest request)
+      throws NotEnoughPointException {
     MemberPoint memberPoint =
         memberPointService.getOrCreateMemberPoint(request.getMemberNumber());
 
@@ -94,7 +95,7 @@ class ConsumePointAdapter implements ConsumePointPort {
   }
 
   /**
-   * 현재는 포인트를 사용취소하면 사용취소한 만큼의 금액이 새로 적립됩니다.(유효기간 갱신) <br/>
+   * 현재는 적립금을 사용취소하면 사용취소한 만큼의 금액이 새로 적립됩니다.(유효기간 갱신) <br/>
    * 이 정책은 추후 적립금 개편 시 기존 적립금에 다시 추가 하는 형태로 변경될 예정입니다.
    */
   @Transactional
@@ -103,7 +104,8 @@ class ConsumePointAdapter implements ConsumePointPort {
     List<PointHistory> consumedByOrderNumber =
         pointHistoryService.getConsumedByOrderNumber(request.getOrderNumber());
 
-    int totalConsumedAmount = consumedByOrderNumber.stream().mapToInt(PointHistory::getAmount).sum();
+    int totalConsumedAmount =
+        consumedByOrderNumber.stream().mapToInt(PointHistory::getAmount).sum();
 
     if (request.getPoint() > Math.abs(totalConsumedAmount)) {
       throw new CancelAmountExceedException(request.getOrderNumber(), request.getPoint());

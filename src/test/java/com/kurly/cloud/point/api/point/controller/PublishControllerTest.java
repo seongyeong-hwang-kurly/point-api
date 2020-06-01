@@ -1,5 +1,11 @@
 package com.kurly.cloud.point.api.point.controller;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.ControllerTest;
@@ -7,6 +13,7 @@ import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.domain.publish.BulkPublishPointRequest;
 import com.kurly.cloud.point.api.point.domain.publish.CancelPublishOrderPointRequest;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
+import com.kurly.cloud.point.api.point.entity.Point;
 import com.kurly.cloud.point.api.point.port.in.PublishPointPort;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,11 +34,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -87,14 +89,14 @@ public class PublishControllerTest implements CommonTestGiven {
 
       @WithUserDetails("admin")
       @Test
-      @DisplayName("포인트를 발급하고 응답코드는 204를 반환한다")
+      @DisplayName("적립금을 발급하고 응답코드는 200를 반환한다")
       void test() throws Exception {
         mockMvc
             .perform(MockMvcRequestBuilders.post("/public/v1/publish")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(givenRequest())))
             .andDo(MockMvcResultHandlers.print())
-            .andExpect(status().isNoContent());
+            .andExpect(status().isOk());
       }
     }
 
@@ -167,7 +169,11 @@ public class PublishControllerTest implements CommonTestGiven {
     @DisplayName("발급에 성공하면 성공한 요청 아이디를 리턴한다")
     void test1() throws Exception {
       List<BulkPublishPointRequest> bulkPublishPointRequests = givenRequest();
-
+      given(publishPointPort.publish(any())).willReturn(
+          Point.builder().seq(1).build()
+          , Point.builder().seq(2).build()
+          , Point.builder().seq(3).build()
+      );
       mockMvc
           .perform(
               MockMvcRequestBuilders.post("/public/v1/publish/bulk")
@@ -176,7 +182,7 @@ public class PublishControllerTest implements CommonTestGiven {
           )
           .andDo(MockMvcResultHandlers.print())
           .andExpect(content().json(
-              "{\"success\":true,\"message\":null,\"data\":{\"succeed\":[1,2,3],\"failed\":[]}}"
+              "{\"success\":true,\"message\":null,\"data\":{\"succeed\":[1,2,3],\"failed\":[],\"resultIds\":[{\"jobId\":1,\"pointSeq\":1},{\"jobId\":2,\"pointSeq\":2},{\"jobId\":3,\"pointSeq\":3}]}}"
           ))
           .andExpect(status().is(200));
     }
