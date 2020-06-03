@@ -61,13 +61,15 @@ class PublishPointAdapter implements PublishPointPort {
       repayPoint(request.getMemberNumber(), memberPoint.getRepayAmount(request.getPoint()));
     }
 
-    FileBeatLogger.info(new HashMap<>() {{
-      put("action", "pointPublished");
-      put("memberNumber", request.getMemberNumber());
-      put("amount", request.getPoint());
-      put("type", request.getHistoryType());
-      put("orderNumber", request.getOrderNumber());
-    }});
+    FileBeatLogger.info(new HashMap<>() {
+      {
+        put("action", "pointPublished");
+        put("memberNumber", request.getMemberNumber());
+        put("amount", request.getPoint());
+        put("type", request.getHistoryType());
+        put("orderNumber", request.getOrderNumber());
+      }
+    });
 
     return point;
   }
@@ -124,18 +126,20 @@ class PublishPointAdapter implements PublishPointPort {
         .orderNumber(request.getOrderNumber())
         .build());
 
-    FileBeatLogger.info(new HashMap<>() {{
-      put("action", "pointPublishCanceled");
-      put("memberNumber", request.getMemberNumber());
-      put("amount", request.getPoint());
-      put("type", request.getHistoryType());
-      put("orderNumber", request.getOrderNumber());
-    }});
+    FileBeatLogger.info(new HashMap<>() {
+      {
+        put("action", "pointPublishCanceled");
+        put("memberNumber", request.getMemberNumber());
+        put("amount", request.getPoint());
+        put("type", request.getHistoryType());
+        put("orderNumber", request.getOrderNumber());
+      }
+    });
 
   }
 
   /**
-   * 적립금을 대출합니다
+   * 적립금을 대출합니다.
    *
    * @param request request
    */
@@ -162,17 +166,19 @@ class PublishPointAdapter implements PublishPointPort {
 
     minusMemberPoint(request.getMemberNumber(), false, amount);
 
-    FileBeatLogger.info(new HashMap<>() {{
-      put("action", "pointLoaned");
-      put("memberNumber", request.getMemberNumber());
-      put("amount", amount);
-      put("type", request.getHistoryType());
-      put("orderNumber", request.getOrderNumber());
-    }});
+    FileBeatLogger.info(new HashMap<>() {
+      {
+        put("action", "pointLoaned");
+        put("memberNumber", request.getMemberNumber());
+        put("amount", amount);
+        put("type", request.getHistoryType());
+        put("orderNumber", request.getOrderNumber());
+      }
+    });
   }
 
   /**
-   * 대출한 적립금을 상환처리 합니다
+   * 대출한 적립금을 상환처리 합니다.
    */
   private void repayPoint(Long memberNumber, int amount) {
     // 기 지급 된 적립금에서 상환해야 할 적립금을 가져옴
@@ -210,11 +216,13 @@ class PublishPointAdapter implements PublishPointPort {
           .build());
     });
 
-    FileBeatLogger.info(new HashMap<>() {{
-      put("action", "pointRepaid");
-      put("memberNumber", memberNumber);
-      put("amount", amount);
-    }});
+    FileBeatLogger.info(new HashMap<>() {
+      {
+        put("action", "pointRepaid");
+        put("memberNumber", memberNumber);
+        put("amount", amount);
+      }
+    });
   }
 
   private MemberPoint plusMemberPoint(Long memberNumber, boolean settle, Integer point) {

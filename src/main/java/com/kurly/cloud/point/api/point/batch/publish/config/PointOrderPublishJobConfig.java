@@ -30,19 +30,19 @@ public class PointOrderPublishJobConfig {
   private final OrderRepository orderRepository;
 
   @Value("${batch.publish.chunkSize:1000}")
-  public void setChunkSize(int ChunkSize) {
-    CHUNK_SIZE = ChunkSize;
+  public void setChunkSize(int chunkSize) {
+    CHUNK_SIZE = chunkSize;
   }
 
   @Bean
-  public Job pointOrderPublishJob(JobBuilderFactory jobBuilderFactory) {
+  Job pointOrderPublishJob(JobBuilderFactory jobBuilderFactory) {
     return jobBuilderFactory.get("pointOrderPublishJob")
         .listener(new PointOrderPublishJobListener())
         .start(pointOrderPublishJobStep(stepBuilderFactory))
         .build();
   }
 
-  public Step pointOrderPublishJobStep(StepBuilderFactory stepBuilderFactory) {
+  Step pointOrderPublishJobStep(StepBuilderFactory stepBuilderFactory) {
     return stepBuilderFactory.get("pointOrderPublishJobStep")
         .<Order, PublishPointRequest>chunk(CHUNK_SIZE)
         .reader(pointPublishOrderReader(null))

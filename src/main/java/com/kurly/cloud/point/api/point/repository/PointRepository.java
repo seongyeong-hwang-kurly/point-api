@@ -22,47 +22,48 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PointRepository extends JpaRepository<Point, Long> {
-  @Query("SELECT p FROM Point p WHERE " +
-      " p.memberNumber = :memberNumber AND p.remain > 0 AND " +
-      " (p.expireTime = 0L OR p.expireTime >= :expireTime) ")
+  @Query("SELECT p FROM Point p WHERE "
+      + " p.memberNumber = :memberNumber AND p.remain > 0 AND "
+      + " (p.expireTime = 0L OR p.expireTime >= :expireTime) ")
   List<Point> findAllAvailableMemberPoint(
       @Param("memberNumber") long memberNumber,
       @Param("expireTime") LocalDateTime expireTime);
 
-  @Query("SELECT p FROM Point p WHERE " +
-      " p.memberNumber = :memberNumber AND p.remain > 0 AND " +
-      " p.settle = true AND " +
-      " (p.expireTime = 0L OR p.expireTime >= :expireTime) ")
+  @Query("SELECT p FROM Point p WHERE "
+      + " p.memberNumber = :memberNumber AND p.remain > 0 AND "
+      + " p.settle = true AND "
+      + " (p.expireTime = 0L OR p.expireTime >= :expireTime) ")
   List<Point> findAllAvailableSettleMemberPoint(
       @Param("memberNumber") long memberNumber,
       @Param("expireTime") LocalDateTime expireTime);
 
-  Optional<Point> findByMemberNumberAndOrderNumberAndRemainGreaterThan
-      (long memberNumber, long orderNumber, int remain);
+  Optional<Point> findByMemberNumberAndOrderNumberAndRemainGreaterThan(long memberNumber,
+                                                                       long orderNumber,
+                                                                       int remain);
 
   @Query("SELECT p FROM Point p WHERE p.memberNumber = :memberNumber AND p.remain < 0")
   List<Point> findAllDebtMemberPoint(@Param("memberNumber") long memberNumber);
 
-  @Query("SELECT p from Point p WHERE " +
-      " p.memberNumber = :memberNumber AND p.remain > 0 AND " +
-      " p.expireTime <= :expireTime AND p.settle = false AND p.payment = false "
+  @Query("SELECT p from Point p WHERE "
+      + " p.memberNumber = :memberNumber AND p.remain > 0 AND "
+      + " p.expireTime <= :expireTime AND p.settle = false AND p.payment = false "
   )
   List<Point> findAllExpiredMemberPoint(
       @Param("memberNumber") long memberNumber,
       @Param("expireTime") LocalDateTime expireTime
   );
 
-  @Query("SELECT DISTINCT p.memberNumber FROM Point p " +
-      " WHERE p.payment = false AND p.settle = false AND p.remain > 0 " +
-      " AND p.expireTime <= :expireTime ")
+  @Query("SELECT DISTINCT p.memberNumber FROM Point p "
+      + " WHERE p.payment = false AND p.settle = false AND p.remain > 0 "
+      + " AND p.expireTime <= :expireTime ")
   List<Long> findAllMemberNumberHasExpiredPoint(
       @Param("expireTime") LocalDateTime expireTime,
       Pageable pageable);
 
-  @Query("SELECT p.expireTime FROM Point p " +
-      " WHERE p.memberNumber = :memberNumber AND p.remain > 0 " +
-      " AND p.payment = false AND p.settle = false " +
-      " ORDER BY p.expireTime ASC ")
+  @Query("SELECT p.expireTime FROM Point p "
+      + " WHERE p.memberNumber = :memberNumber AND p.remain > 0 "
+      + " AND p.payment = false AND p.settle = false "
+      + " ORDER BY p.expireTime ASC ")
   Page<LocalDateTime> getMemberNextExpireTime(@Param("memberNumber") long memberNumber,
                                               Pageable pageable);
 

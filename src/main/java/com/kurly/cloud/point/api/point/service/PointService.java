@@ -75,20 +75,20 @@ class PointService {
   }
 
   List<Point> getAvailableMemberPoint(long memberNumber, boolean onlySettle) {
-    return onlySettle ?
-        getAvailableSettleMemberPoint(memberNumber) : getAvailableMemberPoint(memberNumber);
-  }
-
-  List<Point> getAvailableSettleMemberPoint(long memberNumber) {
-    List<Point> availablePoints =
-        pointRepository.findAllAvailableSettleMemberPoint(memberNumber, LocalDateTime.now());
-    availablePoints.sort(ConsumeOrderComparator.getInstance());
-    return availablePoints;
+    return onlySettle
+        ? getAvailableSettleMemberPoint(memberNumber) : getAvailableMemberPoint(memberNumber);
   }
 
   List<Point> getAvailableMemberPoint(long memberNumber) {
     List<Point> availablePoints =
         pointRepository.findAllAvailableMemberPoint(memberNumber, LocalDateTime.now());
+    availablePoints.sort(ConsumeOrderComparator.getInstance());
+    return availablePoints;
+  }
+
+  List<Point> getAvailableSettleMemberPoint(long memberNumber) {
+    List<Point> availablePoints =
+        pointRepository.findAllAvailableSettleMemberPoint(memberNumber, LocalDateTime.now());
     availablePoints.sort(ConsumeOrderComparator.getInstance());
     return availablePoints;
   }

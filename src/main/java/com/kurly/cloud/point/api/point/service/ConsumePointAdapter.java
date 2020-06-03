@@ -55,9 +55,9 @@ class ConsumePointAdapter implements ConsumePointPort {
           .build());
     });
 
-    minusMemberPoint(request.getMemberNumber()
-        , pointConsumeResult.getTotalFreePointConsumed()
-        , pointConsumeResult.getTotalCashPointConsumed());
+    minusMemberPoint(request.getMemberNumber(),
+        pointConsumeResult.getTotalFreePointConsumed(),
+        pointConsumeResult.getTotalCashPointConsumed());
 
     memberPointHistoryService.insertHistory(MemberPointHistoryInsertRequest.builder()
         .memberNumber(request.getMemberNumber())
@@ -69,13 +69,15 @@ class ConsumePointAdapter implements ConsumePointPort {
         .orderNumber(request.getOrderNumber())
         .build());
 
-    FileBeatLogger.info(new HashMap<>() {{
-      put("action", "pointConsumed");
-      put("memberNumber", request.getMemberNumber());
-      put("amount", request.getPoint());
-      put("type", request.getHistoryType());
-      put("orderNumber", request.getOrderNumber());
-    }});
+    FileBeatLogger.info(new HashMap<>() {
+      {
+        put("action", "pointConsumed");
+        put("memberNumber", request.getMemberNumber());
+        put("amount", request.getPoint());
+        put("type", request.getHistoryType());
+        put("orderNumber", request.getOrderNumber());
+      }
+    });
 
     return pointConsumeResult;
   }
@@ -143,13 +145,15 @@ class ConsumePointAdapter implements ConsumePointPort {
         .orderNumber(request.getOrderNumber())
         .build());
 
-    FileBeatLogger.info(new HashMap<>() {{
-      put("action", "pointConsumeCanceled");
-      put("memberNumber", request.getMemberNumber());
-      put("amount", request.getPoint());
-      put("type", request.getHistoryType());
-      put("orderNumber", request.getOrderNumber());
-    }});
+    FileBeatLogger.info(new HashMap<>() {
+      {
+        put("action", "pointConsumeCanceled");
+        put("memberNumber", request.getMemberNumber());
+        put("amount", request.getPoint());
+        put("type", request.getHistoryType());
+        put("orderNumber", request.getOrderNumber());
+      }
+    });
   }
 
   private void minusMemberPoint(Long memberNumber, int freePoint, int cashPoint) {

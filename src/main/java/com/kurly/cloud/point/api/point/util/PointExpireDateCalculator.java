@@ -36,7 +36,7 @@ public class PointExpireDateCalculator {
   }
 
   /**
-   * 해당 일자의 시각을 23:59:59로 세팅한다
+   * 해당 일자의 시각을 23:59:59로 세팅한다.
    *
    * @return 23:59:59
    */

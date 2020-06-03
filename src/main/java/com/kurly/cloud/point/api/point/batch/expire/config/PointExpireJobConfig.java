@@ -27,19 +27,19 @@ public class PointExpireJobConfig {
   private final PointRepository pointRepository;
 
   @Value("${batch.expire.chunkSize:1000}")
-  public void setChunkSize(int ChunkSize) {
-    CHUNK_SIZE = ChunkSize;
+  public void setChunkSize(int chunkSize) {
+    CHUNK_SIZE = chunkSize;
   }
 
   @Bean
-  public Job pointExpireJob(JobBuilderFactory jobBuilderFactory) {
+  Job pointExpireJob(JobBuilderFactory jobBuilderFactory) {
     return jobBuilderFactory.get("pointExpireJob")
         .listener(new PointExpireJobListener())
         .start(pointExpireJobStep(stepBuilderFactory))
         .build();
   }
 
-  public Step pointExpireJobStep(StepBuilderFactory stepBuilderFactory) {
+  Step pointExpireJobStep(StepBuilderFactory stepBuilderFactory) {
     return stepBuilderFactory.get("pointExpireJobStep")
         .<Long, Long>chunk(CHUNK_SIZE)
         .reader(expirePointMemberNumberReader(null))

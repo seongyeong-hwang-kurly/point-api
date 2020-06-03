@@ -11,7 +11,6 @@ package com.kurly.cloud.point.api.point.batch.publish;
 
 import static com.kurly.cloud.point.api.point.batch.expire.config.PointExpireJobConfig.DATE_TIME_FORMATTER;
 
-
 import com.kurly.cloud.api.common.util.SlackNotifier;
 import com.kurly.cloud.api.common.util.logging.FileBeatLogger;
 import java.time.LocalDateTime;
@@ -37,15 +36,20 @@ public class PointOrderPublishScheduler {
   private final Job pointOrderPublishJob;
   private final JobLauncher jobLauncher;
 
+  /**
+   * 스케쥴 실행.
+   */
   @Scheduled(cron = "0 0 7 * * *")
   public void execute() {
     String publishDate = LocalDateTime.now().format(DATE_TIME_FORMATTER);
     try {
-      FileBeatLogger.info(new HashMap<>() {{
-        put("batch", "PointOrderPublishScheduler");
-        put("action", "STARTED");
-        put("param", publishDate);
-      }});
+      FileBeatLogger.info(new HashMap<>() {
+        {
+          put("batch", "PointOrderPublishScheduler");
+          put("action", "STARTED");
+          put("param", publishDate);
+        }
+      });
       JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
       jobParametersBuilder.addString("publishDate", publishDate);
       JobExecution run =
@@ -53,24 +57,30 @@ public class PointOrderPublishScheduler {
       if (run.getExitStatus().getExitCode().equals(ExitStatus.FAILED.getExitCode())) {
         String exitDescription = run.getExitStatus().getExitDescription();
         SlackNotifier.notify(exitDescription);
-        FileBeatLogger.info(new HashMap<>() {{
+        FileBeatLogger.info(new HashMap<>() {
+          {
+            put("batch", "PointOrderPublishScheduler");
+            put("action", "FAILED");
+            put("param", publishDate);
+          }
+        });
+      } else {
+        FileBeatLogger.info(new HashMap<>() {
+          {
+            put("batch", "PointOrderPublishScheduler");
+            put("action", "COMPLETED");
+            put("param", publishDate);
+          }
+        });
+      }
+    } catch (Exception e) {
+      FileBeatLogger.info(new HashMap<>() {
+        {
           put("batch", "PointOrderPublishScheduler");
           put("action", "FAILED");
           put("param", publishDate);
-        }});
-      } else {
-        FileBeatLogger.info(new HashMap<>() {{
-          put("batch", "PointOrderPublishScheduler");
-          put("action", "COMPLETED");
-          put("param", publishDate);
-        }});
-      }
-    } catch (Exception e) {
-      FileBeatLogger.info(new HashMap<>() {{
-        put("batch", "PointOrderPublishScheduler");
-        put("action", "FAILED");
-        put("param", publishDate);
-      }});
+        }
+      });
       FileBeatLogger.error(e);
       SlackNotifier.notify(e);
     }

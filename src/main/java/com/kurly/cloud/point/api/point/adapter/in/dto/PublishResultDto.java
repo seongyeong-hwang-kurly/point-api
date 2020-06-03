@@ -22,6 +22,9 @@ public class PublishResultDto {
   @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
   LocalDateTime expireDateTime;
 
+  /**
+   * Entity에서 인스턴스 생성.
+   */
   public static PublishResultDto fromEntity(Point point) {
     return PublishResultDto.builder()
         .seq(point.getSeq())

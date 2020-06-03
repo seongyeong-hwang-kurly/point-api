@@ -12,6 +12,9 @@ public class MemberPointSummary {
   LocalDateTime nextExpireDate;
   int nextExpireAmount;
 
+  /**
+   * 만료포인트가 없는 인스턴스를 생성한다.
+   */
   public static MemberPointSummary byEmptyExpireAmount(int pointAmount) {
     return MemberPointSummary.builder()
         .amount(pointAmount)

@@ -21,7 +21,7 @@ public class ControllerExceptionHandler {
   @ExceptionHandler({BindException.class,
       MethodArgumentNotValidException.class,
       ConstraintViolationException.class})
-  public ApiResponseModel serverErrorHandler(Exception e) {
+  ApiResponseModel serverErrorHandler(Exception e) {
     String errorFields = "";
 
     if (e instanceof BindException) {
