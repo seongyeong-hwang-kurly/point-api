@@ -9,6 +9,10 @@
 
 package com.kurly.cloud.point.api.point.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+
+
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.TransactionalTest;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
@@ -28,9 +32,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -165,7 +166,7 @@ class MemberPointHistoryServiceTest implements CommonTestGiven {
                 .expireTime(PointExpireDateCalculator.calculateDefault(LocalDateTime.now()))
                 .hidden(hidden)
                 .orderNumber(1234)
-                .regTime(LocalDateTime.now())
+                .regTime(LocalDateTime.now().plusDays(i))
                 .type(HistoryType.TYPE_1.getValue())
                 .build()
         );
@@ -213,6 +214,67 @@ class MemberPointHistoryServiceTest implements CommonTestGiven {
       void test() {
         Page<MemberPointHistory> historyList = subject(givenRequest());
         assertThat(historyList.getTotalElements()).isEqualTo(10);
+      }
+    }
+
+    @TransactionalTest
+    @Nested
+    @DisplayName("regDateTimeFrom 값이 있다면")
+    class Context2 {
+      MemberPointHistoryListRequest givenRequest() {
+        return MemberPointHistoryListRequest.builder()
+            .memberNumber(givenMemberNumber())
+            .regDateTimeFrom(LocalDateTime.now().plusDays(1).minusMinutes(1))
+            .includeHidden(false)
+            .build();
+      }
+
+      @Test
+      @DisplayName("입력값 이후의 등록일을 가진 이력만 조회 된다")
+      void test() {
+        Page<MemberPointHistory> historyList = subject(givenRequest());
+        assertThat(historyList.getTotalElements()).isEqualTo(9);
+      }
+    }
+
+    @TransactionalTest
+    @Nested
+    @DisplayName("regDateTimeTo 값이 있다면")
+    class Context3 {
+      MemberPointHistoryListRequest givenRequest() {
+        return MemberPointHistoryListRequest.builder()
+            .memberNumber(givenMemberNumber())
+            .regDateTimeTo(LocalDateTime.now().plusDays(2).minusMinutes(1))
+            .includeHidden(false)
+            .build();
+      }
+
+      @Test
+      @DisplayName("입력값 이전의 등록일을 가진 이력만 조회 된다")
+      void test() {
+        Page<MemberPointHistory> historyList = subject(givenRequest());
+        assertThat(historyList.getTotalElements()).isEqualTo(2);
+      }
+    }
+
+    @TransactionalTest
+    @Nested
+    @DisplayName("regDateTimeFrom, regDateTimeTo 값이 있다면")
+    class Context4 {
+      MemberPointHistoryListRequest givenRequest() {
+        return MemberPointHistoryListRequest.builder()
+            .memberNumber(givenMemberNumber())
+            .regDateTimeFrom(LocalDateTime.now().plusDays(1).minusMinutes(1))
+            .regDateTimeTo(LocalDateTime.now().plusDays(2).minusMinutes(1))
+            .includeHidden(false)
+            .build();
+      }
+
+      @Test
+      @DisplayName("입력값 사이의 등록일을 가진 이력만 조회 된다")
+      void test() {
+        Page<MemberPointHistory> historyList = subject(givenRequest());
+        assertThat(historyList.getTotalElements()).isEqualTo(1);
       }
     }
   }

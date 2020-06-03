@@ -9,6 +9,19 @@
 
 package com.kurly.cloud.point.api.point.documentation;
 
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.payload.PayloadDocumentation.beneathPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
+import static org.springframework.restdocs.snippet.Attributes.key;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.config.SpringSecurityTestConfig;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
@@ -34,18 +47,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
-
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.restdocs.payload.PayloadDocumentation.beneathPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
-import static org.springframework.restdocs.snippet.Attributes.key;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Import(SpringSecurityTestConfig.class)
 @ExtendWith({SpringExtension.class, RestDocumentationExtension.class})
@@ -88,6 +89,8 @@ public class MemberPointDocumentationTest implements CommonTestGiven {
     ResultActions resultActions = mockMvc.perform(
         RestDocumentationRequestBuilders
             .get("/public/v1/history/{memberNumber}", givenMemberNumber())
+            .param("regDateTimeFrom", "2020-01-01T00:00:00")
+            .param("regDateTimeTo", "2030-01-01T00:00:00")
             .param("size", "10")
             .param("page", "0")
     );
@@ -102,8 +105,16 @@ public class MemberPointDocumentationTest implements CommonTestGiven {
                     parameterWithName("memberNumber").description("회원번호")
                 )
                 , requestParameters(
-                    parameterWithName("size").description("페이지 사이즈")
-                    , parameterWithName("page").description("페이지 번호")
+                    parameterWithName("regDateTimeFrom")
+                        .optional()
+                        .attributes(key("format").value("yyyy-MM-dd'T'HH:mm:ss"))
+                        .description("등록일 검색 일시 시작 조건")
+                    , parameterWithName("regDateTimeTo")
+                        .optional()
+                        .attributes(key("format").value("yyyy-MM-dd'T'HH:mm:ss"))
+                        .description("등록일 검색 일시 끝 조건")
+                    , parameterWithName("size").optional().description("페이지 사이즈")
+                    , parameterWithName("page").optional().description("페이지 번호")
                 )
                 , responseFields(
                     beneathPath("data").withSubsectionId("data")
@@ -117,9 +128,11 @@ public class MemberPointDocumentationTest implements CommonTestGiven {
                     , fieldWithPath("content[].detail").type(JsonFieldType.STRING)
                         .description("이력 내용")
                     , fieldWithPath("content[].regDateTime").type(JsonFieldType.STRING)
-                        .attributes(key("format").value("yyyy-MM-dd'T'HH:mm:ss")).description("등록시각")
+                        .attributes(key("format").value("yyyy-MM-dd'T'HH:mm:ss"))
+                        .description("등록시각")
                     , fieldWithPath("content[].expireDateTime").type(JsonFieldType.STRING)
-                        .attributes(key("format").value("yyyy-MM-dd'T'HH:mm:ss")).description("만료시각")
+                        .attributes(key("format").value("yyyy-MM-dd'T'HH:mm:ss"))
+                        .description("만료시각")
                     , fieldWithPath("totalPages").type(JsonFieldType.NUMBER).description("전체 페이지 수")
                     , fieldWithPath("totalElements").type(JsonFieldType.NUMBER)
                         .description("전체 컨텐츠 수")

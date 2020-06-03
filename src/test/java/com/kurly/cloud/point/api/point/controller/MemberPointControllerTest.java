@@ -9,6 +9,9 @@
 
 package com.kurly.cloud.point.api.point.controller;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.ControllerTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,8 +27,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
-
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -47,7 +48,11 @@ public class MemberPointControllerTest implements CommonTestGiven {
   @DisplayName("회원 적립금 이력을 조회 한다")
   void test() throws Exception {
     mockMvc
-        .perform(MockMvcRequestBuilders.get("/public/v1/history/{memberNumber}", givenMemberNumber()))
+        .perform(
+            MockMvcRequestBuilders.get("/public/v1/history/{memberNumber}", givenMemberNumber())
+                .param("regDateTimeFrom", "2020-05-10T10:00:00")
+                .param("regDateTimeTo", "2020-05-10T10:00:00")
+        )
         .andDo(MockMvcResultHandlers.print())
         .andExpect(status().isOk());
   }
@@ -57,7 +62,8 @@ public class MemberPointControllerTest implements CommonTestGiven {
   @DisplayName("회원 적립금 요약을 조회 한다")
   void test1() throws Exception {
     mockMvc
-        .perform(MockMvcRequestBuilders.get("/public/v1/summary/{memberNumber}", givenMemberNumber()))
+        .perform(
+            MockMvcRequestBuilders.get("/public/v1/summary/{memberNumber}", givenMemberNumber()))
         .andDo(MockMvcResultHandlers.print())
         .andExpect(status().isOk());
   }

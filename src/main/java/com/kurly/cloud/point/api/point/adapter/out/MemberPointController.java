@@ -30,10 +30,10 @@ public class MemberPointController {
 
   @PreAuthorize("@userSecurity.checkMemberNo(principal,#memberNumber)")
   @GetMapping("/public/v1/history/{memberNumber}")
-  SimplePageImpl<MemberPointHistoryDto> getMemberHistoryList(@PathVariable long memberNumber,
-                                                             MemberPointHistoryListRequest request,
-                                                             @AuthenticationPrincipal
-                                                                 KurlyUserPrincipal principal) {
+  SimplePageImpl<MemberPointHistoryDto> getMemberHistoryList(
+      @PathVariable long memberNumber,
+      MemberPointHistoryListRequest request,
+      @AuthenticationPrincipal KurlyUserPrincipal principal) {
     if (principal.isAdmin()) {
       request.setIncludeHidden(true);
     }

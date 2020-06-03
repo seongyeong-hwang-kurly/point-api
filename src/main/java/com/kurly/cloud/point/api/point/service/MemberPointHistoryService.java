@@ -15,7 +15,6 @@ import com.kurly.cloud.point.api.point.entity.MemberPointHistory;
 import com.kurly.cloud.point.api.point.repository.MemberPointHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -25,22 +24,10 @@ class MemberPointHistoryService {
   private final MemberPointHistoryRepository memberPointHistoryRepository;
 
   MemberPointHistory insertHistory(MemberPointHistoryInsertRequest request) {
-    MemberPointHistory memberPointHistory = memberPointHistoryRepository.save(request.toEntity());
-    return memberPointHistory;
+    return memberPointHistoryRepository.save(request.toEntity());
   }
 
   Page<MemberPointHistory> getHistoryList(MemberPointHistoryListRequest request) {
-    if (request.isIncludeHidden()) {
-      return memberPointHistoryRepository.getAllByMemberNumber(
-          request.getMemberNumber()
-          , PageRequest.of(request.getPage(), request.getSize(), request.getSort())
-      );
-    } else {
-      return memberPointHistoryRepository.getAllByMemberNumberAndHidden(
-          request.getMemberNumber()
-          , false
-          , PageRequest.of(request.getPage(), request.getSize(), request.getSort())
-      );
-    }
+    return memberPointHistoryRepository.getMemberPointHistories(request);
   }
 }

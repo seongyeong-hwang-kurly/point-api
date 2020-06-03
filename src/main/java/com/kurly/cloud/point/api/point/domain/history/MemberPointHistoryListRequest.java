@@ -9,12 +9,13 @@
 
 package com.kurly.cloud.point.api.point.domain.history;
 
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Setter
 @Getter
@@ -25,10 +26,12 @@ public class MemberPointHistoryListRequest {
 
   long memberNumber;
   boolean includeHidden;
+  @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+  LocalDateTime regDateTimeFrom;
+  @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+  LocalDateTime regDateTimeTo;
 
   int page;
   @Builder.Default
   int size = 10;
-  @Builder.Default
-  Sort sort = Sort.by(Sort.Direction.DESC, "regTime");
 }
