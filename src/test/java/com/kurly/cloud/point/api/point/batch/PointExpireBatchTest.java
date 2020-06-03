@@ -9,6 +9,9 @@
 
 package com.kurly.cloud.point.api.point.batch;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+
 import com.kurly.cloud.point.api.point.batch.expire.config.PointExpireJobConfig;
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
@@ -33,8 +36,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -63,51 +64,6 @@ public class PointExpireBatchTest implements CommonTestGiven {
   @Nested
   @DisplayName("적립금 만료 배치를 실행 할 때")
   class DescribeExpire {
-    @Nested
-    @DisplayName("n개의 만료된 적립금이 있다면")
-    class Context0 {
-
-      void givenExpiredPoints() {
-        long memberNumber = givenMemberNumber();
-
-        for (int i = 0; i < givenSize(); i++) {
-          publishPointPort.publish(PublishPointRequest.builder()
-              .point(1000)
-              .memberNumber(memberNumber)
-              .historyType(HistoryType.TYPE_12.getValue())
-              .actionMemberNumber(memberNumber)
-              .expireDate(LocalDateTime.of(2020, 1, 1, 0, 0))
-              .detail("지급")
-              .build());
-          memberNumber = memberNumber - 1;
-        }
-      }
-
-      String givenExpireDateTime() {
-        LocalDateTime dateTime = LocalDateTime.of(2020, 1, 2, 0, 0, 0);
-        return dateTime.format(PointExpireJobConfig.DATE_TIME_FORMATTER);
-      }
-
-      void subject() throws Exception {
-        JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
-        jobParametersBuilder.addString("expireTime", givenExpireDateTime());
-        jobLauncher.run(pointExpireJob, jobParametersBuilder.toJobParameters());
-      }
-
-      @DisplayName("모두 만료 처리 된다")
-      @Test
-      void test() throws Exception {
-        givenExpiredPoints();
-        subject();
-
-        for (int i = 0; i < givenSize(); i++) {
-          Optional<MemberPoint> memberPoint = memberPointRepository.findById(givenMemberNumber() - i);
-          assertThat(memberPoint).isNotEmpty();
-          assertThat(memberPoint.get().getTotalPoint()).isEqualTo(0);
-        }
-      }
-    }
-
     @AfterEach
     void clear() {
       long startMemberNumber = givenMemberNumber() - givenSize();
@@ -132,6 +88,52 @@ public class PointExpireBatchTest implements CommonTestGiven {
           .executeUpdate();
 
       tx.commit();
+    }
+
+    @Nested
+    @DisplayName("n개의 만료된 적립금이 있다면")
+    class Context0 {
+
+      @DisplayName("모두 만료 처리 된다")
+      @Test
+      void test() throws Exception {
+        givenExpiredPoints();
+        subject();
+
+        for (int i = 0; i < givenSize(); i++) {
+          Optional<MemberPoint> memberPoint =
+              memberPointRepository.findById(givenMemberNumber() - i);
+          assertThat(memberPoint).isNotEmpty();
+          assertThat(memberPoint.get().getTotalPoint()).isEqualTo(0);
+        }
+      }
+
+      void givenExpiredPoints() {
+        long memberNumber = givenMemberNumber();
+
+        for (int i = 0; i < givenSize(); i++) {
+          publishPointPort.publish(PublishPointRequest.builder()
+              .point(1000)
+              .memberNumber(memberNumber)
+              .historyType(HistoryType.TYPE_12.getValue())
+              .actionMemberNumber(memberNumber)
+              .expireDate(LocalDateTime.of(2020, 1, 1, 0, 0))
+              .detail("지급")
+              .build());
+          memberNumber = memberNumber - 1;
+        }
+      }
+
+      void subject() throws Exception {
+        JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
+        jobParametersBuilder.addString("expireTime", givenExpireDateTime());
+        jobLauncher.run(pointExpireJob, jobParametersBuilder.toJobParameters());
+      }
+
+      String givenExpireDateTime() {
+        LocalDateTime dateTime = LocalDateTime.of(2020, 1, 2, 0, 0, 0);
+        return dateTime.format(PointExpireJobConfig.DATE_TIME_FORMATTER);
+      }
     }
   }
 }

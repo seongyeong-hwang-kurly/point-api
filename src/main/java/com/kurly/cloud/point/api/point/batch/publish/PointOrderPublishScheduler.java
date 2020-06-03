@@ -9,6 +9,9 @@
 
 package com.kurly.cloud.point.api.point.batch.publish;
 
+import static com.kurly.cloud.point.api.point.batch.expire.config.PointExpireJobConfig.DATE_TIME_FORMATTER;
+
+
 import com.kurly.cloud.api.common.util.SlackNotifier;
 import com.kurly.cloud.api.common.util.logging.FileBeatLogger;
 import java.time.LocalDateTime;
@@ -24,8 +27,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
-import static com.kurly.cloud.point.api.point.batch.expire.config.PointExpireJobConfig.DATE_TIME_FORMATTER;
 
 @Profile("enable-batch")
 @Component
@@ -47,7 +48,8 @@ public class PointOrderPublishScheduler {
       }});
       JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
       jobParametersBuilder.addString("publishDate", publishDate);
-      JobExecution run = jobLauncher.run(pointOrderPublishJob, jobParametersBuilder.toJobParameters());
+      JobExecution run =
+          jobLauncher.run(pointOrderPublishJob, jobParametersBuilder.toJobParameters());
       if (run.getExitStatus().getExitCode().equals(ExitStatus.FAILED.getExitCode())) {
         String exitDescription = run.getExitStatus().getExitDescription();
         SlackNotifier.notify(exitDescription);

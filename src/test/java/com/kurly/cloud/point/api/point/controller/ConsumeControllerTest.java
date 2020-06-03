@@ -5,6 +5,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.ControllerTest;
@@ -38,10 +39,9 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 @ExtendWith(SpringExtension.class)
 public class ConsumeControllerTest implements CommonTestGiven {
 
-  private MockMvc mockMvc;
-
   @Autowired
   ObjectMapper objectMapper;
+  private MockMvc mockMvc;
 
   @BeforeEach
   void setUp(WebApplicationContext webApplicationContext) {
@@ -151,20 +151,6 @@ public class ConsumeControllerTest implements CommonTestGiven {
     @MockBean
     ConsumePointPort consumePointPort;
 
-    List<BulkConsumePointRequest> givenRequest() {
-      ArrayList<BulkConsumePointRequest> requests = new ArrayList<>();
-      for (int i = 0; i < 3; i++) {
-        BulkConsumePointRequest request = new BulkConsumePointRequest();
-        request.setJobSeq(i + 1);
-        request.setMemberNumber(givenMemberNumber());
-        request.setPoint(100);
-        request.setHistoryType(HistoryType.TYPE_100.getValue());
-        request.setDetail("사유");
-        requests.add(request);
-      }
-      return requests;
-    }
-
     @WithUserDetails("admin")
     @Test
     @DisplayName("사용에 실패하면 실패한 요청 아이디를 리턴한다")
@@ -183,6 +169,20 @@ public class ConsumeControllerTest implements CommonTestGiven {
               "{\"success\":true,\"message\":null,\"data\":{\"succeed\":[],\"failed\":[1,2,3]}}"
           ))
           .andExpect(status().is(200));
+    }
+
+    List<BulkConsumePointRequest> givenRequest() {
+      ArrayList<BulkConsumePointRequest> requests = new ArrayList<>();
+      for (int i = 0; i < 3; i++) {
+        BulkConsumePointRequest request = new BulkConsumePointRequest();
+        request.setJobSeq(i + 1);
+        request.setMemberNumber(givenMemberNumber());
+        request.setPoint(100);
+        request.setHistoryType(HistoryType.TYPE_100.getValue());
+        request.setDetail("사유");
+        requests.add(request);
+      }
+      return requests;
     }
 
     @WithUserDetails("admin")
@@ -216,14 +216,6 @@ public class ConsumeControllerTest implements CommonTestGiven {
       @MockBean
       ConsumePointPort consumePointPort;
 
-      OrderConsumePointRequest givenRequest() {
-        return OrderConsumePointRequest.builder()
-            .memberNumber(givenMemberNumber())
-            .orderNumber(givenOrderNumber())
-            .point(100)
-            .build();
-      }
-
       @WithUserDetails
       @Test
       @DisplayName("적립금을 사용하고 응답코드는 204를 반환한다")
@@ -235,20 +227,20 @@ public class ConsumeControllerTest implements CommonTestGiven {
             .andDo(MockMvcResultHandlers.print())
             .andExpect(status().isNoContent());
       }
+
+      OrderConsumePointRequest givenRequest() {
+        return OrderConsumePointRequest.builder()
+            .memberNumber(givenMemberNumber())
+            .orderNumber(givenOrderNumber())
+            .point(100)
+            .build();
+      }
     }
 
     @Nested
     @DisplayName("다른사용자의 적립금 사용을 호출하면")
     @ControllerTest
     class Context1 {
-      OrderConsumePointRequest givenRequest() {
-        return OrderConsumePointRequest.builder()
-            .memberNumber(givenMemberNumber() - 1)
-            .orderNumber(givenOrderNumber())
-            .point(100)
-            .build();
-      }
-
       @WithUserDetails
       @Test
       @DisplayName("응답코드 401을 반환한다")
@@ -259,6 +251,14 @@ public class ConsumeControllerTest implements CommonTestGiven {
                 .content(objectMapper.writeValueAsString(givenRequest())))
             .andDo(MockMvcResultHandlers.print())
             .andExpect(status().isUnauthorized());
+      }
+
+      OrderConsumePointRequest givenRequest() {
+        return OrderConsumePointRequest.builder()
+            .memberNumber(givenMemberNumber() - 1)
+            .orderNumber(givenOrderNumber())
+            .point(100)
+            .build();
       }
     }
   }
@@ -274,14 +274,6 @@ public class ConsumeControllerTest implements CommonTestGiven {
       @MockBean
       ConsumePointPort consumePointPort;
 
-      CancelOrderConsumePointRequest givenRequest() {
-        return CancelOrderConsumePointRequest.builder()
-            .orderNumber(givenOrderNumber())
-            .memberNumber(givenMemberNumber())
-            .point(100)
-            .build();
-      }
-
       @WithUserDetails("admin")
       @Test
       @DisplayName("적립금을 사용취소 하고 응답코드는 204를 반환한다")
@@ -292,6 +284,14 @@ public class ConsumeControllerTest implements CommonTestGiven {
                 .content(objectMapper.writeValueAsString(givenRequest())))
             .andDo(MockMvcResultHandlers.print())
             .andExpect(status().isNoContent());
+      }
+
+      CancelOrderConsumePointRequest givenRequest() {
+        return CancelOrderConsumePointRequest.builder()
+            .orderNumber(givenOrderNumber())
+            .memberNumber(givenMemberNumber())
+            .point(100)
+            .build();
       }
     }
   }

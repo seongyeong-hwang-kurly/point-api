@@ -9,6 +9,9 @@
 
 package com.kurly.cloud.point.api.point.batch.expire;
 
+import static com.kurly.cloud.point.api.point.batch.expire.config.PointExpireJobConfig.DATE_TIME_FORMATTER;
+
+
 import com.kurly.cloud.api.common.util.SlackNotifier;
 import com.kurly.cloud.api.common.util.logging.FileBeatLogger;
 import java.time.LocalDateTime;
@@ -24,8 +27,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
-import static com.kurly.cloud.point.api.point.batch.expire.config.PointExpireJobConfig.DATE_TIME_FORMATTER;
 
 @Profile("enable-batch")
 @Component

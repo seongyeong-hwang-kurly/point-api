@@ -51,16 +51,6 @@ class MemberPointHistoryServiceTest implements CommonTestGiven {
     @Nested
     @DisplayName("MemberNumber가 없으면")
     class Context0 {
-      MemberPointHistoryInsertRequest givenExceptMemberNumber() {
-        return MemberPointHistoryInsertRequest.builder()
-            .type(HistoryType.TYPE_1.getValue())
-            .build();
-      }
-
-      MemberPointHistory subject(MemberPointHistoryInsertRequest memberPointHistoryInsertRequest) {
-        return memberPointHistoryService.insertHistory(memberPointHistoryInsertRequest);
-      }
-
       @DisplayName("ConstraintViolationException 예외가 발생 한다")
       @Test
       void test() {
@@ -72,21 +62,21 @@ class MemberPointHistoryServiceTest implements CommonTestGiven {
 
         }
       }
-    }
 
-    @Nested
-    @DisplayName("HistoryType이 없으면")
-    class Context1 {
-      MemberPointHistoryInsertRequest givenExceptHistoryType() {
+      MemberPointHistoryInsertRequest givenExceptMemberNumber() {
         return MemberPointHistoryInsertRequest.builder()
-            .memberNumber(givenMemberNumber())
+            .type(HistoryType.TYPE_1.getValue())
             .build();
       }
 
       MemberPointHistory subject(MemberPointHistoryInsertRequest memberPointHistoryInsertRequest) {
         return memberPointHistoryService.insertHistory(memberPointHistoryInsertRequest);
       }
+    }
 
+    @Nested
+    @DisplayName("HistoryType이 없으면")
+    class Context1 {
       @DisplayName("ConstraintViolationException 예외가 발생 한다")
       @Test
       void test() {
@@ -98,31 +88,22 @@ class MemberPointHistoryServiceTest implements CommonTestGiven {
 
         }
       }
-    }
 
-    @TransactionalTest
-    @Nested
-    @DisplayName("올바른 값이 입력 된다면")
-    class Context2 {
-      MemberPointHistoryInsertRequest givenRequest() {
+      MemberPointHistoryInsertRequest givenExceptHistoryType() {
         return MemberPointHistoryInsertRequest.builder()
-            .freePoint(100)
-            .cashPoint(10)
-            .detail("설명")
-            .memo("메모")
             .memberNumber(givenMemberNumber())
-            .expireTime(PointExpireDateCalculator.calculateDefault(LocalDateTime.now()))
-            .hidden(false)
-            .orderNumber(1234)
-            .regTime(LocalDateTime.now())
-            .type(HistoryType.TYPE_1.getValue())
             .build();
       }
 
       MemberPointHistory subject(MemberPointHistoryInsertRequest memberPointHistoryInsertRequest) {
         return memberPointHistoryService.insertHistory(memberPointHistoryInsertRequest);
       }
+    }
 
+    @TransactionalTest
+    @Nested
+    @DisplayName("올바른 값이 입력 된다면")
+    class Context2 {
       @DisplayName("입력하고 값을 리턴 한다")
       @Test
       void test() {
@@ -142,6 +123,25 @@ class MemberPointHistoryServiceTest implements CommonTestGiven {
         assertThat(subject.getExpireTime()).isEqualTo(given.getExpireTime());
 
       }
+
+      MemberPointHistoryInsertRequest givenRequest() {
+        return MemberPointHistoryInsertRequest.builder()
+            .freePoint(100)
+            .cashPoint(10)
+            .detail("설명")
+            .memo("메모")
+            .memberNumber(givenMemberNumber())
+            .expireTime(PointExpireDateCalculator.calculateDefault(LocalDateTime.now()))
+            .hidden(false)
+            .orderNumber(1234)
+            .regTime(LocalDateTime.now())
+            .type(HistoryType.TYPE_1.getValue())
+            .build();
+      }
+
+      MemberPointHistory subject(MemberPointHistoryInsertRequest memberPointHistoryInsertRequest) {
+        return memberPointHistoryService.insertHistory(memberPointHistoryInsertRequest);
+      }
     }
 
   }
@@ -152,6 +152,12 @@ class MemberPointHistoryServiceTest implements CommonTestGiven {
 
     Page<MemberPointHistory> subject(MemberPointHistoryListRequest request) {
       return memberPointHistoryService.getHistoryList(request);
+    }
+
+    @BeforeEach
+    public void setUp() {
+      insertHistoryWithHidden(false, 10);
+      insertHistoryWithHidden(true, 10);
     }
 
     void insertHistoryWithHidden(boolean hidden, int count) {
@@ -173,28 +179,22 @@ class MemberPointHistoryServiceTest implements CommonTestGiven {
       }
     }
 
-    @BeforeEach
-    public void setUp() {
-      insertHistoryWithHidden(false, 10);
-      insertHistoryWithHidden(true, 10);
-    }
-
     @TransactionalTest
     @Nested
     @DisplayName("숨겨진 이력을 모두 조회한다면")
     class Context0 {
-      MemberPointHistoryListRequest givenRequest() {
-        return MemberPointHistoryListRequest.builder()
-            .memberNumber(givenMemberNumber())
-            .includeHidden(true)
-            .build();
-      }
-
       @Test
       @DisplayName("총 20개의 이력이 조회 된다")
       void test() {
         Page<MemberPointHistory> historyList = subject(givenRequest());
         assertThat(historyList.getTotalElements()).isEqualTo(20);
+      }
+
+      MemberPointHistoryListRequest givenRequest() {
+        return MemberPointHistoryListRequest.builder()
+            .memberNumber(givenMemberNumber())
+            .includeHidden(true)
+            .build();
       }
     }
 
@@ -202,18 +202,18 @@ class MemberPointHistoryServiceTest implements CommonTestGiven {
     @Nested
     @DisplayName("숨겨진 이력을 제외하고 조회한다면")
     class Context1 {
-      MemberPointHistoryListRequest givenRequest() {
-        return MemberPointHistoryListRequest.builder()
-            .memberNumber(givenMemberNumber())
-            .includeHidden(false)
-            .build();
-      }
-
       @Test
       @DisplayName("총 10개의 이력이 조회 된다")
       void test() {
         Page<MemberPointHistory> historyList = subject(givenRequest());
         assertThat(historyList.getTotalElements()).isEqualTo(10);
+      }
+
+      MemberPointHistoryListRequest givenRequest() {
+        return MemberPointHistoryListRequest.builder()
+            .memberNumber(givenMemberNumber())
+            .includeHidden(false)
+            .build();
       }
     }
 
@@ -221,19 +221,19 @@ class MemberPointHistoryServiceTest implements CommonTestGiven {
     @Nested
     @DisplayName("regDateTimeFrom 값이 있다면")
     class Context2 {
+      @Test
+      @DisplayName("입력값 이후의 등록일을 가진 이력만 조회 된다")
+      void test() {
+        Page<MemberPointHistory> historyList = subject(givenRequest());
+        assertThat(historyList.getTotalElements()).isEqualTo(9);
+      }
+
       MemberPointHistoryListRequest givenRequest() {
         return MemberPointHistoryListRequest.builder()
             .memberNumber(givenMemberNumber())
             .regDateTimeFrom(LocalDateTime.now().plusDays(1).minusMinutes(1))
             .includeHidden(false)
             .build();
-      }
-
-      @Test
-      @DisplayName("입력값 이후의 등록일을 가진 이력만 조회 된다")
-      void test() {
-        Page<MemberPointHistory> historyList = subject(givenRequest());
-        assertThat(historyList.getTotalElements()).isEqualTo(9);
       }
     }
 
@@ -241,19 +241,19 @@ class MemberPointHistoryServiceTest implements CommonTestGiven {
     @Nested
     @DisplayName("regDateTimeTo 값이 있다면")
     class Context3 {
+      @Test
+      @DisplayName("입력값 이전의 등록일을 가진 이력만 조회 된다")
+      void test() {
+        Page<MemberPointHistory> historyList = subject(givenRequest());
+        assertThat(historyList.getTotalElements()).isEqualTo(2);
+      }
+
       MemberPointHistoryListRequest givenRequest() {
         return MemberPointHistoryListRequest.builder()
             .memberNumber(givenMemberNumber())
             .regDateTimeTo(LocalDateTime.now().plusDays(2).minusMinutes(1))
             .includeHidden(false)
             .build();
-      }
-
-      @Test
-      @DisplayName("입력값 이전의 등록일을 가진 이력만 조회 된다")
-      void test() {
-        Page<MemberPointHistory> historyList = subject(givenRequest());
-        assertThat(historyList.getTotalElements()).isEqualTo(2);
       }
     }
 
@@ -261,6 +261,13 @@ class MemberPointHistoryServiceTest implements CommonTestGiven {
     @Nested
     @DisplayName("regDateTimeFrom, regDateTimeTo 값이 있다면")
     class Context4 {
+      @Test
+      @DisplayName("입력값 사이의 등록일을 가진 이력만 조회 된다")
+      void test() {
+        Page<MemberPointHistory> historyList = subject(givenRequest());
+        assertThat(historyList.getTotalElements()).isEqualTo(1);
+      }
+
       MemberPointHistoryListRequest givenRequest() {
         return MemberPointHistoryListRequest.builder()
             .memberNumber(givenMemberNumber())
@@ -268,13 +275,6 @@ class MemberPointHistoryServiceTest implements CommonTestGiven {
             .regDateTimeTo(LocalDateTime.now().plusDays(2).minusMinutes(1))
             .includeHidden(false)
             .build();
-      }
-
-      @Test
-      @DisplayName("입력값 사이의 등록일을 가진 이력만 조회 된다")
-      void test() {
-        Page<MemberPointHistory> historyList = subject(givenRequest());
-        assertThat(historyList.getTotalElements()).isEqualTo(1);
       }
     }
   }

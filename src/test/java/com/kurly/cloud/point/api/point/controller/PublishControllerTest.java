@@ -6,6 +6,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.ControllerTest;
@@ -39,10 +40,9 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 @ExtendWith(SpringExtension.class)
 public class PublishControllerTest implements CommonTestGiven {
 
-  private MockMvc mockMvc;
-
   @Autowired
   ObjectMapper objectMapper;
+  private MockMvc mockMvc;
 
   @BeforeEach
   void setUp(WebApplicationContext webApplicationContext) {
@@ -131,19 +131,6 @@ public class PublishControllerTest implements CommonTestGiven {
     @MockBean
     PublishPointPort publishPointPort;
 
-    List<BulkPublishPointRequest> givenRequest() {
-      ArrayList<BulkPublishPointRequest> requests = new ArrayList<>();
-      for (int i = 0; i < 3; i++) {
-        BulkPublishPointRequest request = new BulkPublishPointRequest();
-        request.setJobSeq(i + 1);
-        request.setMemberNumber(givenMemberNumber());
-        request.setPoint(100);
-        request.setHistoryType(HistoryType.TYPE_1.getValue());
-        requests.add(request);
-      }
-      return requests;
-    }
-
     @WithUserDetails("admin")
     @Test
     @DisplayName("발급에 실패하면 실패한 요청 아이디를 리턴한다")
@@ -162,6 +149,19 @@ public class PublishControllerTest implements CommonTestGiven {
               "{\"success\":true,\"message\":null,\"data\":{\"succeed\":[],\"failed\":[1,2,3]}}"
           ))
           .andExpect(status().is(200));
+    }
+
+    List<BulkPublishPointRequest> givenRequest() {
+      ArrayList<BulkPublishPointRequest> requests = new ArrayList<>();
+      for (int i = 0; i < 3; i++) {
+        BulkPublishPointRequest request = new BulkPublishPointRequest();
+        request.setJobSeq(i + 1);
+        request.setMemberNumber(givenMemberNumber());
+        request.setPoint(100);
+        request.setHistoryType(HistoryType.TYPE_1.getValue());
+        requests.add(request);
+      }
+      return requests;
     }
 
     @WithUserDetails("admin")

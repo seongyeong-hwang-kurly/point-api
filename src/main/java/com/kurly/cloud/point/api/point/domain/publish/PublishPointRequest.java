@@ -66,15 +66,11 @@ public class PublishPointRequest {
         .build();
   }
 
-  public boolean isUnlimitedDate() {
-    return isSettle() || unlimitedDate;
-  }
-
-  public String getDetail() {
-    if (Objects.isNull(detail)) {
-      detail = MessageFormat.format("{0} 적립금 적립", isPayment() ? "유료" : "무료");
+  public @Nullable Integer getPoint() {
+    if (Objects.nonNull(point)) {
+      return point < 0 ? 0 : point;
     }
-    return detail;
+    return point;
   }
 
   public @Nullable LocalDateTime getExpireDate() {
@@ -87,10 +83,14 @@ public class PublishPointRequest {
         PointExpireDateCalculator.withEndOfDate(expireDate);
   }
 
-  public @Nullable Integer getPoint() {
-    if (Objects.nonNull(point)) {
-      return point < 0 ? 0 : point;
+  public boolean isUnlimitedDate() {
+    return isSettle() || unlimitedDate;
+  }
+
+  public String getDetail() {
+    if (Objects.isNull(detail)) {
+      detail = MessageFormat.format("{0} 적립금 적립", isPayment() ? "유료" : "무료");
     }
-    return point;
+    return detail;
   }
 }

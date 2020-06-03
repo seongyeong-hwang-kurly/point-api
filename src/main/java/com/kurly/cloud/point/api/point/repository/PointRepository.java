@@ -63,7 +63,8 @@ public interface PointRepository extends JpaRepository<Point, Long> {
       " WHERE p.memberNumber = :memberNumber AND p.remain > 0 " +
       " AND p.payment = false AND p.settle = false " +
       " ORDER BY p.expireTime ASC ")
-  Page<LocalDateTime> getMemberNextExpireTime(@Param("memberNumber") long memberNumber, Pageable pageable);
+  Page<LocalDateTime> getMemberNextExpireTime(@Param("memberNumber") long memberNumber,
+                                              Pageable pageable);
 
   Optional<Point> findByOrderNumberAndHistoryType(long orderNumber, int historyType);
 }

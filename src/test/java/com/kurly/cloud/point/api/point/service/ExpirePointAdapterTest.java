@@ -2,6 +2,7 @@ package com.kurly.cloud.point.api.point.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.TransactionalTest;
 import com.kurly.cloud.point.api.point.domain.PointExpireResult;
@@ -37,10 +38,6 @@ public class ExpirePointAdapterTest implements CommonTestGiven {
       return LocalDateTime.of(2020, 1, 1, 0, 0, 0);
     }
 
-    LocalDateTime givenExpiredTargetDateTime() {
-      return LocalDateTime.of(2020, 1, 2, 0, 0, 0);
-    }
-
     LocalDateTime givenNonExpiredDateTime() {
       return LocalDateTime.of(2020, 1, 3, 0, 0, 0);
     }
@@ -49,8 +46,8 @@ public class ExpirePointAdapterTest implements CommonTestGiven {
       return expirePointPort.expireMemberPoint(givenMemberNumber(), givenExpiredTargetDateTime());
     }
 
-    int givenPointAmount() {
-      return 1000;
+    LocalDateTime givenExpiredTargetDateTime() {
+      return LocalDateTime.of(2020, 1, 2, 0, 0, 0);
     }
 
     void givenPoint(LocalDateTime expireDate) {
@@ -62,6 +59,10 @@ public class ExpirePointAdapterTest implements CommonTestGiven {
           .expireDate(expireDate)
           .detail("지급")
           .build());
+    }
+
+    int givenPointAmount() {
+      return 1000;
     }
 
     @TransactionalTest

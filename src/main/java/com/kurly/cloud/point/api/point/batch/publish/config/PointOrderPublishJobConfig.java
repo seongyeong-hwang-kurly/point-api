@@ -23,9 +23,8 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 public class PointOrderPublishJobConfig {
 
-  public static int CHUNK_SIZE = 1000;
   public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ISO_DATE_TIME;
-
+  public static int CHUNK_SIZE = 1000;
   private final StepBuilderFactory stepBuilderFactory;
   private final PointOrderPublishItemWriter pointOrderPublishItemWriter;
   private final OrderRepository orderRepository;

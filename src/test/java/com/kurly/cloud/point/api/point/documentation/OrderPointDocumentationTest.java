@@ -9,6 +9,18 @@
 
 package com.kurly.cloud.point.api.point.documentation;
 
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.payload.PayloadDocumentation.beneathPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.snippet.Attributes.key;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.config.SpringSecurityTestConfig;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
@@ -34,17 +46,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.restdocs.payload.PayloadDocumentation.beneathPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.restdocs.snippet.Attributes.key;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @Import(SpringSecurityTestConfig.class)
 @ExtendWith({SpringExtension.class, RestDocumentationExtension.class})
 @SpringBootTest
@@ -65,14 +66,6 @@ public class OrderPointDocumentationTest implements CommonTestGiven {
         .apply(documentationConfiguration(restDocumentation))
         .alwaysDo(print())
         .build();
-  }
-
-  void givenOrderPoint() throws AlreadyPublishedException {
-    publishPointPort.publishByOrder(PublishPointRequest.builder()
-        .memberNumber(givenMemberNumber())
-        .orderNumber(givenOrderNumber())
-        .point(1000)
-        .build());
   }
 
   @WithUserDetails
@@ -102,16 +95,27 @@ public class OrderPointDocumentationTest implements CommonTestGiven {
                     , fieldWithPath("charge").type(JsonFieldType.NUMBER).description("지급 적립금")
                     , fieldWithPath("remain").type(JsonFieldType.NUMBER).description("남은 적립금")
                     , fieldWithPath("pointRatio").type(JsonFieldType.NUMBER).description("적립률")
-                    , fieldWithPath("historyType").type(JsonFieldType.NUMBER).description("적립 사유 번호")
+                    ,
+                    fieldWithPath("historyType").type(JsonFieldType.NUMBER).description("적립 사유 번호")
                     , fieldWithPath("refundType").ignored()
                     , fieldWithPath("payment").type(JsonFieldType.BOOLEAN).description("결제 여부")
                     , fieldWithPath("settle").type(JsonFieldType.BOOLEAN).description("유상 여부")
                     , fieldWithPath("regTime").type(JsonFieldType.STRING)
-                        .attributes(key("format").value("yyyy-MM-dd'T'HH:mm:ss")).description("등록 시각")
+                        .attributes(key("format").value("yyyy-MM-dd'T'HH:mm:ss"))
+                        .description("등록 시각")
                     , fieldWithPath("expireTime").type(JsonFieldType.STRING)
-                        .attributes(key("format").value("yyyy-MM-dd'T'HH:mm:ss")).description("만료 시각")
+                        .attributes(key("format").value("yyyy-MM-dd'T'HH:mm:ss"))
+                        .description("만료 시각")
                 )
             )
         );
+  }
+
+  void givenOrderPoint() throws AlreadyPublishedException {
+    publishPointPort.publishByOrder(PublishPointRequest.builder()
+        .memberNumber(givenMemberNumber())
+        .orderNumber(givenOrderNumber())
+        .point(1000)
+        .build());
   }
 }

@@ -66,7 +66,9 @@ public class MemberPoint {
 
   @Transient
   public int getRepayAmount(int publishedAmount) {
-    if (getTotalPoint() >= publishedAmount) return 0;
+    if (getTotalPoint() >= publishedAmount) {
+      return 0;
+    }
 
     int repayAmount;
     if (getTotalPoint() < 0) { // 아직도 빚이 남아있는 상태

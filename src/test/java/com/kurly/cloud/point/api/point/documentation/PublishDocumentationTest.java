@@ -12,6 +12,7 @@ import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.config.SpringSecurityTestConfig;
@@ -66,36 +67,6 @@ public class PublishDocumentationTest implements CommonTestGiven {
         .webAppContextSetup(webApplicationContext)
         .apply(documentationConfiguration(restDocumentation))
         .alwaysDo(print())
-        .build();
-  }
-
-  PublishPointRequest givenPublishRequest() {
-    return PublishPointRequest.builder()
-        .memberNumber(givenMemberNumber())
-        .point(1000)
-        .historyType(HistoryType.TYPE_1.getValue())
-        .payment(false)
-        .settle(false)
-        .unlimitedDate(false)
-        .expireDate(LocalDateTime.of(2020, 12, 31, 0, 0, 0))
-        .memo("발급사유(내부)")
-        .detail("발급사유(고객용)")
-        .hidden(false)
-        .build();
-  }
-
-  Point givenPoint(PublishPointRequest publishRequest, long seq) {
-    return Point.builder()
-        .seq(seq)
-        .memberNumber(publishRequest.getMemberNumber())
-        .orderNumber(publishRequest.getOrderNumber())
-        .charge(publishRequest.getPoint())
-        .pointRatio(publishRequest.getPointRatio())
-        .historyType(publishRequest.getHistoryType())
-        .payment(publishRequest.isPayment())
-        .settle(publishRequest.isSettle())
-        .regTime(LocalDateTime.now())
-        .expireTime(publishRequest.getExpireDate())
         .build();
   }
 
@@ -165,17 +136,34 @@ public class PublishDocumentationTest implements CommonTestGiven {
         );
   }
 
-  List<BulkPublishPointRequest> givenBulkRequest() {
-    ArrayList<BulkPublishPointRequest> requests = new ArrayList<>();
-    for (int i = 0; i < 3; i++) {
-      BulkPublishPointRequest request = new BulkPublishPointRequest();
-      request.setJobSeq(i + 1);
-      request.setMemberNumber(givenMemberNumber());
-      request.setPoint(100);
-      request.setHistoryType(HistoryType.TYPE_1.getValue());
-      requests.add(request);
-    }
-    return requests;
+  PublishPointRequest givenPublishRequest() {
+    return PublishPointRequest.builder()
+        .memberNumber(givenMemberNumber())
+        .point(1000)
+        .historyType(HistoryType.TYPE_1.getValue())
+        .payment(false)
+        .settle(false)
+        .unlimitedDate(false)
+        .expireDate(LocalDateTime.of(2020, 12, 31, 0, 0, 0))
+        .memo("발급사유(내부)")
+        .detail("발급사유(고객용)")
+        .hidden(false)
+        .build();
+  }
+
+  Point givenPoint(PublishPointRequest publishRequest, long seq) {
+    return Point.builder()
+        .seq(seq)
+        .memberNumber(publishRequest.getMemberNumber())
+        .orderNumber(publishRequest.getOrderNumber())
+        .charge(publishRequest.getPoint())
+        .pointRatio(publishRequest.getPointRatio())
+        .historyType(publishRequest.getHistoryType())
+        .payment(publishRequest.isPayment())
+        .settle(publishRequest.isSettle())
+        .regTime(LocalDateTime.now())
+        .expireTime(publishRequest.getExpireDate())
+        .build();
   }
 
   @WithUserDetails("admin")
@@ -230,12 +218,17 @@ public class PublishDocumentationTest implements CommonTestGiven {
         );
   }
 
-  CancelPublishOrderPointRequest givenCancelOrderRequest() {
-    return CancelPublishOrderPointRequest.builder()
-        .memberNumber(givenMemberNumber())
-        .orderNumber(givenOrderNumber())
-        .point(1000)
-        .build();
+  List<BulkPublishPointRequest> givenBulkRequest() {
+    ArrayList<BulkPublishPointRequest> requests = new ArrayList<>();
+    for (int i = 0; i < 3; i++) {
+      BulkPublishPointRequest request = new BulkPublishPointRequest();
+      request.setJobSeq(i + 1);
+      request.setMemberNumber(givenMemberNumber());
+      request.setPoint(100);
+      request.setHistoryType(HistoryType.TYPE_1.getValue());
+      requests.add(request);
+    }
+    return requests;
   }
 
   @WithUserDetails("admin")
@@ -264,5 +257,13 @@ public class PublishDocumentationTest implements CommonTestGiven {
                 )
             )
         );
+  }
+
+  CancelPublishOrderPointRequest givenCancelOrderRequest() {
+    return CancelPublishOrderPointRequest.builder()
+        .memberNumber(givenMemberNumber())
+        .orderNumber(givenOrderNumber())
+        .point(1000)
+        .build();
   }
 }

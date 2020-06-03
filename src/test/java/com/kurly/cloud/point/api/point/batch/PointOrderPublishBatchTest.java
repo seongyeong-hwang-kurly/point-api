@@ -9,6 +9,9 @@
 
 package com.kurly.cloud.point.api.point.batch;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+
 import com.kurly.cloud.point.api.order.entity.Order;
 import com.kurly.cloud.point.api.order.entity.OrderDynamicColumn;
 import com.kurly.cloud.point.api.point.batch.publish.config.PointOrderPublishJobConfig;
@@ -34,8 +37,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @DisplayName("PointOrderPublishBatch class")
@@ -56,23 +57,58 @@ public class PointOrderPublishBatchTest implements CommonTestGiven {
   @Autowired
   MemberPointRepository memberPointRepository;
 
+  @AfterEach
+  void clear() {
+    EntityManager entityManager = entityManagerFactory.createEntityManager();
+    EntityTransaction tx = entityManager.getTransaction();
+    tx.begin();
+
+    entityManager
+        .createQuery("DELETE FROM Order o WHERE o.orderNumber = :orderNumber")
+        .setParameter("orderNumber", givenOrderNumber())
+        .executeUpdate();
+
+    entityManager
+        .createQuery("DELETE FROM OrderDynamicColumn odc WHERE odc.orderNumber = :orderNumber")
+        .setParameter("orderNumber", givenOrderNumber())
+        .executeUpdate();
+
+    entityManager
+        .createQuery("DELETE FROM MemberPoint mp WHERE mp.memberNumber = :memberNumber")
+        .setParameter("memberNumber", givenMemberNumber())
+        .executeUpdate();
+
+    entityManager
+        .createQuery("DELETE FROM Point p WHERE p.memberNumber = :memberNumber")
+        .setParameter("memberNumber", givenMemberNumber())
+        .executeUpdate();
+
+    entityManager
+        .createQuery("DELETE FROM PointHistory ph WHERE ph.orderNumber = :orderNumber")
+        .setParameter("orderNumber", givenOrderNumber())
+        .executeUpdate();
+
+    entityManager
+        .createQuery("DELETE FROM MemberPointHistory ph WHERE ph.memberNumber = :memberNumber")
+        .setParameter("memberNumber", givenMemberNumber())
+        .executeUpdate();
+
+    tx.commit();
+  }
+
   @Nested
   @DisplayName("적립금 지급 배치를 실행 할 때")
   class DescribeOrderPublish {
+    int givenPoint() {
+      return PointCalculator.calculateOrderPoint(givenPayPrice(), givenPointRatio());
+    }
+
     int givenPayPrice() {
       return 3333;
     }
 
     float givenPointRatio() {
       return 5;
-    }
-
-    int givenPoint() {
-      return PointCalculator.calculateOrderPoint(givenPayPrice(), givenPointRatio());
-    }
-
-    LocalDateTime givenPayDate() {
-      return LocalDateTime.of(2000, 1, 2, 12, 0);
     }
 
     private void givenOrder() {
@@ -95,6 +131,10 @@ public class PointOrderPublishBatchTest implements CommonTestGiven {
           .build();
       entityManager.persist(orderDynamicColumn);
       tx.commit();
+    }
+
+    LocalDateTime givenPayDate() {
+      return LocalDateTime.of(2000, 1, 2, 12, 0);
     }
 
     void subject() throws Exception {
@@ -139,44 +179,5 @@ public class PointOrderPublishBatchTest implements CommonTestGiven {
         assertThat(memberPoint.getCashPoint()).isEqualTo(0);
       }
     }
-  }
-
-  @AfterEach
-  void clear() {
-    EntityManager entityManager = entityManagerFactory.createEntityManager();
-    EntityTransaction tx = entityManager.getTransaction();
-    tx.begin();
-
-    entityManager
-        .createQuery("DELETE FROM Order o WHERE o.orderNumber = :orderNumber")
-        .setParameter("orderNumber", givenOrderNumber())
-        .executeUpdate();
-
-    entityManager
-        .createQuery("DELETE FROM OrderDynamicColumn odc WHERE odc.orderNumber = :orderNumber")
-        .setParameter("orderNumber", givenOrderNumber())
-        .executeUpdate();
-
-    entityManager
-        .createQuery("DELETE FROM MemberPoint mp WHERE mp.memberNumber = :memberNumber")
-        .setParameter("memberNumber", givenMemberNumber())
-        .executeUpdate();
-
-    entityManager
-        .createQuery("DELETE FROM Point p WHERE p.memberNumber = :memberNumber")
-        .setParameter("memberNumber", givenMemberNumber())
-        .executeUpdate();
-
-    entityManager
-        .createQuery("DELETE FROM PointHistory ph WHERE ph.orderNumber = :orderNumber")
-        .setParameter("orderNumber", givenOrderNumber())
-        .executeUpdate();
-
-    entityManager
-        .createQuery("DELETE FROM MemberPointHistory ph WHERE ph.memberNumber = :memberNumber")
-        .setParameter("memberNumber", givenMemberNumber())
-        .executeUpdate();
-
-    tx.commit();
   }
 }

@@ -45,6 +45,12 @@ class MemberPointAdapterTest implements CommonTestGiven {
       return memberPointAdapter.getMemberHistoryList(request);
     }
 
+    @BeforeEach
+    public void setUp() {
+      insertHistoryWithHidden(false, 10);
+      insertHistoryWithHidden(true, 10);
+    }
+
     void insertHistoryWithHidden(boolean hidden, int count) {
       for (int i = 0; i < count; i++) {
         memberPointHistoryService.insertHistory(
@@ -64,24 +70,10 @@ class MemberPointAdapterTest implements CommonTestGiven {
       }
     }
 
-    @BeforeEach
-    public void setUp() {
-      insertHistoryWithHidden(false, 10);
-      insertHistoryWithHidden(true, 10);
-    }
-
     @TransactionalTest
     @Nested
     @DisplayName("숨겨진 이력을 포함하도록 요청하면")
     class Context0 {
-      MemberPointHistoryListRequest givenRequest(int page) {
-        return MemberPointHistoryListRequest.builder()
-            .memberNumber(givenMemberNumber())
-            .page(page)
-            .includeHidden(true)
-            .build();
-      }
-
       @Test
       @DisplayName("1페이지가 조회 된다")
       void test() {
@@ -89,6 +81,14 @@ class MemberPointAdapterTest implements CommonTestGiven {
         assertThat(historyList.getTotalElements()).isEqualTo(20);
         assertThat(historyList.getTotalPages()).isEqualTo(2);
         assertThat(historyList.getNumberOfElements()).isEqualTo(10);
+      }
+
+      MemberPointHistoryListRequest givenRequest(int page) {
+        return MemberPointHistoryListRequest.builder()
+            .memberNumber(givenMemberNumber())
+            .page(page)
+            .includeHidden(true)
+            .build();
       }
 
       @Test
@@ -109,18 +109,18 @@ class MemberPointAdapterTest implements CommonTestGiven {
     @Nested
     @DisplayName("숨겨진 이력을 제외하고 조회한다면")
     class Context1 {
-      MemberPointHistoryListRequest givenRequest() {
-        return MemberPointHistoryListRequest.builder()
-            .memberNumber(givenMemberNumber())
-            .includeHidden(false)
-            .build();
-      }
-
       @Test
       @DisplayName("총 10개의 이력이 조회 된다")
       void test() {
         Page<MemberPointHistoryDto> historyList = subject(givenRequest());
         assertThat(historyList.getTotalElements()).isEqualTo(10);
+      }
+
+      MemberPointHistoryListRequest givenRequest() {
+        return MemberPointHistoryListRequest.builder()
+            .memberNumber(givenMemberNumber())
+            .includeHidden(false)
+            .build();
       }
     }
 
@@ -128,18 +128,18 @@ class MemberPointAdapterTest implements CommonTestGiven {
     @Nested
     @DisplayName("memo 필드를 포함 한다면")
     class Context2 {
-      MemberPointHistoryListRequest givenRequest() {
-        return MemberPointHistoryListRequest.builder()
-            .memberNumber(givenMemberNumber())
-            .includeMemo(true)
-            .build();
-      }
-
       @Test
       @DisplayName("memo 필드값이 존재 해야 한다")
       void test() {
         Page<MemberPointHistoryDto> historyList = subject(givenRequest());
         assertThat(historyList.getContent().get(0).getMemo()).isNotEmpty();
+      }
+
+      MemberPointHistoryListRequest givenRequest() {
+        return MemberPointHistoryListRequest.builder()
+            .memberNumber(givenMemberNumber())
+            .includeMemo(true)
+            .build();
       }
     }
 
@@ -147,17 +147,17 @@ class MemberPointAdapterTest implements CommonTestGiven {
     @Nested
     @DisplayName("memo 필드를 포함 하지 않는다면")
     class Context3 {
-      MemberPointHistoryListRequest givenRequest() {
-        return MemberPointHistoryListRequest.builder()
-            .memberNumber(givenMemberNumber())
-            .build();
-      }
-
       @Test
       @DisplayName("memo 필드값이 존재 하지 않아야 한다")
       void test() {
         Page<MemberPointHistoryDto> historyList = subject(givenRequest());
         assertThat(historyList.getContent().get(0).getMemo()).isNullOrEmpty();
+      }
+
+      MemberPointHistoryListRequest givenRequest() {
+        return MemberPointHistoryListRequest.builder()
+            .memberNumber(givenMemberNumber())
+            .build();
       }
     }
   }
@@ -194,18 +194,6 @@ class MemberPointAdapterTest implements CommonTestGiven {
     @DisplayName("유상적립금이 있으면")
     class Context1 {
 
-      void givenPoint() {
-        publishPointPort.publish(PublishPointRequest.builder()
-            .point(givenPointAmount())
-            .memberNumber(givenMemberNumber())
-            .settle(true)
-            .historyType(HistoryType.TYPE_12.getValue())
-            .actionMemberNumber(givenMemberNumber())
-            .detail("")
-            .memo("")
-            .build());
-      }
-
       @Test
       @DisplayName("만료일은 시스템 기본 만료금액은 0으로 리턴한다")
       void test() {
@@ -217,6 +205,18 @@ class MemberPointAdapterTest implements CommonTestGiven {
         assertThat(memberPointSummary.getNextExpireAmount()).isEqualTo(0);
 
       }
+
+      void givenPoint() {
+        publishPointPort.publish(PublishPointRequest.builder()
+            .point(givenPointAmount())
+            .memberNumber(givenMemberNumber())
+            .settle(true)
+            .historyType(HistoryType.TYPE_12.getValue())
+            .actionMemberNumber(givenMemberNumber())
+            .detail("")
+            .memo("")
+            .build());
+      }
     }
 
     @Nested
@@ -227,19 +227,6 @@ class MemberPointAdapterTest implements CommonTestGiven {
       @Nested
       @DisplayName("다음 만료일이 시스템 만료일과 같으면")
       class Context2_Context0 {
-
-        void givenPoint() {
-          publishPointPort.publish(PublishPointRequest.builder()
-              .point(givenPointAmount())
-              .memberNumber(givenMemberNumber())
-              .historyType(HistoryType.TYPE_12.getValue())
-              .actionMemberNumber(givenMemberNumber())
-              .detail("")
-              .memo("")
-              .expireDate(PointExpireDateCalculator
-                  .calculateDefault(LocalDateTime.now().minusYears(1)))
-              .build());
-        }
 
         @Test
         @DisplayName("다음 시스템 만료일에 만료예정 적립금을 리턴한다")
@@ -253,17 +240,6 @@ class MemberPointAdapterTest implements CommonTestGiven {
                   .calculateDefault(LocalDateTime.now().minusYears(1)));
           assertThat(memberPointSummary.getNextExpireAmount()).isEqualTo(givenPointAmount());
         }
-      }
-
-      @TransactionalTest
-      @Nested
-      @DisplayName("다음 만료일이 시스템 만료일 이전이면")
-      class Context2_Context1 {
-
-        LocalDateTime givenExpireDate() {
-          return PointExpireDateCalculator
-              .calculateDefault(LocalDateTime.now().minusYears(1)).minusDays(1);
-        }
 
         void givenPoint() {
           publishPointPort.publish(PublishPointRequest.builder()
@@ -273,9 +249,16 @@ class MemberPointAdapterTest implements CommonTestGiven {
               .actionMemberNumber(givenMemberNumber())
               .detail("")
               .memo("")
-              .expireDate(givenExpireDate())
+              .expireDate(PointExpireDateCalculator
+                  .calculateDefault(LocalDateTime.now().minusYears(1)))
               .build());
         }
+      }
+
+      @TransactionalTest
+      @Nested
+      @DisplayName("다음 만료일이 시스템 만료일 이전이면")
+      class Context2_Context1 {
 
         @Test
         @DisplayName("해당 적립금의 만료일과 만료 예정금액을 리턴한다")
@@ -288,14 +271,38 @@ class MemberPointAdapterTest implements CommonTestGiven {
               .isEqualTo(givenExpireDate());
           assertThat(memberPointSummary.getNextExpireAmount()).isEqualTo(givenPointAmount());
         }
+
+        void givenPoint() {
+          publishPointPort.publish(PublishPointRequest.builder()
+              .point(givenPointAmount())
+              .memberNumber(givenMemberNumber())
+              .historyType(HistoryType.TYPE_12.getValue())
+              .actionMemberNumber(givenMemberNumber())
+              .detail("")
+              .memo("")
+              .expireDate(givenExpireDate())
+              .build());
+        }
+
+        LocalDateTime givenExpireDate() {
+          return PointExpireDateCalculator
+              .calculateDefault(LocalDateTime.now().minusYears(1)).minusDays(1);
+        }
       }
 
       @TransactionalTest
       @Nested
       @DisplayName("다음 만료일이 시스템 만료일과 이후이면")
       class Context2_Context2 {
-        LocalDateTime givenExpireDate() {
-          return PointExpireDateCalculator.calculateDefault(LocalDateTime.now()).plusDays(1);
+        @Test
+        @DisplayName("만료일은 시스템 기본 만료금액은 0으로 리턴한다")
+        void test() {
+          givenPoint();
+          MemberPointSummary memberPointSummary = subject();
+          assertThat(memberPointSummary.getAmount()).isEqualTo(givenPointAmount());
+          assertThat(memberPointSummary.getNextExpireDate())
+              .isEqualTo(PointExpireDateCalculator.calculateDefault(LocalDateTime.now()));
+          assertThat(memberPointSummary.getNextExpireAmount()).isEqualTo(0);
         }
 
         void givenPoint() {
@@ -310,15 +317,8 @@ class MemberPointAdapterTest implements CommonTestGiven {
               .build());
         }
 
-        @Test
-        @DisplayName("만료일은 시스템 기본 만료금액은 0으로 리턴한다")
-        void test() {
-          givenPoint();
-          MemberPointSummary memberPointSummary = subject();
-          assertThat(memberPointSummary.getAmount()).isEqualTo(givenPointAmount());
-          assertThat(memberPointSummary.getNextExpireDate())
-              .isEqualTo(PointExpireDateCalculator.calculateDefault(LocalDateTime.now()));
-          assertThat(memberPointSummary.getNextExpireAmount()).isEqualTo(0);
+        LocalDateTime givenExpireDate() {
+          return PointExpireDateCalculator.calculateDefault(LocalDateTime.now()).plusDays(1);
         }
       }
 
@@ -327,8 +327,21 @@ class MemberPointAdapterTest implements CommonTestGiven {
       @DisplayName("다음 만료일에 만료될 적립금이 여러건 있다면")
       class Context2_Context3 {
 
-        int givenCount() {
-          return 5;
+        @Test
+        @DisplayName("만료 될 적립금의 합산을 리턴한다")
+        void test() {
+          givenPoint();
+          givenNonExpirePoint();
+          MemberPointSummary memberPointSummary = subject();
+
+          assertThat(memberPointSummary.getAmount())
+              .isEqualTo(
+                  givenPointAmount() * givenCount() + givenPointAmount() + givenPointAmount());
+          assertThat(memberPointSummary.getNextExpireDate())
+              .isEqualTo(PointExpireDateCalculator
+                  .calculateDefault(LocalDateTime.now().minusYears(1)));
+          assertThat(memberPointSummary.getNextExpireAmount())
+              .isEqualTo(givenPointAmount() * givenCount());
         }
 
         void givenPoint() {
@@ -369,21 +382,8 @@ class MemberPointAdapterTest implements CommonTestGiven {
               .build());
         }
 
-        @Test
-        @DisplayName("만료 될 적립금의 합산을 리턴한다")
-        void test() {
-          givenPoint();
-          givenNonExpirePoint();
-          MemberPointSummary memberPointSummary = subject();
-
-          assertThat(memberPointSummary.getAmount())
-              .isEqualTo(
-                  givenPointAmount() * givenCount() + givenPointAmount() + givenPointAmount());
-          assertThat(memberPointSummary.getNextExpireDate())
-              .isEqualTo(PointExpireDateCalculator
-                  .calculateDefault(LocalDateTime.now().minusYears(1)));
-          assertThat(memberPointSummary.getNextExpireAmount())
-              .isEqualTo(givenPointAmount() * givenCount());
+        int givenCount() {
+          return 5;
         }
       }
     }

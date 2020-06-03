@@ -33,26 +33,6 @@ class PointService {
     return pointRepository.save(request.toEntity());
   }
 
-  PointConsumeResult consumeMemberPoint(long memberNumber, int amount) {
-    return this.consumeMemberPoint(memberNumber, amount, false);
-  }
-
-  PointConsumeResult consumeMemberPoint(long memberNumber, int amount, boolean onlySettle) {
-    List<Point> availablePoints = getAvailableMemberPoint(memberNumber, onlySettle);
-
-    PointConsumeResult pointConsumeResult = new PointConsumeResult(amount);
-
-    for (Point point : availablePoints) {
-      if (amount == 0) break;
-      int consume = Math.min(point.getRemain(), amount);
-      amount = amount - consume;
-      point.setRemain(point.getRemain() - consume);
-      pointConsumeResult.add(point.getSeq(), consume, point.isSettle());
-    }
-
-    return pointConsumeResult;
-  }
-
   PointConsumeResult consumeOrderPoint(long memberNumber, long orderNumber, int amount) {
     Optional<Point> orderPoint = pointRepository
         .findByMemberNumberAndOrderNumberAndRemainGreaterThan(memberNumber, orderNumber, 0);
@@ -72,16 +52,31 @@ class PointService {
     return pointConsumeResult;
   }
 
+  PointConsumeResult consumeMemberPoint(long memberNumber, int amount) {
+    return this.consumeMemberPoint(memberNumber, amount, false);
+  }
+
+  PointConsumeResult consumeMemberPoint(long memberNumber, int amount, boolean onlySettle) {
+    List<Point> availablePoints = getAvailableMemberPoint(memberNumber, onlySettle);
+
+    PointConsumeResult pointConsumeResult = new PointConsumeResult(amount);
+
+    for (Point point : availablePoints) {
+      if (amount == 0) {
+        break;
+      }
+      int consume = Math.min(point.getRemain(), amount);
+      amount = amount - consume;
+      point.setRemain(point.getRemain() - consume);
+      pointConsumeResult.add(point.getSeq(), consume, point.isSettle());
+    }
+
+    return pointConsumeResult;
+  }
+
   List<Point> getAvailableMemberPoint(long memberNumber, boolean onlySettle) {
     return onlySettle ?
         getAvailableSettleMemberPoint(memberNumber) : getAvailableMemberPoint(memberNumber);
-  }
-
-  List<Point> getAvailableMemberPoint(long memberNumber) {
-    List<Point> availablePoints =
-        pointRepository.findAllAvailableMemberPoint(memberNumber, LocalDateTime.now());
-    availablePoints.sort(ConsumeOrderComparator.getInstance());
-    return availablePoints;
   }
 
   List<Point> getAvailableSettleMemberPoint(long memberNumber) {
@@ -91,12 +86,21 @@ class PointService {
     return availablePoints;
   }
 
+  List<Point> getAvailableMemberPoint(long memberNumber) {
+    List<Point> availablePoints =
+        pointRepository.findAllAvailableMemberPoint(memberNumber, LocalDateTime.now());
+    availablePoints.sort(ConsumeOrderComparator.getInstance());
+    return availablePoints;
+  }
+
   PointConsumeResult repayMemberPoint(Long memberNumber, int amount) {
     List<Point> debtMemberPoint = pointRepository.findAllDebtMemberPoint(memberNumber);
     PointConsumeResult pointConsumeResult = new PointConsumeResult(amount);
 
     for (Point point : debtMemberPoint) {
-      if (amount == 0) break;
+      if (amount == 0) {
+        break;
+      }
       int repay = Math.min(Math.abs(point.getRemain()), amount);
       amount = amount - repay;
       point.setRemain(point.getRemain() + repay);

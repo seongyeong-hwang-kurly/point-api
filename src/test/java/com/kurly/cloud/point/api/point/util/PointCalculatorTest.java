@@ -2,6 +2,7 @@ package com.kurly.cloud.point.api.point.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -15,10 +16,6 @@ class PointCalculatorTest {
     @DisplayName("적립금액이 소수점 단위로 계산되면")
     class Context0 {
 
-      int subject(int payPrice, float pointRatio) {
-        return PointCalculator.calculateOrderPoint(payPrice, pointRatio);
-      }
-
       @DisplayName("반올림 한 결과를 리턴한다")
       @Test
       void test() {
@@ -27,6 +24,10 @@ class PointCalculatorTest {
         assertThat(subject(460, 5)).isEqualTo(23);
         assertThat(subject(345, 7)).isEqualTo(24);
         assertThat(subject(350, 7)).isEqualTo(25);
+      }
+
+      int subject(int payPrice, float pointRatio) {
+        return PointCalculator.calculateOrderPoint(payPrice, pointRatio);
       }
     }
   }
