@@ -26,6 +26,7 @@ public class MemberPointHistoryListRequest {
 
   long memberNumber;
   boolean includeHidden;
+  boolean includeMemo;
   @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
   LocalDateTime regDateTimeFrom;
   @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")

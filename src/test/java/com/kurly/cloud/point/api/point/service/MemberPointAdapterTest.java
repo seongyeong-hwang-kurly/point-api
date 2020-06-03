@@ -2,6 +2,7 @@ package com.kurly.cloud.point.api.point.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.TransactionalTest;
 import com.kurly.cloud.point.api.point.domain.MemberPointSummary;
@@ -120,6 +121,43 @@ class MemberPointAdapterTest implements CommonTestGiven {
       void test() {
         Page<MemberPointHistoryDto> historyList = subject(givenRequest());
         assertThat(historyList.getTotalElements()).isEqualTo(10);
+      }
+    }
+
+    @TransactionalTest
+    @Nested
+    @DisplayName("memo 필드를 포함 한다면")
+    class Context2 {
+      MemberPointHistoryListRequest givenRequest() {
+        return MemberPointHistoryListRequest.builder()
+            .memberNumber(givenMemberNumber())
+            .includeMemo(true)
+            .build();
+      }
+
+      @Test
+      @DisplayName("memo 필드값이 존재 해야 한다")
+      void test() {
+        Page<MemberPointHistoryDto> historyList = subject(givenRequest());
+        assertThat(historyList.getContent().get(0).getMemo()).isNotEmpty();
+      }
+    }
+
+    @TransactionalTest
+    @Nested
+    @DisplayName("memo 필드를 포함 하지 않는다면")
+    class Context3 {
+      MemberPointHistoryListRequest givenRequest() {
+        return MemberPointHistoryListRequest.builder()
+            .memberNumber(givenMemberNumber())
+            .build();
+      }
+
+      @Test
+      @DisplayName("memo 필드값이 존재 하지 않아야 한다")
+      void test() {
+        Page<MemberPointHistoryDto> historyList = subject(givenRequest());
+        assertThat(historyList.getContent().get(0).getMemo()).isNullOrEmpty();
       }
     }
   }

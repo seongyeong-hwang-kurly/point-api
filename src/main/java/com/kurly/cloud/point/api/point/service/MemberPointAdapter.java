@@ -28,7 +28,8 @@ class MemberPointAdapter implements MemberPointPort {
   @Override public Page<MemberPointHistoryDto> getMemberHistoryList(
       MemberPointHistoryListRequest request) {
     Page<MemberPointHistory> pointHistories = memberPointHistoryService.getHistoryList(request);
-    return pointHistories.map(MemberPointHistoryDto::fromEntity);
+    return pointHistories.map(memberPointHistory
+        -> MemberPointHistoryDto.fromEntity(memberPointHistory, request.isIncludeMemo()));
   }
 
   @Transactional(readOnly = true)
@@ -43,8 +44,8 @@ class MemberPointAdapter implements MemberPointPort {
     LocalDateTime nextSystemExpireDate =
         PointExpireDateCalculator.calculateDefault(LocalDateTime.now().minusYears(1));
 
-    if (memberPointNextExpireDate.isEmpty() ||
-        nextSystemExpireDate.isBefore(memberPointNextExpireDate.get())) {
+    if (memberPointNextExpireDate.isEmpty()
+        || nextSystemExpireDate.isBefore(memberPointNextExpireDate.get())) {
       return MemberPointSummary.byEmptyExpireAmount(memberPoint.getTotalPoint());
     }
 

@@ -47,6 +47,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.filter.CharacterEncodingFilter;
 
 @Import(SpringSecurityTestConfig.class)
 @ExtendWith({SpringExtension.class, RestDocumentationExtension.class})
@@ -66,6 +67,7 @@ public class MemberPointDocumentationTest implements CommonTestGiven {
     this.mockMvc = MockMvcBuilders
         .webAppContextSetup(webApplicationContext)
         .apply(documentationConfiguration(restDocumentation))
+        .addFilters(new CharacterEncodingFilter("UTF-8", true))
         .alwaysDo(print())
         .build();
   }
@@ -79,10 +81,11 @@ public class MemberPointDocumentationTest implements CommonTestGiven {
         .actionMemberNumber(givenMemberNumber())
         .expireDate(LocalDateTime.now())
         .detail("지급")
+        .memo("메모")
         .build());
   }
 
-  @WithUserDetails
+  @WithUserDetails("admin")
   @Test
   @DisplayName("RestDoc - 적립금 이력 조회")
   void history() throws Exception {
@@ -126,7 +129,9 @@ public class MemberPointDocumentationTest implements CommonTestGiven {
                     , fieldWithPath("content[].point").type(JsonFieldType.NUMBER)
                         .description("적립금")
                     , fieldWithPath("content[].detail").type(JsonFieldType.STRING)
-                        .description("이력 내용")
+                        .description("이력 내용(고객용)")
+                    , fieldWithPath("content[].memo").type(JsonFieldType.STRING)
+                        .description("이력 내용(내부용) - 관리자 권한 일때만 노출 됩니다")
                     , fieldWithPath("content[].regDateTime").type(JsonFieldType.STRING)
                         .attributes(key("format").value("yyyy-MM-dd'T'HH:mm:ss"))
                         .description("등록시각")

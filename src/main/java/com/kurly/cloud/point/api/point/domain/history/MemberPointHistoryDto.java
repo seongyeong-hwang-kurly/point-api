@@ -10,6 +10,7 @@
 package com.kurly.cloud.point.api.point.domain.history;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.kurly.cloud.point.api.point.entity.MemberPointHistory;
 import java.time.LocalDateTime;
 import lombok.Builder;
@@ -23,17 +24,24 @@ public class MemberPointHistoryDto {
   long orderNumber;
   int point;
   String detail;
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  String memo;
   @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
   LocalDateTime regDateTime;
   @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
   LocalDateTime expireDateTime;
 
-  public static MemberPointHistoryDto fromEntity(MemberPointHistory memberPointHistory) {
+  /**
+   * Entity 를 Dto로 변환한다.
+   */
+  public static MemberPointHistoryDto fromEntity(MemberPointHistory memberPointHistory,
+                                                 boolean includeMemo) {
     return MemberPointHistoryDto.builder()
         .seq(memberPointHistory.getSeq())
         .orderNumber(memberPointHistory.getOrderNumber())
         .point(memberPointHistory.getTotalPoint())
         .detail(memberPointHistory.getDetail())
+        .memo(includeMemo ? memberPointHistory.getMemo() : null)
         .regDateTime(memberPointHistory.getRegTime())
         .expireDateTime(memberPointHistory.getExpireTime())
         .build();

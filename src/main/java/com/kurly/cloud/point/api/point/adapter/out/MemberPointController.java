@@ -34,10 +34,16 @@ public class MemberPointController {
       @PathVariable long memberNumber,
       MemberPointHistoryListRequest request,
       @AuthenticationPrincipal KurlyUserPrincipal principal) {
+
+    request.setMemberNumber(memberNumber);
+    request.setIncludeHidden(false);
+    request.setIncludeMemo(false);
+
     if (principal.isAdmin()) {
       request.setIncludeHidden(true);
+      request.setIncludeMemo(true);
     }
-    request.setMemberNumber(memberNumber);
+
     return SimplePageImpl.transform(memberPointPort.getMemberHistoryList(request));
   }
 
