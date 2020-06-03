@@ -35,9 +35,9 @@ import org.hibernate.annotations.Type;
 @Entity
 @Table(name = "mk_point_info_history",
     indexes = {
-        @Index(columnList = "mk_point_info_m_no")
-        , @Index(columnList = "ordno")
-        , @Index(columnList = "reg_time")
+        @Index(columnList = "mk_point_info_m_no"),
+        @Index(columnList = "ordno"),
+        @Index(columnList = "reg_time")
     }
 )
 public class MemberPointHistory {

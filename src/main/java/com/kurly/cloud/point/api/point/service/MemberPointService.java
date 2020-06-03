@@ -24,6 +24,12 @@ class MemberPointService {
 
   private final MemberPointRepository memberPointRepository;
 
+  MemberPoint plusFreePoint(long memberNumber, int amount) {
+    MemberPoint memberPoint = getOrCreateMemberPoint(memberNumber);
+    memberPoint.plusPoint(amount, 0);
+    return memberPointRepository.save(memberPoint);
+  }
+
   MemberPoint getOrCreateMemberPoint(long memberNumber) {
     Optional<MemberPoint> memberPoint = memberPointRepository.findById(memberNumber);
     return memberPoint.orElseGet(() -> {
@@ -40,12 +46,6 @@ class MemberPointService {
         .totalPoint(cashPoint + freePoint)
         .updateTime(LocalDateTime.now())
         .build());
-  }
-
-  MemberPoint plusFreePoint(long memberNumber, int amount) {
-    MemberPoint memberPoint = getOrCreateMemberPoint(memberNumber);
-    memberPoint.plusPoint(amount, 0);
-    return memberPointRepository.save(memberPoint);
   }
 
   MemberPoint plusCashPoint(long memberNumber, int amount) {

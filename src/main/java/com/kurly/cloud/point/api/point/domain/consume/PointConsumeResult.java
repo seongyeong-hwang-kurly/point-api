@@ -24,16 +24,16 @@ public class PointConsumeResult {
     consumed.add(new ConsumedPoint(pointSeq, amount, settle));
   }
 
-  public void add(List<ConsumedPoint> anotherConsumed) {
-    consumed.addAll(anotherConsumed);
-  }
-
   public void add(PointConsumeResult result) {
     add(result.getConsumed());
   }
 
-  public int getTotalConsumed() {
-    return consumed.stream().mapToInt(ConsumedPoint::getConsumed).sum();
+  public void add(List<ConsumedPoint> anotherConsumed) {
+    consumed.addAll(anotherConsumed);
+  }
+
+  public List<ConsumedPoint> getConsumed() {
+    return consumed;
   }
 
   public int getTotalFreePointConsumed() {
@@ -50,7 +50,7 @@ public class PointConsumeResult {
     return requested - getTotalConsumed();
   }
 
-  public List<ConsumedPoint> getConsumed() {
-    return consumed;
+  public int getTotalConsumed() {
+    return consumed.stream().mapToInt(ConsumedPoint::getConsumed).sum();
   }
 }

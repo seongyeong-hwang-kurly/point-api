@@ -50,6 +50,9 @@ public class PublishPointRequest {
   long actionMemberNumber;
   boolean hidden;
 
+  /**
+   * Entity로 변환.
+   */
   public Point toEntity() {
     return Point.builder()
         .charge(getPoint())
@@ -66,31 +69,40 @@ public class PublishPointRequest {
         .build();
   }
 
-  public boolean isUnlimitedDate() {
-    return isSettle() || unlimitedDate;
-  }
-
-  public String getDetail() {
-    if (Objects.isNull(detail)) {
-      detail = MessageFormat.format("{0} 적립금 적립", isPayment() ? "유료" : "무료");
-    }
-    return detail;
-  }
-
-  public @Nullable LocalDateTime getExpireDate() {
-    if (isUnlimitedDate()) {
-      return null;
-    }
-    return Objects.isNull(expireDate) ?
-        PointExpireDateCalculator.calculateDefault(LocalDateTime.now())
-        :
-        PointExpireDateCalculator.withEndOfDate(expireDate);
-  }
-
+  /**
+   * 적립금.
+   */
   public @Nullable Integer getPoint() {
     if (Objects.nonNull(point)) {
       return point < 0 ? 0 : point;
     }
     return point;
+  }
+
+  /**
+   * 만료일.
+   */
+  public @Nullable LocalDateTime getExpireDate() {
+    if (isUnlimitedDate()) {
+      return null;
+    }
+    return Objects.isNull(expireDate)
+        ? PointExpireDateCalculator.calculateDefault(LocalDateTime.now())
+        :
+        PointExpireDateCalculator.withEndOfDate(expireDate);
+  }
+
+  public boolean isUnlimitedDate() {
+    return isSettle() || unlimitedDate;
+  }
+
+  /**
+   * 사유.
+   */
+  public String getDetail() {
+    if (Objects.isNull(detail)) {
+      detail = MessageFormat.format("{0} 적립금 적립", isPayment() ? "유료" : "무료");
+    }
+    return detail;
   }
 }

@@ -26,6 +26,9 @@ public class PointExpireJobListener implements JobExecutionListener {
     log.debug("적립금 만료 배치를 시작합니다");
   }
 
+  /**
+   * 작업 수행 후 요약 로그를 출력 한다.
+   */
   public void afterJob(JobExecution jobExecution) {
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
     Date startTime = jobExecution.getStartTime();
@@ -45,13 +48,15 @@ public class PointExpireJobListener implements JobExecutionListener {
     log.debug(MessageFormat.format("만료 처리 된 총 적립금 수 : {0}", totalExpiredPointCount));
     log.debug(MessageFormat.format("만료 처리 된 총 적립금 : {0}", totalExpiredPointAmount));
 
-    FileBeatLogger.info(new HashMap<>() {{
-      put("action", "pointExpiredSummary");
-      put("expiredMemberCount", totalMemberCount);
-      put("expiredAmount", totalExpiredPointAmount);
-      put("expiredPointCount", totalExpiredPointCount);
-      put("totalExecutionTimeInSeconds", totalExecutionTimeInSeconds);
-    }});
+    FileBeatLogger.info(new HashMap<>() {
+      {
+        put("action", "pointExpiredSummary");
+        put("expiredMemberCount", totalMemberCount);
+        put("expiredAmount", totalExpiredPointAmount);
+        put("expiredPointCount", totalExpiredPointCount);
+        put("totalExecutionTimeInSeconds", totalExecutionTimeInSeconds);
+      }
+    });
   }
 
 }

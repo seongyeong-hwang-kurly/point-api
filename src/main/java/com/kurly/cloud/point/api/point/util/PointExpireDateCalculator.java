@@ -17,14 +17,8 @@ import org.springframework.beans.factory.annotation.Value;
 @NoArgsConstructor
 public class PointExpireDateCalculator {
 
-  private static String DEFAULT_STRATEGY = "QUARTER";
-
   static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("Q");
-
-  @Value("${pointExpireDefaultStrategy:QUARTER}")
-  public void setStrategy(String strategy) {
-    DEFAULT_STRATEGY = strategy;
-  }
+  private static String DEFAULT_STRATEGY = "QUARTER";
 
   public PointExpireDateCalculator(String strategy) {
     DEFAULT_STRATEGY = strategy;
@@ -42,7 +36,7 @@ public class PointExpireDateCalculator {
   }
 
   /**
-   * 해당 일자의 시각을 23:59:59로 세팅한다
+   * 해당 일자의 시각을 23:59:59로 세팅한다.
    *
    * @return 23:59:59
    */
@@ -90,5 +84,10 @@ public class PointExpireDateCalculator {
    */
   public static LocalDateTime calculateNextYear(LocalDateTime from) {
     return withEndOfDate(from.plusYears(1));
+  }
+
+  @Value("${pointExpireDefaultStrategy:QUARTER}")
+  public void setStrategy(String strategy) {
+    DEFAULT_STRATEGY = strategy;
   }
 }

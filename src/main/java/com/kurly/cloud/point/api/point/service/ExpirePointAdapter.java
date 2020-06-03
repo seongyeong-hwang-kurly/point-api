@@ -24,7 +24,8 @@ class ExpirePointAdapter implements ExpirePointPort {
   private final PointService pointService;
   private final PointHistoryService pointHistoryService;
 
-  @Override public PointExpireResult expireMemberPoint(long memberNumber, LocalDateTime expireTime) {
+  @Override public PointExpireResult expireMemberPoint(long memberNumber,
+                                                       LocalDateTime expireTime) {
     List<Point> expiredMemberPoint = pointService.getExpiredMemberPoint(memberNumber, expireTime);
     PointExpireResult pointExpireResult = doExpire(expiredMemberPoint);
     pointExpireResult.setMemberNumber(memberNumber);
@@ -38,12 +39,14 @@ class ExpirePointAdapter implements ExpirePointPort {
         .type(HistoryType.TYPE_103.getValue())
         .build());
 
-    FileBeatLogger.info(new HashMap<>() {{
-      put("action", "pointExpired");
-      put("memberNumber", pointExpireResult.getMemberNumber());
-      put("expired", pointExpireResult.getTotalExpired());
-      put("expiredPointSeq", pointExpireResult.getExpiredPointSeq());
-    }});
+    FileBeatLogger.info(new HashMap<>() {
+      {
+        put("action", "pointExpired");
+        put("memberNumber", pointExpireResult.getMemberNumber());
+        put("expired", pointExpireResult.getTotalExpired());
+        put("expiredPointSeq", pointExpireResult.getExpiredPointSeq());
+      }
+    });
 
     return pointExpireResult;
   }

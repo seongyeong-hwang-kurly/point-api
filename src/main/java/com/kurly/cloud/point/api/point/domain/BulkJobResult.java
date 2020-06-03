@@ -21,17 +21,6 @@ public class BulkJobResult {
   Set<Integer> failed = new HashSet<>();
   List<JobAndResultId> resultIds = new ArrayList<>();
 
-  @Getter
-  class JobAndResultId {
-    int jobId;
-    long pointSeq;
-
-    JobAndResultId(int jobId, long pointSeq) {
-      this.jobId = jobId;
-      this.pointSeq = pointSeq;
-    }
-  }
-
   public void addSuccess(int seq) {
     this.succeed.add(seq);
   }
@@ -43,5 +32,16 @@ public class BulkJobResult {
 
   public void addFailed(int seq) {
     this.failed.add(seq);
+  }
+
+  @Getter
+  class JobAndResultId {
+    int jobId;
+    long pointSeq;
+
+    JobAndResultId(int jobId, long pointSeq) {
+      this.jobId = jobId;
+      this.pointSeq = pointSeq;
+    }
   }
 }

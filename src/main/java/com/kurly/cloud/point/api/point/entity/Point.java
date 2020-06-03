@@ -36,11 +36,11 @@ import org.hibernate.annotations.Type;
 @Entity
 @Table(name = "mk_point_list",
     indexes = {
-        @Index(columnList = "m_no")
-        , @Index(columnList = "ordno")
-        , @Index(columnList = "point_type")
-        , @Index(columnList = "reg_time")
-        , @Index(columnList = "expire_time")
+        @Index(columnList = "m_no"),
+        @Index(columnList = "ordno"),
+        @Index(columnList = "point_type"),
+        @Index(columnList = "reg_time"),
+        @Index(columnList = "expire_time")
     }
 )
 public class Point {

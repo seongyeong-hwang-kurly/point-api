@@ -8,7 +8,7 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
-public class PersistenceJPAConfig {
+public class PersistenceJpaConfig {
   @Bean
   @Primary
   public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {

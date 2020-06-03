@@ -22,6 +22,9 @@ public class PointExpireItemReader extends AbstractPagingItemReader<Long> {
   private final PointRepository pointRepository;
   private final LocalDateTime expireTime;
 
+  /**
+   * 기본 생성자.
+   */
   public PointExpireItemReader(PointRepository pointRepository,
                                int pageSize,
                                String expireTime) {

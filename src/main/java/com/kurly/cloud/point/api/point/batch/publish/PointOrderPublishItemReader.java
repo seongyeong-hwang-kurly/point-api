@@ -27,6 +27,9 @@ public class PointOrderPublishItemReader extends AbstractPagingItemReader<Order>
   private final LocalDateTime fromDateTime;
   private final LocalDateTime toDateTime;
 
+  /**
+   * 기본 생성자.
+   */
   public PointOrderPublishItemReader(OrderRepository orderRepository,
                                      int pageSize,
                                      String publishDate) {

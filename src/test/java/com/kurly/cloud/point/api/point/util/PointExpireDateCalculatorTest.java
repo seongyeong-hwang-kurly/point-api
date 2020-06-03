@@ -9,6 +9,10 @@
 
 package com.kurly.cloud.point.api.point.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+
+
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.MonthDay;
@@ -17,9 +21,6 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 
 @DisplayName("PointExpireDateCalculator class")
 public class PointExpireDateCalculatorTest {
@@ -39,13 +40,6 @@ public class PointExpireDateCalculatorTest {
     @Nested
     @DisplayName("입력일이 1분기 일 때")
     class Context0 {
-      Collection<LocalDateTime> given입력일() {
-        return List.of(
-            given(MonthDay.of(Month.JANUARY, 1)),
-            given(MonthDay.of(Month.FEBRUARY, 1)),
-            given(MonthDay.of(Month.MARCH, 31)));
-      }
-
       @Test
       @DisplayName("다음해 1분기 마지막 일을 리턴 한다")
       public void test() {
@@ -55,18 +49,18 @@ public class PointExpireDateCalculatorTest {
           assertThat(subject(입력일)).isEqualToIgnoringHours(내년_분기_말일);
         }
       }
+
+      Collection<LocalDateTime> given입력일() {
+        return List.of(
+            given(MonthDay.of(Month.JANUARY, 1)),
+            given(MonthDay.of(Month.FEBRUARY, 1)),
+            given(MonthDay.of(Month.MARCH, 31)));
+      }
     }
 
     @Nested
     @DisplayName("입력일이 2분기 일 때")
     class Context1 {
-      Collection<LocalDateTime> given입력일() {
-        return List.of(
-            given(MonthDay.of(Month.APRIL, 1)),
-            given(MonthDay.of(Month.MAY, 31)),
-            given(MonthDay.of(Month.JUNE, 12)));
-      }
-
       @Test
       @DisplayName("다음해 2분기 마지막 일을 리턴 한다")
       public void test() {
@@ -76,18 +70,18 @@ public class PointExpireDateCalculatorTest {
           assertThat(subject(입력일)).isEqualToIgnoringHours(내년_분기_말일);
         }
       }
+
+      Collection<LocalDateTime> given입력일() {
+        return List.of(
+            given(MonthDay.of(Month.APRIL, 1)),
+            given(MonthDay.of(Month.MAY, 31)),
+            given(MonthDay.of(Month.JUNE, 12)));
+      }
     }
 
     @Nested
     @DisplayName("입력일이 3분기 일 때")
     class Context2 {
-      Collection<LocalDateTime> given입력일() {
-        return List.of(
-            given(MonthDay.of(Month.JULY, 1)),
-            given(MonthDay.of(Month.AUGUST, 15)),
-            given(MonthDay.of(Month.SEPTEMBER, 30)));
-      }
-
       @Test
       @DisplayName("다음해 3분기 마지막 일을 리턴 한다")
       public void test() {
@@ -97,18 +91,18 @@ public class PointExpireDateCalculatorTest {
           assertThat(subject(입력일)).isEqualToIgnoringHours(내년_분기_말일);
         }
       }
+
+      Collection<LocalDateTime> given입력일() {
+        return List.of(
+            given(MonthDay.of(Month.JULY, 1)),
+            given(MonthDay.of(Month.AUGUST, 15)),
+            given(MonthDay.of(Month.SEPTEMBER, 30)));
+      }
     }
 
     @Nested
     @DisplayName("입력일이 4분기 일 때")
     class Context3 {
-      Collection<LocalDateTime> given입력일() {
-        return List.of(
-            given(MonthDay.of(Month.OCTOBER, 31)),
-            given(MonthDay.of(Month.NOVEMBER, 15)),
-            given(MonthDay.of(Month.DECEMBER, 31)));
-      }
-
       @Test
       @DisplayName("다음해 4분기 마지막 일을 리턴 한다")
       public void test() {
@@ -117,6 +111,13 @@ public class PointExpireDateCalculatorTest {
         for (LocalDateTime 입력일 : given입력일()) {
           assertThat(subject(입력일)).isEqualToIgnoringHours(내년_분기_말일);
         }
+      }
+
+      Collection<LocalDateTime> given입력일() {
+        return List.of(
+            given(MonthDay.of(Month.OCTOBER, 31)),
+            given(MonthDay.of(Month.NOVEMBER, 15)),
+            given(MonthDay.of(Month.DECEMBER, 31)));
       }
     }
   }
@@ -182,11 +183,11 @@ public class PointExpireDateCalculatorTest {
     @DisplayName("입력값이 임의의 날짜 일 때")
     class ContextWithDate {
 
+      LocalDateTime 입력일 = given(MonthDay.of(Month.JANUARY, 1));
+
       void givenCalculator(String strategy) {
         new PointExpireDateCalculator(strategy);
       }
-
-      LocalDateTime 입력일 = given(MonthDay.of(Month.JANUARY, 1));
 
       @Nested
       @DisplayName("기본설정이 'QUARTER'로 설정 된다면")

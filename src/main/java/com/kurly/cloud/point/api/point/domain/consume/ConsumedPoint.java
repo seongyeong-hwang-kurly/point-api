@@ -17,6 +17,9 @@ public class ConsumedPoint {
   int consumed;
   boolean settle;
 
+  /**
+   * 기본 생성자.
+   */
   public ConsumedPoint(long pointSeq, int consumed, boolean settle) {
     this.pointSeq = pointSeq;
     this.consumed = consumed;

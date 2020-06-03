@@ -9,6 +9,9 @@
 
 package com.kurly.cloud.point.api.point.controller;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.ControllerTest;
@@ -30,19 +33,15 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @ControllerTest
 public class OrderPointControllerTest implements CommonTestGiven {
-  private MockMvc mockMvc;
-
   @Autowired
   ObjectMapper objectMapper;
-
   @Autowired
   PublishPointPort publishPointPort;
+  private MockMvc mockMvc;
 
   @BeforeEach
   void setUp(WebApplicationContext webApplicationContext) {
@@ -63,14 +62,6 @@ public class OrderPointControllerTest implements CommonTestGiven {
         .andExpect(status().isInternalServerError());
   }
 
-  void givenOrderPoint() throws AlreadyPublishedException {
-    publishPointPort.publishByOrder(PublishPointRequest.builder()
-        .memberNumber(givenMemberNumber())
-        .orderNumber(givenOrderNumber())
-        .point(1000)
-        .build());
-  }
-
   @WithUserDetails
   @Test
   @DisplayName("적립된 주문 적립금 조회")
@@ -81,5 +72,13 @@ public class OrderPointControllerTest implements CommonTestGiven {
             , givenOrderNumber()))
         .andDo(MockMvcResultHandlers.print())
         .andExpect(status().isOk());
+  }
+
+  void givenOrderPoint() throws AlreadyPublishedException {
+    publishPointPort.publishByOrder(PublishPointRequest.builder()
+        .memberNumber(givenMemberNumber())
+        .orderNumber(givenOrderNumber())
+        .point(1000)
+        .build());
   }
 }

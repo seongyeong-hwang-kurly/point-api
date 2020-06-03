@@ -23,27 +23,26 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 public class PointOrderPublishJobConfig {
 
-  public static int CHUNK_SIZE = 1000;
   public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ISO_DATE_TIME;
-
+  public static int CHUNK_SIZE = 1000;
   private final StepBuilderFactory stepBuilderFactory;
   private final PointOrderPublishItemWriter pointOrderPublishItemWriter;
   private final OrderRepository orderRepository;
 
   @Value("${batch.publish.chunkSize:1000}")
-  public void setChunkSize(int ChunkSize) {
-    CHUNK_SIZE = ChunkSize;
+  public void setChunkSize(int chunkSize) {
+    CHUNK_SIZE = chunkSize;
   }
 
   @Bean
-  public Job pointOrderPublishJob(JobBuilderFactory jobBuilderFactory) {
+  Job pointOrderPublishJob(JobBuilderFactory jobBuilderFactory) {
     return jobBuilderFactory.get("pointOrderPublishJob")
         .listener(new PointOrderPublishJobListener())
         .start(pointOrderPublishJobStep(stepBuilderFactory))
         .build();
   }
 
-  public Step pointOrderPublishJobStep(StepBuilderFactory stepBuilderFactory) {
+  Step pointOrderPublishJobStep(StepBuilderFactory stepBuilderFactory) {
     return stepBuilderFactory.get("pointOrderPublishJobStep")
         .<Order, PublishPointRequest>chunk(CHUNK_SIZE)
         .reader(pointPublishOrderReader(null))

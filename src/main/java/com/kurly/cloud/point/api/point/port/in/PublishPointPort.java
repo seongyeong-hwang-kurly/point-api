@@ -22,7 +22,7 @@ public interface PublishPointPort {
 
   /**
    * 발급 된 주문 적립 적립금을 취소합니다 <br/>
-   * 만약 회원이 이미 적립금을 써버렸다면 대출(마이너스)이 발생됩니다 <br/>
+   * 만약 회원이 이미 적립금을 써버렸다면 대출(마이너스)이 발생됩니다.
    *
    * @param request request
    */

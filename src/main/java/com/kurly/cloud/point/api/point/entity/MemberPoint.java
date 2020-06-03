@@ -48,6 +48,9 @@ public class MemberPoint {
   @Column(name = "update_time")
   LocalDateTime updateTime;
 
+  /**
+   * 적립금을 더함.
+   */
   @Transient
   public void plusPoint(int freePoint, int cashPoint) {
     setTotalPoint(getTotalPoint() + freePoint + cashPoint);
@@ -56,6 +59,9 @@ public class MemberPoint {
     setUpdateTime(LocalDateTime.now());
   }
 
+  /**
+   * 적립금을 뺌.
+   */
   @Transient
   public void minusPoint(int freePoint, int cashPoint) {
     setTotalPoint(getTotalPoint() - freePoint - cashPoint);
@@ -64,9 +70,14 @@ public class MemberPoint {
     setUpdateTime(LocalDateTime.now());
   }
 
+  /**
+   * 상환할 빚이 있는지 계산 한다.
+   */
   @Transient
   public int getRepayAmount(int publishedAmount) {
-    if (getTotalPoint() >= publishedAmount) return 0;
+    if (getTotalPoint() >= publishedAmount) {
+      return 0;
+    }
 
     int repayAmount;
     if (getTotalPoint() < 0) { // 아직도 빚이 남아있는 상태
@@ -78,6 +89,9 @@ public class MemberPoint {
     return repayAmount;
   }
 
+  /**
+   * 적립금을 사용하기에 충분히 가지고 있는지 계산한다.
+   */
   @Transient
   public boolean isEnough(Integer point, boolean settle) {
     return settle ? getCashPoint() >= point : getTotalPoint() >= point;

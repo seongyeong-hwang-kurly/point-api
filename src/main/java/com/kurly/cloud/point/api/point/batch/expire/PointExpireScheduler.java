@@ -9,6 +9,8 @@
 
 package com.kurly.cloud.point.api.point.batch.expire;
 
+import static com.kurly.cloud.point.api.point.batch.expire.config.PointExpireJobConfig.DATE_TIME_FORMATTER;
+
 import com.kurly.cloud.api.common.util.SlackNotifier;
 import com.kurly.cloud.api.common.util.logging.FileBeatLogger;
 import java.time.LocalDateTime;
@@ -25,8 +27,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import static com.kurly.cloud.point.api.point.batch.expire.config.PointExpireJobConfig.DATE_TIME_FORMATTER;
-
 @Profile("enable-batch")
 @Component
 @Slf4j
@@ -36,39 +36,50 @@ public class PointExpireScheduler {
   private final Job pointExpireJob;
   private final JobLauncher jobLauncher;
 
+  /**
+   * 스케줄 실행.
+   */
   @Scheduled(cron = "0 0 0 * * *")
   public void execute() {
     String expireTime = LocalDateTime.now().format(DATE_TIME_FORMATTER);
     try {
-      FileBeatLogger.info(new HashMap<>() {{
-        put("batch", "PointExpireScheduler");
-        put("action", "STARTED");
-        put("param", expireTime);
-      }});
+      FileBeatLogger.info(new HashMap<>() {
+        {
+          put("batch", "PointExpireScheduler");
+          put("action", "STARTED");
+          put("param", expireTime);
+        }
+      });
       JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
       jobParametersBuilder.addString("expireTime", expireTime);
       JobExecution run = jobLauncher.run(pointExpireJob, jobParametersBuilder.toJobParameters());
       if (run.getExitStatus().getExitCode().equals(ExitStatus.FAILED.getExitCode())) {
         String exitDescription = run.getExitStatus().getExitDescription();
         SlackNotifier.notify(exitDescription);
-        FileBeatLogger.info(new HashMap<>() {{
+        FileBeatLogger.info(new HashMap<>() {
+          {
+            put("batch", "PointExpireScheduler");
+            put("action", "FAILED");
+            put("param", expireTime);
+          }
+        });
+      } else {
+        FileBeatLogger.info(new HashMap<>() {
+          {
+            put("batch", "PointExpireScheduler");
+            put("action", "COMPLETED");
+            put("param", expireTime);
+          }
+        });
+      }
+    } catch (Exception e) {
+      FileBeatLogger.info(new HashMap<>() {
+        {
           put("batch", "PointExpireScheduler");
           put("action", "FAILED");
           put("param", expireTime);
-        }});
-      } else {
-        FileBeatLogger.info(new HashMap<>() {{
-          put("batch", "PointExpireScheduler");
-          put("action", "COMPLETED");
-          put("param", expireTime);
-        }});
-      }
-    } catch (Exception e) {
-      FileBeatLogger.info(new HashMap<>() {{
-        put("batch", "PointExpireScheduler");
-        put("action", "FAILED");
-        put("param", expireTime);
-      }});
+        }
+      });
       FileBeatLogger.error(e);
       SlackNotifier.notify(e);
     }

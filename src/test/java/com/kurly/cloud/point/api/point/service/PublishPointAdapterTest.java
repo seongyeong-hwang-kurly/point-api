@@ -3,6 +3,7 @@ package com.kurly.cloud.point.api.point.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
+
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.TransactionalTest;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
@@ -160,10 +161,6 @@ class PublishPointAdapterTest implements CommonTestGiven {
   @DisplayName("대출한 적립금이 있을 때")
   class DescribeRepay {
 
-    int givenDebtAmount() {
-      return 1000;
-    }
-
     MemberPoint given() {
       publishPointPort.cancelPublishByOrder(CancelPublishOrderPointRequest.builder()
           .actionMemberNumber(givenMemberNumber())
@@ -172,6 +169,10 @@ class PublishPointAdapterTest implements CommonTestGiven {
           .point(givenDebtAmount())
           .build());
       return memberPointService.getOrCreateMemberPoint(givenMemberNumber());
+    }
+
+    int givenDebtAmount() {
+      return 1000;
     }
 
     @Nested
@@ -190,10 +191,6 @@ class PublishPointAdapterTest implements CommonTestGiven {
       @Nested
       @DisplayName("대출적립금 보다 지급적립금이 많으면")
       class Context0 {
-        int givenAmount() {
-          return 2000;
-        }
-
         @Test
         @DisplayName("적립금을 지급하고 대출적립금만큼 차감한다")
         void test() {
@@ -202,16 +199,16 @@ class PublishPointAdapterTest implements CommonTestGiven {
           assertThat(given.getTotalPoint()).isEqualTo(givenAmount() - givenDebtAmount());
           assertThat(given.getFreePoint()).isEqualTo(givenAmount() - givenDebtAmount());
         }
+
+        int givenAmount() {
+          return 2000;
+        }
       }
 
       @TransactionalTest
       @Nested
       @DisplayName("지급적립금 보다 대출적립금이 많으면")
       class Context1 {
-        int givenAmount() {
-          return 500;
-        }
-
         @Test
         @DisplayName("적립금을 지급하고 전액 차감한다")
         void test() {
@@ -220,16 +217,16 @@ class PublishPointAdapterTest implements CommonTestGiven {
           assertThat(given.getTotalPoint()).isEqualTo(givenAmount() - givenDebtAmount());
           assertThat(given.getFreePoint()).isEqualTo(givenAmount() - givenDebtAmount());
         }
+
+        int givenAmount() {
+          return 500;
+        }
       }
 
       @TransactionalTest
       @Nested
       @DisplayName("대출적립금과 지급적립금이 같으면")
       class Context2 {
-        int givenAmount() {
-          return 1000;
-        }
-
         @Test
         @DisplayName("적립금을 지급하고 전액 차감한다")
         void test() {
@@ -237,6 +234,10 @@ class PublishPointAdapterTest implements CommonTestGiven {
           subject(givenAmount());
           assertThat(given.getTotalPoint()).isEqualTo(0);
           assertThat(given.getFreePoint()).isEqualTo(0);
+        }
+
+        int givenAmount() {
+          return 1000;
         }
       }
     }
@@ -258,10 +259,6 @@ class PublishPointAdapterTest implements CommonTestGiven {
       @Nested
       @DisplayName("대출적립금보다 지급적립금이 많으면")
       class Context0 {
-        int givenAmount() {
-          return 2000;
-        }
-
         @Test
         @DisplayName("적립금을 지급하고 대출적립금만큼 차감한다")
         void test() {
@@ -271,16 +268,16 @@ class PublishPointAdapterTest implements CommonTestGiven {
           assertThat(given.getFreePoint()).isEqualTo(0);
           assertThat(given.getCashPoint()).isEqualTo(givenAmount() - givenDebtAmount());
         }
+
+        int givenAmount() {
+          return 2000;
+        }
       }
 
       @TransactionalTest
       @Nested
       @DisplayName("지급적립금보다 대출적립금이 많으면")
       class Context1 {
-        int givenAmount() {
-          return 500;
-        }
-
         @Test
         @DisplayName("적립금을 지급하고 전액 차감한다")
         void test() {
@@ -290,16 +287,16 @@ class PublishPointAdapterTest implements CommonTestGiven {
           assertThat(given.getFreePoint()).isEqualTo(givenAmount() - givenDebtAmount());
           assertThat(given.getCashPoint()).isEqualTo(0);
         }
+
+        int givenAmount() {
+          return 500;
+        }
       }
 
       @TransactionalTest
       @Nested
       @DisplayName("대출적립금과 지급적립금이 같으면")
       class Context2 {
-        int givenAmount() {
-          return 1000;
-        }
-
         @Test
         @DisplayName("적립금을 지급하고 전액 차감한다")
         void test() {
@@ -309,6 +306,10 @@ class PublishPointAdapterTest implements CommonTestGiven {
           assertThat(given.getFreePoint()).isEqualTo(0);
           assertThat(given.getCashPoint()).isEqualTo(0);
         }
+
+        int givenAmount() {
+          return 1000;
+        }
       }
     }
 
@@ -317,14 +318,6 @@ class PublishPointAdapterTest implements CommonTestGiven {
   @Nested
   @DisplayName("주문 적립 적립금을 발행을 취소 할 때")
   class DescribeCancelPublishByOrder {
-    int givenOrderPointAmount() {
-      return 1000;
-    }
-
-    int givenNonOrderPointAmount() {
-      return 2000;
-    }
-
     void givenOrderPoint() throws AlreadyPublishedException {
       publishPointPort.publishByOrder(PublishPointRequest.builder()
           .point(givenOrderPointAmount())
@@ -335,12 +328,20 @@ class PublishPointAdapterTest implements CommonTestGiven {
       );
     }
 
+    int givenOrderPointAmount() {
+      return 1000;
+    }
+
     void givenNonOrderPoint() {
       publishPointPort.publish(PublishPointRequest.builder()
           .point(givenNonOrderPointAmount())
           .memberNumber(givenMemberNumber())
           .historyType(HistoryType.TYPE_12.getValue())
           .build());
+    }
+
+    int givenNonOrderPointAmount() {
+      return 2000;
     }
 
     MemberPoint subject(int amount) {
@@ -357,10 +358,6 @@ class PublishPointAdapterTest implements CommonTestGiven {
     @Nested
     @DisplayName("보유햔 적립금이 충분하면")
     class Context0 {
-      int givenAmount() {
-        return givenOrderPointAmount();
-      }
-
       @Test
       @DisplayName("적립된 적립금을 전부 회수(사용) 한다")
       void test() throws AlreadyPublishedException {
@@ -371,16 +368,16 @@ class PublishPointAdapterTest implements CommonTestGiven {
         assertThat(subject.getTotalPoint())
             .isEqualTo(givenOrderPointAmount() + givenNonOrderPointAmount() - givenAmount());
       }
+
+      int givenAmount() {
+        return givenOrderPointAmount();
+      }
     }
 
     @TransactionalTest
     @Nested
     @DisplayName("보유햔 적립금이 충분하지 않으면")
     class Context1 {
-
-      int givenAmount() {
-        return 10000;
-      }
 
       @Test
       @DisplayName("모자른 만큼 보유적립금이 대출(마이너스) 처리 된다")
@@ -391,6 +388,10 @@ class PublishPointAdapterTest implements CommonTestGiven {
 
         assertThat(subject.getTotalPoint())
             .isEqualTo(givenOrderPointAmount() + givenNonOrderPointAmount() - givenAmount());
+      }
+
+      int givenAmount() {
+        return 10000;
       }
     }
   }

@@ -27,6 +27,9 @@ public class SimplePageImpl<T> {
   boolean last;
   boolean first;
 
+  /**
+   * Page 객체를 SimplePageImpl로 변환.
+   */
   public static <T> SimplePageImpl<T> transform(Page<T> page) {
     SimplePageImpl<T> simplePage = new SimplePageImpl<>();
     simplePage.setContent(page.getContent());

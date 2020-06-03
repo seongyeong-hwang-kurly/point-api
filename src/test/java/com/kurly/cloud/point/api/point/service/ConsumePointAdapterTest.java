@@ -3,6 +3,7 @@ package com.kurly.cloud.point.api.point.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
+
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.TransactionalTest;
 import com.kurly.cloud.point.api.point.domain.consume.CancelOrderConsumePointRequest;
@@ -62,6 +63,12 @@ class ConsumePointAdapterTest implements CommonTestGiven {
       return consumePointPort.consume(request);
     }
 
+    @BeforeEach
+    void publishPoint() {
+      publishFreePoint(getFreeAmount());
+      publishCashPoint(getCashAmount());
+    }
+
     int getFreeAmount() {
       return 1000;
     }
@@ -70,24 +77,10 @@ class ConsumePointAdapterTest implements CommonTestGiven {
       return 2000;
     }
 
-    @BeforeEach
-    void publishPoint() {
-      publishFreePoint(getFreeAmount());
-      publishCashPoint(getCashAmount());
-    }
-
     @TransactionalTest
     @Nested
     @DisplayName("보유한 보인트가 부족하면")
     class Context0 {
-
-      ConsumePointRequest givenRequest() {
-        return ConsumePointRequest.builder()
-            .memberNumber(givenMemberNumber())
-            .point(10000)
-            .historyType(HistoryType.TYPE_100.getValue())
-            .build();
-      }
 
       @DisplayName("NotEnoughPointException 예외가 발생 한다")
       @Test
@@ -99,21 +92,20 @@ class ConsumePointAdapterTest implements CommonTestGiven {
 
         }
       }
+
+      ConsumePointRequest givenRequest() {
+        return ConsumePointRequest.builder()
+            .memberNumber(givenMemberNumber())
+            .point(10000)
+            .historyType(HistoryType.TYPE_100.getValue())
+            .build();
+      }
     }
 
     @TransactionalTest
     @Nested
     @DisplayName("보유한 보인트가 충분 하면")
     class Context1 {
-
-      ConsumePointRequest givenRequest() {
-        return ConsumePointRequest.builder()
-            .memberNumber(givenMemberNumber())
-            .point(getFreeAmount() + getCashAmount())
-            .detail("detail")
-            .historyType(HistoryType.TYPE_100.getValue())
-            .build();
-      }
 
       @DisplayName("적립금을 사용처리 한다")
       @Test
@@ -125,21 +117,21 @@ class ConsumePointAdapterTest implements CommonTestGiven {
         assertThat(subject.getTotalCashPointConsumed()).isEqualTo(getCashAmount());
         assertThat(subject.getRemain()).isEqualTo(0);
       }
+
+      ConsumePointRequest givenRequest() {
+        return ConsumePointRequest.builder()
+            .memberNumber(givenMemberNumber())
+            .point(getFreeAmount() + getCashAmount())
+            .detail("detail")
+            .historyType(HistoryType.TYPE_100.getValue())
+            .build();
+      }
     }
 
     @TransactionalTest
     @Nested
     @DisplayName("보유한 보인트중 일부만 사용하면")
     class Context2 {
-
-      ConsumePointRequest givenRequest() {
-        return ConsumePointRequest.builder()
-            .memberNumber(givenMemberNumber())
-            .point(getCashAmount())
-            .detail("detail")
-            .historyType(HistoryType.TYPE_100.getValue())
-            .build();
-      }
 
       @DisplayName("무상적립금을 먼저 사용하고 유상적립금을 사용 한다")
       @Test
@@ -153,6 +145,15 @@ class ConsumePointAdapterTest implements CommonTestGiven {
         assertThat(subject.getRemain()).isEqualTo(0);
 
       }
+
+      ConsumePointRequest givenRequest() {
+        return ConsumePointRequest.builder()
+            .memberNumber(givenMemberNumber())
+            .point(getCashAmount())
+            .detail("detail")
+            .historyType(HistoryType.TYPE_100.getValue())
+            .build();
+      }
     }
 
     @Nested
@@ -162,16 +163,6 @@ class ConsumePointAdapterTest implements CommonTestGiven {
       @Nested
       @DisplayName("전체 적립금이 충분하고 유상적립금이 부족하면")
       class Context0 {
-
-        ConsumePointRequest givenRequest() {
-          return ConsumePointRequest.builder()
-              .memberNumber(givenMemberNumber())
-              .point(getCashAmount() + getFreeAmount())
-              .detail("detail")
-              .settle(true)
-              .historyType(HistoryType.TYPE_100.getValue())
-              .build();
-        }
 
         @DisplayName("NotEnoughPointException 예외가 발생 한다")
         @Test
@@ -183,22 +174,22 @@ class ConsumePointAdapterTest implements CommonTestGiven {
 
           }
         }
+
+        ConsumePointRequest givenRequest() {
+          return ConsumePointRequest.builder()
+              .memberNumber(givenMemberNumber())
+              .point(getCashAmount() + getFreeAmount())
+              .detail("detail")
+              .settle(true)
+              .historyType(HistoryType.TYPE_100.getValue())
+              .build();
+        }
       }
 
       @TransactionalTest
       @Nested
       @DisplayName("유상적립금이 충분하면")
       class Context1 {
-
-        ConsumePointRequest givenRequest() {
-          return ConsumePointRequest.builder()
-              .memberNumber(givenMemberNumber())
-              .point(getCashAmount())
-              .detail("detail")
-              .settle(true)
-              .historyType(HistoryType.TYPE_100.getValue())
-              .build();
-        }
 
         @DisplayName("유상적립금을 사용 하고 무상적립금은 사용하지 않는다")
         @Test
@@ -209,6 +200,16 @@ class ConsumePointAdapterTest implements CommonTestGiven {
           assertThat(subject.getTotalFreePointConsumed()).isEqualTo(0);
           assertThat(subject.getTotalCashPointConsumed()).isEqualTo(getCashAmount());
           assertThat(subject.getRemain()).isEqualTo(0);
+        }
+
+        ConsumePointRequest givenRequest() {
+          return ConsumePointRequest.builder()
+              .memberNumber(givenMemberNumber())
+              .point(getCashAmount())
+              .detail("detail")
+              .settle(true)
+              .historyType(HistoryType.TYPE_100.getValue())
+              .build();
         }
       }
     }
@@ -222,6 +223,12 @@ class ConsumePointAdapterTest implements CommonTestGiven {
       return consumePointPort.consumeByOrder(request);
     }
 
+    @BeforeEach
+    void publishPoint() {
+      publishFreePoint(getFreeAmount());
+      publishCashPoint(getCashAmount());
+    }
+
     int getFreeAmount() {
       return 1000;
     }
@@ -230,24 +237,10 @@ class ConsumePointAdapterTest implements CommonTestGiven {
       return 2000;
     }
 
-    @BeforeEach
-    void publishPoint() {
-      publishFreePoint(getFreeAmount());
-      publishCashPoint(getCashAmount());
-    }
-
     @TransactionalTest
     @Nested
     @DisplayName("보유한 보인트가 부족하면")
     class Context0 {
-
-      OrderConsumePointRequest givenRequest() {
-        return OrderConsumePointRequest.builder()
-            .orderNumber(givenOrderNumber())
-            .memberNumber(givenMemberNumber())
-            .point(10000)
-            .build();
-      }
 
       @DisplayName("NotEnoughPointException 예외가 발생 한다")
       @Test
@@ -259,20 +252,20 @@ class ConsumePointAdapterTest implements CommonTestGiven {
 
         }
       }
+
+      OrderConsumePointRequest givenRequest() {
+        return OrderConsumePointRequest.builder()
+            .orderNumber(givenOrderNumber())
+            .memberNumber(givenMemberNumber())
+            .point(10000)
+            .build();
+      }
     }
 
     @TransactionalTest
     @Nested
     @DisplayName("보유한 보인트가 충분 하면")
     class Context1 {
-
-      OrderConsumePointRequest givenRequest() {
-        return OrderConsumePointRequest.builder()
-            .orderNumber(givenOrderNumber())
-            .memberNumber(givenMemberNumber())
-            .point(getFreeAmount() + getCashAmount())
-            .build();
-      }
 
       @DisplayName("적립금을 사용처리 한다")
       @Test
@@ -284,20 +277,20 @@ class ConsumePointAdapterTest implements CommonTestGiven {
         assertThat(subject.getTotalCashPointConsumed()).isEqualTo(getCashAmount());
         assertThat(subject.getRemain()).isEqualTo(0);
       }
+
+      OrderConsumePointRequest givenRequest() {
+        return OrderConsumePointRequest.builder()
+            .orderNumber(givenOrderNumber())
+            .memberNumber(givenMemberNumber())
+            .point(getFreeAmount() + getCashAmount())
+            .build();
+      }
     }
 
     @TransactionalTest
     @Nested
     @DisplayName("보유한 보인트중 일부만 사용하면")
     class Context2 {
-
-      OrderConsumePointRequest givenRequest() {
-        return OrderConsumePointRequest.builder()
-            .orderNumber(givenOrderNumber())
-            .memberNumber(givenMemberNumber())
-            .point(getCashAmount())
-            .build();
-      }
 
       @DisplayName("무상적립금을 먼저 사용하고 유상적립금을 사용 한다")
       @Test
@@ -311,6 +304,14 @@ class ConsumePointAdapterTest implements CommonTestGiven {
         assertThat(subject.getRemain()).isEqualTo(0);
 
       }
+
+      OrderConsumePointRequest givenRequest() {
+        return OrderConsumePointRequest.builder()
+            .orderNumber(givenOrderNumber())
+            .memberNumber(givenMemberNumber())
+            .point(getCashAmount())
+            .build();
+      }
     }
 
   }
@@ -318,10 +319,6 @@ class ConsumePointAdapterTest implements CommonTestGiven {
   @Nested
   @DisplayName("회원이 주문에 사용한 적립금을 사용 취소 할 때")
   class DescribeCancelConsumeByOrder {
-
-    int givenFreeAmount() {
-      return 1000;
-    }
 
     void givenConsumeByOrder() {
       try {
@@ -334,6 +331,10 @@ class ConsumePointAdapterTest implements CommonTestGiven {
       } catch (NotEnoughPointException e) {
 
       }
+    }
+
+    int givenFreeAmount() {
+      return 1000;
     }
 
     void subject(int amount) throws CancelAmountExceedException {

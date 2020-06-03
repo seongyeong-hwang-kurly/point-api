@@ -1,6 +1,5 @@
 package com.kurly.cloud.point.api.point.domain.publish;
 
-
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

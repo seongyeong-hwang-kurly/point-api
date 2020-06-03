@@ -18,6 +18,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.config.SpringSecurityTestConfig;
@@ -73,17 +74,6 @@ public class ConsumeDocumentationTest implements CommonTestGiven {
         .build();
   }
 
-  ConsumePointRequest givenConsumeRequest() {
-    return ConsumePointRequest.builder()
-        .memberNumber(givenMemberNumber())
-        .historyType(HistoryType.TYPE_101.getValue())
-        .detail("사용사유(고객용)")
-        .memo("사용사유(내부용)")
-        .point(1000)
-        .settle(false)
-        .build();
-  }
-
   @WithUserDetails("admin")
   @Test
   @DisplayName("RestDoc - 적립금 사용")
@@ -117,18 +107,15 @@ public class ConsumeDocumentationTest implements CommonTestGiven {
         );
   }
 
-  List<BulkConsumePointRequest> givenBulkRequest() {
-    ArrayList<BulkConsumePointRequest> requests = new ArrayList<>();
-    for (int i = 0; i < 3; i++) {
-      BulkConsumePointRequest request = new BulkConsumePointRequest();
-      request.setJobSeq(i + 1);
-      request.setMemberNumber(givenMemberNumber());
-      request.setPoint(100);
-      request.setHistoryType(HistoryType.TYPE_100.getValue());
-      request.setDetail("발급 사유명(고객용)");
-      requests.add(request);
-    }
-    return requests;
+  ConsumePointRequest givenConsumeRequest() {
+    return ConsumePointRequest.builder()
+        .memberNumber(givenMemberNumber())
+        .historyType(HistoryType.TYPE_101.getValue())
+        .detail("사용사유(고객용)")
+        .memo("사용사유(내부용)")
+        .point(1000)
+        .settle(false)
+        .build();
   }
 
   @WithUserDetails("admin")
@@ -169,12 +156,18 @@ public class ConsumeDocumentationTest implements CommonTestGiven {
         );
   }
 
-  OrderConsumePointRequest givenOrderConsumeRequest() {
-    return OrderConsumePointRequest.builder()
-        .point(100)
-        .memberNumber(givenMemberNumber())
-        .orderNumber(givenOrderNumber())
-        .build();
+  List<BulkConsumePointRequest> givenBulkRequest() {
+    ArrayList<BulkConsumePointRequest> requests = new ArrayList<>();
+    for (int i = 0; i < 3; i++) {
+      BulkConsumePointRequest request = new BulkConsumePointRequest();
+      request.setJobSeq(i + 1);
+      request.setMemberNumber(givenMemberNumber());
+      request.setPoint(100);
+      request.setHistoryType(HistoryType.TYPE_100.getValue());
+      request.setDetail("발급 사유명(고객용)");
+      requests.add(request);
+    }
+    return requests;
   }
 
   @WithUserDetails
@@ -206,11 +199,11 @@ public class ConsumeDocumentationTest implements CommonTestGiven {
         );
   }
 
-  CancelOrderConsumePointRequest givenCancelConsumeRequest() {
-    return CancelOrderConsumePointRequest.builder()
-        .orderNumber(givenOrderNumber())
+  OrderConsumePointRequest givenOrderConsumeRequest() {
+    return OrderConsumePointRequest.builder()
+        .point(100)
         .memberNumber(givenMemberNumber())
-        .point(1000)
+        .orderNumber(givenOrderNumber())
         .build();
   }
 
@@ -240,6 +233,14 @@ public class ConsumeDocumentationTest implements CommonTestGiven {
                 )
             )
         );
+  }
+
+  CancelOrderConsumePointRequest givenCancelConsumeRequest() {
+    return CancelOrderConsumePointRequest.builder()
+        .orderNumber(givenOrderNumber())
+        .memberNumber(givenMemberNumber())
+        .point(1000)
+        .build();
   }
 
 }
