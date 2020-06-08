@@ -7,12 +7,14 @@
  * 1)
  */
 
-package com.kurly.cloud.point.api.point.domain.history;
+package com.kurly.cloud.point.api.point.adapter.out.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.kurly.cloud.point.api.point.entity.MemberPointHistory;
-import java.time.LocalDateTime;
+import com.kurly.cloud.point.api.point.util.DateTimeUtil;
+import java.sql.Timestamp;
+import java.time.ZonedDateTime;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -26,10 +28,12 @@ public class MemberPointHistoryDto {
   String detail;
   @JsonInclude(JsonInclude.Include.NON_NULL)
   String memo;
-  @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-  LocalDateTime regDateTime;
-  @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-  LocalDateTime expireDateTime;
+  @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+  ZonedDateTime regDateTime;
+  long regTimeStamp;
+  @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+  ZonedDateTime expireDateTime;
+  long expireTimeStamp;
 
   /**
    * Entity 를 Dto로 변환한다.
@@ -42,8 +46,10 @@ public class MemberPointHistoryDto {
         .point(memberPointHistory.getTotalPoint())
         .detail(memberPointHistory.getDetail())
         .memo(includeMemo ? memberPointHistory.getMemo() : null)
-        .regDateTime(memberPointHistory.getRegTime())
-        .expireDateTime(memberPointHistory.getExpireTime())
+        .regDateTime(DateTimeUtil.toZonedDateTime(memberPointHistory.getRegTime()))
+        .regTimeStamp(Timestamp.valueOf(memberPointHistory.getRegTime()).getTime())
+        .expireDateTime(DateTimeUtil.toZonedDateTime(memberPointHistory.getExpireTime()))
+        .expireTimeStamp(Timestamp.valueOf(memberPointHistory.getExpireTime()).getTime())
         .build();
   }
 }

@@ -12,7 +12,6 @@ package com.kurly.cloud.point.api.point.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.TransactionalTest;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
@@ -22,6 +21,7 @@ import com.kurly.cloud.point.api.point.entity.MemberPointHistory;
 import com.kurly.cloud.point.api.point.repository.MemberPointHistoryRepository;
 import com.kurly.cloud.point.api.point.util.PointExpireDateCalculator;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import javax.validation.ConstraintViolationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -231,7 +231,7 @@ class MemberPointHistoryServiceTest implements CommonTestGiven {
       MemberPointHistoryListRequest givenRequest() {
         return MemberPointHistoryListRequest.builder()
             .memberNumber(givenMemberNumber())
-            .regDateTimeFrom(LocalDateTime.now().plusDays(1).minusMinutes(1))
+            .regDateTimeFrom(ZonedDateTime.now().plusDays(1).minusMinutes(1))
             .includeHidden(false)
             .build();
       }
@@ -251,7 +251,7 @@ class MemberPointHistoryServiceTest implements CommonTestGiven {
       MemberPointHistoryListRequest givenRequest() {
         return MemberPointHistoryListRequest.builder()
             .memberNumber(givenMemberNumber())
-            .regDateTimeTo(LocalDateTime.now().plusDays(2).minusMinutes(1))
+            .regDateTimeTo(ZonedDateTime.now().plusDays(2).minusMinutes(1))
             .includeHidden(false)
             .build();
       }
@@ -271,8 +271,8 @@ class MemberPointHistoryServiceTest implements CommonTestGiven {
       MemberPointHistoryListRequest givenRequest() {
         return MemberPointHistoryListRequest.builder()
             .memberNumber(givenMemberNumber())
-            .regDateTimeFrom(LocalDateTime.now().plusDays(1).minusMinutes(1))
-            .regDateTimeTo(LocalDateTime.now().plusDays(2).minusMinutes(1))
+            .regDateTimeFrom(ZonedDateTime.now().plusDays(1).minusMinutes(1))
+            .regDateTimeTo(ZonedDateTime.now().plusDays(2).minusMinutes(1))
             .includeHidden(false)
             .build();
       }

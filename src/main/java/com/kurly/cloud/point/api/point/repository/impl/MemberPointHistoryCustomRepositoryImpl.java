@@ -12,6 +12,7 @@ package com.kurly.cloud.point.api.point.repository.impl;
 import com.kurly.cloud.point.api.point.domain.history.MemberPointHistoryListRequest;
 import com.kurly.cloud.point.api.point.entity.MemberPointHistory;
 import com.kurly.cloud.point.api.point.repository.MemberPointHistoryCustomRepository;
+import com.kurly.cloud.point.api.point.util.DateTimeUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -65,10 +66,12 @@ class MemberPointHistoryCustomRepositoryImpl implements MemberPointHistoryCustom
       predicateList.add(cb.equal(from.get("hidden"), false));
     }
     if (Objects.nonNull(request.getRegDateTimeFrom())) {
-      predicateList.add(cb.greaterThanOrEqualTo(from.get("regTime"), request.getRegDateTimeFrom()));
+      predicateList.add(cb.greaterThanOrEqualTo(from.get("regTime"),
+          DateTimeUtil.toLocalDateTime(request.getRegDateTimeFrom())));
     }
     if (Objects.nonNull(request.getRegDateTimeTo())) {
-      predicateList.add(cb.lessThanOrEqualTo(from.get("regTime"), request.getRegDateTimeTo()));
+      predicateList.add(cb.lessThanOrEqualTo(from.get("regTime"),
+          DateTimeUtil.toLocalDateTime(request.getRegDateTimeTo())));
     }
     return cb.and(predicateList.toArray(new Predicate[] {}));
   }

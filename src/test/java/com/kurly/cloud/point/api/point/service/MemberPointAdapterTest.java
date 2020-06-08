@@ -2,12 +2,11 @@ package com.kurly.cloud.point.api.point.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
+import com.kurly.cloud.point.api.point.adapter.out.dto.MemberPointHistoryDto;
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.TransactionalTest;
 import com.kurly.cloud.point.api.point.domain.MemberPointSummary;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
-import com.kurly.cloud.point.api.point.domain.history.MemberPointHistoryDto;
 import com.kurly.cloud.point.api.point.domain.history.MemberPointHistoryInsertRequest;
 import com.kurly.cloud.point.api.point.domain.history.MemberPointHistoryListRequest;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;

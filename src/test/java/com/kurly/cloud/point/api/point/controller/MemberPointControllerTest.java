@@ -11,7 +11,6 @@ package com.kurly.cloud.point.api.point.controller;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.ControllerTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,8 +49,8 @@ public class MemberPointControllerTest implements CommonTestGiven {
     mockMvc
         .perform(
             MockMvcRequestBuilders.get("/public/v1/history/{memberNumber}", givenMemberNumber())
-                .param("regDateTimeFrom", "2020-05-10T10:00:00")
-                .param("regDateTimeTo", "2020-05-10T10:00:00")
+                .param("regDateTimeFrom", "2020-05-10T10:00:00+09:00")
+                .param("regDateTimeTo", "2020-05-10T10:00:00+09:00")
         )
         .andDo(MockMvcResultHandlers.print())
         .andExpect(status().isOk());

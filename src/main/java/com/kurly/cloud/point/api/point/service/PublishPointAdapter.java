@@ -11,6 +11,7 @@ import com.kurly.cloud.point.api.point.entity.MemberPoint;
 import com.kurly.cloud.point.api.point.entity.Point;
 import com.kurly.cloud.point.api.point.exception.AlreadyPublishedException;
 import com.kurly.cloud.point.api.point.port.in.PublishPointPort;
+import com.kurly.cloud.point.api.point.util.DateTimeUtil;
 import java.util.HashMap;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -50,7 +51,7 @@ class PublishPointAdapter implements PublishPointPort {
         .type(request.getHistoryType())
         .cashPoint(request.isSettle() ? request.getPoint() : 0)
         .freePoint(!request.isSettle() ? request.getPoint() : 0)
-        .expireTime(request.getExpireDate())
+        .expireTime(DateTimeUtil.toLocalDateTime(request.getExpireDate()))
         .hidden(request.isHidden())
         .detail(request.getDetail())
         .memo(request.getMemo())

@@ -12,13 +12,13 @@ package com.kurly.cloud.point.api.point.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.TransactionalTest;
 import com.kurly.cloud.point.api.point.domain.consume.PointConsumeResult;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
 import com.kurly.cloud.point.api.point.entity.Point;
+import com.kurly.cloud.point.api.point.util.DateTimeUtil;
 import com.kurly.cloud.point.api.point.util.PointExpireDateCalculator;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -203,7 +203,9 @@ class PointServiceTest implements CommonTestGiven {
         Point subject = subject(given);
 
         assertThat(subject.getExpireTime())
-            .isEqualTo(given.getExpireDate().withHour(23).withMinute(59).withSecond(59));
+            .isEqualTo(
+                DateTimeUtil.toLocalDateTime(given.getExpireDate()).withHour(23).withMinute(59)
+                    .withSecond(59));
       }
 
       PublishPointRequest givenRequest() {

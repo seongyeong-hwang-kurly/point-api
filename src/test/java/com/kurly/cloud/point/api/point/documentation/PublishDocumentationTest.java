@@ -12,7 +12,6 @@ import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.config.SpringSecurityTestConfig;
@@ -22,6 +21,7 @@ import com.kurly.cloud.point.api.point.domain.publish.CancelPublishOrderPointReq
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
 import com.kurly.cloud.point.api.point.entity.Point;
 import com.kurly.cloud.point.api.point.port.in.PublishPointPort;
+import com.kurly.cloud.point.api.point.util.DateTimeUtil;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -99,7 +99,7 @@ public class PublishDocumentationTest implements CommonTestGiven {
                         .description("유상여부 - 무상을 제외한 모든 적립금은 유상입니다.").optional()
                     , fieldWithPath("expireDate").type(JsonFieldType.STRING)
                         .description("만료일 - 만료일을 따로 지정하고 싶은경우 입력합니다.")
-                        .attributes(key("format").value("yyyy-MM-dd'T'HH:mm:ss"))
+                        .attributes(key("format").value("yyyy-MM-dd'T'HH:mm:ssXXX"))
                         .optional()
                     , fieldWithPath("memo").type(JsonFieldType.STRING).description("발급 사유명(내부용)")
                         .optional()
@@ -126,10 +126,10 @@ public class PublishDocumentationTest implements CommonTestGiven {
                     , fieldWithPath("settle").type(JsonFieldType.BOOLEAN)
                         .description("유상여부 - 무상을 제외한 모든 적립금은 유상입니다.")
                     , fieldWithPath("regDateTime").type(JsonFieldType.STRING)
-                        .attributes(key("format").value("yyyy-MM-dd'T'HH:mm:ss"))
+                        .attributes(key("format").value("yyyy-MM-dd'T'HH:mm:ssXXX"))
                         .description("등록시각")
                     , fieldWithPath("expireDateTime").type(JsonFieldType.STRING)
-                        .attributes(key("format").value("yyyy-MM-dd'T'HH:mm:ss"))
+                        .attributes(key("format").value("yyyy-MM-dd'T'HH:mm:ssXXX"))
                         .description("만료시각")
                 )
             )
@@ -162,7 +162,7 @@ public class PublishDocumentationTest implements CommonTestGiven {
         .payment(publishRequest.isPayment())
         .settle(publishRequest.isSettle())
         .regTime(LocalDateTime.now())
-        .expireTime(publishRequest.getExpireDate())
+        .expireTime(DateTimeUtil.toLocalDateTime(publishRequest.getExpireDate()))
         .build();
   }
 
