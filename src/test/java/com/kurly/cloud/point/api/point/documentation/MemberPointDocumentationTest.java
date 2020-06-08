@@ -21,7 +21,6 @@ import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.config.SpringSecurityTestConfig;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
@@ -92,8 +91,8 @@ public class MemberPointDocumentationTest implements CommonTestGiven {
     ResultActions resultActions = mockMvc.perform(
         RestDocumentationRequestBuilders
             .get("/public/v1/history/{memberNumber}", givenMemberNumber())
-            .param("regDateTimeFrom", "2020-01-01T00:00:00")
-            .param("regDateTimeTo", "2030-01-01T00:00:00")
+            .param("regDateTimeFrom", "2020-01-01T00:00:00+09:00")
+            .param("regDateTimeTo", "2030-01-01T00:00:00+09:00")
             .param("size", "10")
             .param("page", "0")
     );
@@ -110,11 +109,11 @@ public class MemberPointDocumentationTest implements CommonTestGiven {
                 , requestParameters(
                     parameterWithName("regDateTimeFrom")
                         .optional()
-                        .attributes(key("format").value("yyyy-MM-dd'T'HH:mm:ss"))
+                        .attributes(key("format").value("yyyy-MM-dd'T'HH:mm:ssXXX"))
                         .description("등록일 검색 일시 시작 조건")
                     , parameterWithName("regDateTimeTo")
                         .optional()
-                        .attributes(key("format").value("yyyy-MM-dd'T'HH:mm:ss"))
+                        .attributes(key("format").value("yyyy-MM-dd'T'HH:mm:ssXXX"))
                         .description("등록일 검색 일시 끝 조건")
                     , parameterWithName("size").optional().description("페이지 사이즈")
                     , parameterWithName("page").optional().description("페이지 번호")
@@ -133,10 +132,16 @@ public class MemberPointDocumentationTest implements CommonTestGiven {
                     , fieldWithPath("content[].memo").type(JsonFieldType.STRING)
                         .description("이력 내용(내부용) - 관리자 권한 일때만 노출 됩니다")
                     , fieldWithPath("content[].regDateTime").type(JsonFieldType.STRING)
-                        .attributes(key("format").value("yyyy-MM-dd'T'HH:mm:ss"))
+                        .attributes(key("format").value("yyyy-MM-dd'T'HH:mm:ssXXX"))
                         .description("등록시각")
+                    , fieldWithPath("content[].regTimeStamp").type(JsonFieldType.NUMBER)
+                        .attributes(key("format").value("Timestamp"))
+                        .description("만료시각")
                     , fieldWithPath("content[].expireDateTime").type(JsonFieldType.STRING)
-                        .attributes(key("format").value("yyyy-MM-dd'T'HH:mm:ss"))
+                        .attributes(key("format").value("yyyy-MM-dd'T'HH:mm:ssXXX"))
+                        .description("등록시각")
+                    , fieldWithPath("content[].expireTimeStamp").type(JsonFieldType.NUMBER)
+                        .attributes(key("format").value("Timestamp"))
                         .description("만료시각")
                     , fieldWithPath("totalPages").type(JsonFieldType.NUMBER).description("전체 페이지 수")
                     , fieldWithPath("totalElements").type(JsonFieldType.NUMBER)
@@ -174,7 +179,10 @@ public class MemberPointDocumentationTest implements CommonTestGiven {
                     beneathPath("data").withSubsectionId("data")
                     , fieldWithPath("amount").type(JsonFieldType.NUMBER).description("총 보유 적립금")
                     , fieldWithPath("nextExpireDate").type(JsonFieldType.STRING)
-                        .attributes(key("format").value("yyyy-MM-dd'T'HH:mm:ss"))
+                        .attributes(key("format").value("yyyy-MM-dd'T'HH:mm:ssXXX"))
+                        .description("다음 만료 시각")
+                    , fieldWithPath("nextExpireTimeStamp").type(JsonFieldType.NUMBER)
+                        .attributes(key("format").value("Timestamp"))
                         .description("다음 만료 시각")
                     , fieldWithPath("nextExpireAmount").type(JsonFieldType.NUMBER)
                         .description("다음 만료 적립금")

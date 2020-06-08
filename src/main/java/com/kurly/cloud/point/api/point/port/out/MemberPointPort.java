@@ -1,7 +1,7 @@
 package com.kurly.cloud.point.api.point.port.out;
 
+import com.kurly.cloud.point.api.point.adapter.out.dto.MemberPointHistoryDto;
 import com.kurly.cloud.point.api.point.domain.MemberPointSummary;
-import com.kurly.cloud.point.api.point.domain.history.MemberPointHistoryDto;
 import com.kurly.cloud.point.api.point.domain.history.MemberPointHistoryListRequest;
 import org.springframework.data.domain.Page;
 

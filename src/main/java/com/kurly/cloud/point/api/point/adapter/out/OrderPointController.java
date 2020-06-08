@@ -9,6 +9,7 @@
 
 package com.kurly.cloud.point.api.point.adapter.out;
 
+import com.kurly.cloud.point.api.point.adapter.out.dto.PointDto;
 import com.kurly.cloud.point.api.point.entity.Point;
 import com.kurly.cloud.point.api.point.exception.OrderPublishedNotFoundException;
 import com.kurly.cloud.point.api.point.port.out.OrderPointPort;
@@ -27,9 +28,10 @@ public class OrderPointController {
 
   @Secured({"ROLE_USER", "ROLE_ADMIN"})
   @GetMapping("/public/v1/order-published-amount/{orderNumber}")
-  Point getOrderPublishedAmount(@PathVariable long orderNumber) {
+  PointDto getOrderPublishedAmount(@PathVariable long orderNumber) {
     Optional<Point> orderPublished = orderPointPort.getOrderPublished(orderNumber);
-    return orderPublished.orElseThrow(() -> new OrderPublishedNotFoundException(orderNumber));
+    return PointDto.fromEntity(orderPublished.orElseThrow(()
+        -> new OrderPublishedNotFoundException(orderNumber)));
   }
 
 }

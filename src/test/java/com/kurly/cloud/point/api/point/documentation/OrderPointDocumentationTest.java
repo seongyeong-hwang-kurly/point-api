@@ -20,7 +20,6 @@ import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.config.SpringSecurityTestConfig;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
@@ -101,10 +100,16 @@ public class OrderPointDocumentationTest implements CommonTestGiven {
                     , fieldWithPath("payment").type(JsonFieldType.BOOLEAN).description("결제 여부")
                     , fieldWithPath("settle").type(JsonFieldType.BOOLEAN).description("유상 여부")
                     , fieldWithPath("regTime").type(JsonFieldType.STRING)
-                        .attributes(key("format").value("yyyy-MM-dd'T'HH:mm:ss"))
+                        .attributes(key("format").value("yyyy-MM-dd'T'HH:mm:ssXXX"))
                         .description("등록 시각")
+                    , fieldWithPath("regTimeStamp").type(JsonFieldType.NUMBER)
+                        .attributes(key("format").value("Timestamp"))
+                        .description("만료 시각")
                     , fieldWithPath("expireTime").type(JsonFieldType.STRING)
-                        .attributes(key("format").value("yyyy-MM-dd'T'HH:mm:ss"))
+                        .attributes(key("format").value("yyyy-MM-dd'T'HH:mm:ssXXX"))
+                        .description("등록 시각")
+                    , fieldWithPath("expireTimeStamp").type(JsonFieldType.NUMBER)
+                        .attributes(key("format").value("Timestamp"))
                         .description("만료 시각")
                 )
             )

@@ -10,9 +10,11 @@
 package com.kurly.cloud.point.api.point.domain.publish;
 
 import com.kurly.cloud.point.api.point.entity.Point;
+import com.kurly.cloud.point.api.point.util.DateTimeUtil;
 import com.kurly.cloud.point.api.point.util.PointExpireDateCalculator;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Objects;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -41,14 +43,21 @@ public class PublishPointRequest {
   boolean payment;
   boolean settle;
   boolean unlimitedDate;
-  @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-  LocalDateTime expireDate;
+  @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+  ZonedDateTime expireDate;
 
   @Builder.Default
   String memo = "";
   String detail;
   long actionMemberNumber;
   boolean hidden;
+
+  public static class PublishPointRequestBuilder {
+    public PublishPointRequestBuilder expireDate(LocalDateTime expireDate) {
+      this.expireDate = DateTimeUtil.toZonedDateTime(expireDate);
+      return this;
+    }
+  }
 
   /**
    * Entity로 변환.
@@ -65,7 +74,7 @@ public class PublishPointRequest {
         .payment(payment)
         .settle(settle)
         .regTime(LocalDateTime.now())
-        .expireTime(getExpireDate())
+        .expireTime(DateTimeUtil.toLocalDateTime(getExpireDate()))
         .build();
   }
 
@@ -82,14 +91,16 @@ public class PublishPointRequest {
   /**
    * 만료일.
    */
-  public @Nullable LocalDateTime getExpireDate() {
+  public @Nullable ZonedDateTime getExpireDate() {
     if (isUnlimitedDate()) {
       return null;
     }
-    return Objects.isNull(expireDate)
-        ? PointExpireDateCalculator.calculateDefault(LocalDateTime.now())
-        :
-        PointExpireDateCalculator.withEndOfDate(expireDate);
+    return DateTimeUtil.toZonedDateTime(
+        Objects.isNull(expireDate)
+            ? PointExpireDateCalculator.calculateDefault(LocalDateTime.now())
+            :
+            PointExpireDateCalculator.withEndOfDate(expireDate.toLocalDateTime())
+    );
   }
 
   public boolean isUnlimitedDate() {

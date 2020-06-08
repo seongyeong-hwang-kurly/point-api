@@ -10,9 +10,9 @@
 package com.kurly.cloud.point.api.point.adapter.out;
 
 import com.kurly.cloud.api.common.config.KurlyUserPrincipal;
+import com.kurly.cloud.point.api.point.adapter.out.dto.MemberPointHistoryDto;
+import com.kurly.cloud.point.api.point.adapter.out.dto.MemberPointSummaryDto;
 import com.kurly.cloud.point.api.point.adapter.out.dto.SimplePageImpl;
-import com.kurly.cloud.point.api.point.domain.MemberPointSummary;
-import com.kurly.cloud.point.api.point.domain.history.MemberPointHistoryDto;
 import com.kurly.cloud.point.api.point.domain.history.MemberPointHistoryListRequest;
 import com.kurly.cloud.point.api.point.port.out.MemberPointPort;
 import lombok.RequiredArgsConstructor;
@@ -49,7 +49,7 @@ public class MemberPointController {
 
   @PreAuthorize("@userSecurity.checkMemberNo(principal,#memberNumber)")
   @GetMapping("/public/v1/summary/{memberNumber}")
-  MemberPointSummary getMemberPointSummary(@PathVariable long memberNumber) {
-    return memberPointPort.getMemberPointSummary(memberNumber);
+  MemberPointSummaryDto getMemberPointSummary(@PathVariable long memberNumber) {
+    return MemberPointSummaryDto.fromSummary(memberPointPort.getMemberPointSummary(memberNumber));
   }
 }

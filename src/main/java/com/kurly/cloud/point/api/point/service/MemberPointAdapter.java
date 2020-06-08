@@ -1,7 +1,7 @@
 package com.kurly.cloud.point.api.point.service;
 
+import com.kurly.cloud.point.api.point.adapter.out.dto.MemberPointHistoryDto;
 import com.kurly.cloud.point.api.point.domain.MemberPointSummary;
-import com.kurly.cloud.point.api.point.domain.history.MemberPointHistoryDto;
 import com.kurly.cloud.point.api.point.domain.history.MemberPointHistoryListRequest;
 import com.kurly.cloud.point.api.point.entity.MemberPoint;
 import com.kurly.cloud.point.api.point.entity.MemberPointHistory;

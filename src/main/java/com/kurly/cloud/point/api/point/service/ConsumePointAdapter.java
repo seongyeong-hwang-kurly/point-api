@@ -14,6 +14,7 @@ import com.kurly.cloud.point.api.point.entity.PointHistory;
 import com.kurly.cloud.point.api.point.exception.CancelAmountExceedException;
 import com.kurly.cloud.point.api.point.exception.NotEnoughPointException;
 import com.kurly.cloud.point.api.point.port.in.ConsumePointPort;
+import com.kurly.cloud.point.api.point.util.DateTimeUtil;
 import java.util.HashMap;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -140,7 +141,7 @@ class ConsumePointAdapter implements ConsumePointPort {
         .memberNumber(request.getMemberNumber())
         .type(request.getHistoryType())
         .freePoint(request.getPoint())
-        .expireTime(publishRequest.getExpireDate())
+        .expireTime(DateTimeUtil.toLocalDateTime(publishRequest.getExpireDate()))
         .detail(request.getDetail())
         .orderNumber(request.getOrderNumber())
         .build());
