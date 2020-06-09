@@ -7,7 +7,7 @@
  * 1)
  */
 
-package com.kurly.cloud.point.api.point.documentation;
+package com.kurly.cloud.point.api.point.documentation.pub;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
@@ -22,6 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.config.SpringSecurityTestConfig;
+import com.kurly.cloud.point.api.point.documentation.ApiDocumentUtils;
 import com.kurly.cloud.point.api.point.domain.consume.BulkConsumePointRequest;
 import com.kurly.cloud.point.api.point.domain.consume.CancelOrderConsumePointRequest;
 import com.kurly.cloud.point.api.point.domain.consume.ConsumePointRequest;
@@ -42,6 +43,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.test.context.support.WithUserDetails;
@@ -54,6 +56,7 @@ import org.springframework.web.context.WebApplicationContext;
 @Import(SpringSecurityTestConfig.class)
 @ExtendWith({SpringExtension.class, RestDocumentationExtension.class})
 @SpringBootTest
+@DisplayName("PublicConsumeDocumentationTest")
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = "gateway.cloud.dev.kurly.services/point", uriPort = 443)
 public class ConsumeDocumentationTest implements CommonTestGiven {
   MockMvc mockMvc;
@@ -87,7 +90,7 @@ public class ConsumeDocumentationTest implements CommonTestGiven {
     resultActions
         .andExpect(status().isNoContent())
         .andDo(
-            document("point/{method-name}"
+            MockMvcRestDocumentation.document("point/pub/{method-name}"
                 , ApiDocumentUtils.getDocumentRequest()
                 , ApiDocumentUtils.getDocumentResponse()
                 , requestFields(
@@ -131,7 +134,7 @@ public class ConsumeDocumentationTest implements CommonTestGiven {
     resultActions
         .andExpect(status().isOk())
         .andDo(
-            document("point/{method-name}"
+            document("point/pub/{method-name}"
                 , ApiDocumentUtils.getDocumentRequest()
                 , ApiDocumentUtils.getDocumentResponse()
                 , requestFields(
@@ -183,7 +186,7 @@ public class ConsumeDocumentationTest implements CommonTestGiven {
     resultActions
         .andExpect(status().isNoContent())
         .andDo(
-            document("point/{method-name}"
+            document("point/pub/{method-name}"
                 , ApiDocumentUtils.getDocumentRequest()
                 , ApiDocumentUtils.getDocumentResponse()
                 , requestFields(
@@ -220,7 +223,7 @@ public class ConsumeDocumentationTest implements CommonTestGiven {
     resultActions
         .andExpect(status().isNoContent())
         .andDo(
-            document("point/{method-name}"
+            document("point/pub/{method-name}"
                 , ApiDocumentUtils.getDocumentRequest()
                 , ApiDocumentUtils.getDocumentResponse()
                 , requestFields(

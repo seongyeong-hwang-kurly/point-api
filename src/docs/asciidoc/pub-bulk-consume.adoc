@@ -10,18 +10,18 @@ POST
 
 ==== HTTP request
 
-include::{snippets}/point/bulk-consume/http-request.adoc[]
+include::{snippets}/point/pub/bulk-consume/http-request.adoc[]
 
 ==== Request Fields
 
 사용 API와 동일하며 아래 값이 추가로 필요합니다
 
-include::{snippets}/point/bulk-consume/request-fields.adoc[]
+include::{snippets}/point/pub/bulk-consume/request-fields.adoc[]
 
 ==== Response fields
 
-include::{snippets}/point/bulk-consume/response-fields-data.adoc[]
+include::{snippets}/point/pub/bulk-consume/response-fields-data.adoc[]
 
 ==== Response body
 
-include::{snippets}/point/bulk-consume/response-body.adoc[]
+include::{snippets}/point/pub/bulk-consume/response-body.adoc[]

@@ -10,11 +10,11 @@ POST
 
 ==== HTTP request
 
-include::{snippets}/point/cancel-order-publish/http-request.adoc[]
+include::{snippets}/point/pub/cancel-order-publish/http-request.adoc[]
 
 ==== Request Fields
 
-include::{snippets}/point/cancel-order-publish/request-fields.adoc[]
+include::{snippets}/point/pub/cancel-order-publish/request-fields.adoc[]
 
 ==== Response fields
 
@@ -22,4 +22,4 @@ include::{snippets}/point/cancel-order-publish/request-fields.adoc[]
 
 ==== Response body
 
-include::{snippets}/point/cancel-order-publish/response-body.adoc[]
+include::{snippets}/point/pub/cancel-order-publish/response-body.adoc[]

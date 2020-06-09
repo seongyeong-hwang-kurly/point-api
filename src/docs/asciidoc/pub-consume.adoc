@@ -10,11 +10,11 @@ POST
 
 ==== HTTP request
 
-include::{snippets}/point/consume/http-request.adoc[]
+include::{snippets}/point/pub/consume/http-request.adoc[]
 
 ==== Request Fields
 
-include::{snippets}/point/consume/request-fields.adoc[]
+include::{snippets}/point/pub/consume/request-fields.adoc[]
 
 ==== Response fields
 
@@ -22,4 +22,4 @@ include::{snippets}/point/consume/request-fields.adoc[]
 
 ==== Response body
 
-include::{snippets}/point/consume/response-body.adoc[]
+include::{snippets}/point/pub/consume/response-body.adoc[]

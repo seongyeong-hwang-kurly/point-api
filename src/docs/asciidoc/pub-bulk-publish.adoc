@@ -10,18 +10,18 @@ POST
 
 ==== HTTP request
 
-include::{snippets}/point/bulk-publish/http-request.adoc[]
+include::{snippets}/point/pub/bulk-publish/http-request.adoc[]
 
 ==== Request Fields
 
 지급 API와 동일하며 아래 값이 추가로 필요합니다
 
-include::{snippets}/point/bulk-publish/request-fields.adoc[]
+include::{snippets}/point/pub/bulk-publish/request-fields.adoc[]
 
 ==== Response fields
 
-include::{snippets}/point/bulk-publish/response-fields-data.adoc[]
+include::{snippets}/point/pub/bulk-publish/response-fields-data.adoc[]
 
 ==== Response body
 
-include::{snippets}/point/bulk-publish/response-body.adoc[]
+include::{snippets}/point/pub/bulk-publish/response-body.adoc[]

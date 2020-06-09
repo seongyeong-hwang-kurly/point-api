@@ -10,16 +10,16 @@ POST
 
 ==== HTTP request
 
-include::{snippets}/point/publish/http-request.adoc[]
+include::{snippets}/point/pub/publish/http-request.adoc[]
 
 ==== Request Fields
 
-include::{snippets}/point/publish/request-fields.adoc[]
+include::{snippets}/point/pub/publish/request-fields.adoc[]
 
 ==== Response fields
 
-include::{snippets}/point/publish/response-fields-data.adoc[]
+include::{snippets}/point/pub/publish/response-fields-data.adoc[]
 
 ==== Response body
 
-include::{snippets}/point/publish/response-body.adoc[]
+include::{snippets}/point/pub/publish/response-body.adoc[]

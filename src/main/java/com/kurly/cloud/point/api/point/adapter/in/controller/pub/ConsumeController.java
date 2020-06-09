@@ -1,4 +1,4 @@
-package com.kurly.cloud.point.api.point.adapter.in;
+package com.kurly.cloud.point.api.point.adapter.in.controller.pub;
 
 import com.kurly.cloud.api.common.config.KurlyUserPrincipal;
 import com.kurly.cloud.api.common.domain.exception.ApiErrorResponse;
@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Validated
 @RequiredArgsConstructor
-@RestController
+@RestController("PublicConsumeController")
 public class ConsumeController {
 
   private final ConsumePointPort consumePointPort;

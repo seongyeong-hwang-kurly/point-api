@@ -1,4 +1,4 @@
-package com.kurly.cloud.point.api.point.controller;
+package com.kurly.cloud.point.api.point.controller.pri;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -6,13 +6,11 @@ import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.ControllerTest;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.domain.publish.BulkPublishPointRequest;
-import com.kurly.cloud.point.api.point.domain.publish.CancelPublishOrderPointRequest;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
 import com.kurly.cloud.point.api.point.entity.Point;
 import com.kurly.cloud.point.api.point.port.in.PublishPointPort;
@@ -27,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -38,6 +35,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
+@DisplayName("PrivatePublishControllerTest")
 public class PublishControllerTest implements CommonTestGiven {
 
   @Autowired
@@ -65,34 +63,15 @@ public class PublishControllerTest implements CommonTestGiven {
     }
 
     @Nested
-    @DisplayName("일반 회원이 호출하면")
+    @DisplayName("적립금 발급을 호출하면")
     @ControllerTest
-    class Context0 {
+    class Context {
 
-      @WithUserDetails
-      @Test
-      @DisplayName("응답코드 401을 반환한다")
-      void test() throws Exception {
-        mockMvc
-            .perform(MockMvcRequestBuilders.post("/public/v1/publish")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(givenRequest())))
-            .andDo(MockMvcResultHandlers.print())
-            .andExpect(status().isUnauthorized());
-      }
-    }
-
-    @Nested
-    @DisplayName("관리자가 호출하면")
-    @ControllerTest
-    class Context1 {
-
-      @WithUserDetails("admin")
       @Test
       @DisplayName("적립금을 발급하고 응답코드는 200를 반환한다")
       void test() throws Exception {
         mockMvc
-            .perform(MockMvcRequestBuilders.post("/public/v1/publish")
+            .perform(MockMvcRequestBuilders.post("/v1/publish")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(givenRequest())))
             .andDo(MockMvcResultHandlers.print())
@@ -103,14 +82,13 @@ public class PublishControllerTest implements CommonTestGiven {
     @Nested
     @DisplayName("필수값이 없으면")
     @ControllerTest
-    class Context2 {
+    class Context1 {
 
-      @WithUserDetails("admin")
       @Test
       @DisplayName("응답 코드는 422를 반환하고 필드명을 반환한다")
       void test() throws Exception {
         mockMvc
-            .perform(MockMvcRequestBuilders.post("/public/v1/publish")
+            .perform(MockMvcRequestBuilders.post("/v1/publish")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(new PublishPointRequest()))
             )
@@ -131,7 +109,6 @@ public class PublishControllerTest implements CommonTestGiven {
     @MockBean
     PublishPointPort publishPointPort;
 
-    @WithUserDetails("admin")
     @Test
     @DisplayName("발급에 실패하면 실패한 요청 아이디를 리턴한다")
     void test() throws Exception {
@@ -140,7 +117,7 @@ public class PublishControllerTest implements CommonTestGiven {
 
       mockMvc
           .perform(
-              MockMvcRequestBuilders.post("/public/v1/publish/bulk")
+              MockMvcRequestBuilders.post("/v1/publish/bulk")
                   .contentType(MediaType.APPLICATION_JSON)
                   .content(objectMapper.writeValueAsString(bulkPublishPointRequests))
           )
@@ -164,7 +141,6 @@ public class PublishControllerTest implements CommonTestGiven {
       return requests;
     }
 
-    @WithUserDetails("admin")
     @Test
     @DisplayName("발급에 성공하면 성공한 요청 아이디를 리턴한다")
     void test1() throws Exception {
@@ -176,7 +152,7 @@ public class PublishControllerTest implements CommonTestGiven {
       );
       mockMvc
           .perform(
-              MockMvcRequestBuilders.post("/public/v1/publish/bulk")
+              MockMvcRequestBuilders.post("/v1/publish/bulk")
                   .contentType(MediaType.APPLICATION_JSON)
                   .content(objectMapper.writeValueAsString(bulkPublishPointRequests))
           )
@@ -185,40 +161,6 @@ public class PublishControllerTest implements CommonTestGiven {
               "{\"success\":true,\"message\":null,\"data\":{\"succeed\":[1,2,3],\"failed\":[],\"resultIds\":[{\"jobId\":1,\"pointSeq\":1},{\"jobId\":2,\"pointSeq\":2},{\"jobId\":3,\"pointSeq\":3}]}}"
           ))
           .andExpect(status().is(200));
-    }
-  }
-
-  @Nested
-  @DisplayName("적립금 주문 발급 취소를 호출 할 때")
-  class DescribeCancelOrderPublish {
-
-    CancelPublishOrderPointRequest givenRequest() {
-      return CancelPublishOrderPointRequest.builder()
-          .memberNumber(givenMemberNumber())
-          .orderNumber(givenOrderNumber())
-          .point(1000)
-          .build();
-    }
-
-    @Nested
-    @DisplayName("값이 올바르면")
-    @ControllerTest
-    class Context0 {
-
-      @MockBean
-      PublishPointPort publishPointPort;
-
-      @WithUserDetails("admin")
-      @Test
-      @DisplayName("적립금 발급을 취소하고 204를 반환한다")
-      void test() throws Exception {
-        mockMvc
-            .perform(MockMvcRequestBuilders.post("/public/v1/publish/order-cancel")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(givenRequest())))
-            .andDo(MockMvcResultHandlers.print())
-            .andExpect(status().isNoContent());
-      }
     }
   }
 }

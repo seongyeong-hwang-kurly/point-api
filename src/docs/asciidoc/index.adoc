@@ -20,13 +20,24 @@ API에 관계없이 아래 사항을 지켜주셔야 합니다
 === Domain
 
 |===
-| 환경 | domain
+| 환경 | type | domain
 
-| 개발서버
-| `https://gateway.cloud.dev.kurly.services/point`
+| 개발
+| public
+| https://gateway.cloud.dev.kurly.services/point
 
-| 운영서버
-| `https://gateway.cloud.kurly.services/point`
+| 개발
+| private
+| https://gateway.cloud.dev.kurly.services/point
+
+| 운영
+| public
+| https://api.kurly.com/cloud/point
+
+| 운영
+| private
+| https://gateway.cloud.kurly.services/point
+
 |===
 
 === Header
@@ -72,20 +83,32 @@ include::summary.adoc[]
 
 include::order-published-amount.adoc[]
 
-== 지급
+== 지급 (Public)
 
-include::publish.adoc[]
+include::pub-publish.adoc[]
 
-include::bulk-publish.adoc[]
+include::pub-bulk-publish.adoc[]
 
-include::cancel-order-publish.adoc[]
+include::pub-cancel-order-publish.adoc[]
 
-== 사용
+== 지급 (Private)
 
-include::order-consume.adoc[]
+include::pri-publish.adoc[]
 
-include::consume.adoc[]
+include::pri-bulk-publish.adoc[]
 
-include::bulk-consume.adoc[]
+== 사용 (Public)
 
-include::cancel-consume.adoc[]
+include::pub-order-consume.adoc[]
+
+include::pub-consume.adoc[]
+
+include::pub-bulk-consume.adoc[]
+
+include::pub-cancel-consume.adoc[]
+
+== 사용 (Private)
+
+include::pri-consume.adoc[]
+
+include::pri-bulk-consume.adoc[]

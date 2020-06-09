@@ -1,18 +1,15 @@
-package com.kurly.cloud.point.api.point.controller;
+package com.kurly.cloud.point.api.point.controller.pri;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.ControllerTest;
 import com.kurly.cloud.point.api.point.domain.consume.BulkConsumePointRequest;
-import com.kurly.cloud.point.api.point.domain.consume.CancelOrderConsumePointRequest;
 import com.kurly.cloud.point.api.point.domain.consume.ConsumePointRequest;
-import com.kurly.cloud.point.api.point.domain.consume.OrderConsumePointRequest;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.port.in.ConsumePointPort;
 import java.util.ArrayList;
@@ -26,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -37,6 +33,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
+@DisplayName("PrivateConsumeControllerTest")
 public class ConsumeControllerTest implements CommonTestGiven {
 
   @Autowired
@@ -66,38 +63,19 @@ public class ConsumeControllerTest implements CommonTestGiven {
           .build();
     }
 
-    @ControllerTest
     @Nested
-    @DisplayName("일반 회원이 호출하면")
-    class Context0 {
-
-      @WithUserDetails
-      @Test
-      @DisplayName("응답코드 401을 반환한다")
-      void test() throws Exception {
-        mockMvc
-            .perform(MockMvcRequestBuilders.post("/public/v1/consume")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(givenRequest())))
-            .andDo(MockMvcResultHandlers.print())
-            .andExpect(status().isUnauthorized());
-      }
-    }
-
-    @Nested
-    @DisplayName("관리자가 호출하면")
+    @DisplayName("적립금 사용을 호출하면")
     @ControllerTest
     class Context1 {
 
       @MockBean
       ConsumePointPort consumePointPort;
 
-      @WithUserDetails("admin")
       @Test
       @DisplayName("적립금을 사용하고 응답코드는 204를 반환한다")
       void test() throws Exception {
         mockMvc
-            .perform(MockMvcRequestBuilders.post("/public/v1/consume")
+            .perform(MockMvcRequestBuilders.post("/v1/consume")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(givenRequest())))
             .andDo(MockMvcResultHandlers.print())
@@ -110,12 +88,11 @@ public class ConsumeControllerTest implements CommonTestGiven {
     @ControllerTest
     class Context2 {
 
-      @WithUserDetails("admin")
       @Test
       @DisplayName("응답 코드는 422를 반환하고 필드명을 반환한다")
       void test() throws Exception {
         mockMvc
-            .perform(MockMvcRequestBuilders.post("/public/v1/consume")
+            .perform(MockMvcRequestBuilders.post("/v1/consume")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(new ConsumePointRequest()))
             )
@@ -129,12 +106,11 @@ public class ConsumeControllerTest implements CommonTestGiven {
     @ControllerTest
     class Context3 {
 
-      @WithUserDetails("admin")
       @Test
       @DisplayName("400을 리턴한다")
       void test() throws Exception {
         mockMvc
-            .perform(MockMvcRequestBuilders.post("/public/v1/consume")
+            .perform(MockMvcRequestBuilders.post("/v1/consume")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(givenRequest())))
             .andDo(MockMvcResultHandlers.print())
@@ -151,7 +127,6 @@ public class ConsumeControllerTest implements CommonTestGiven {
     @MockBean
     ConsumePointPort consumePointPort;
 
-    @WithUserDetails("admin")
     @Test
     @DisplayName("사용에 실패하면 실패한 요청 아이디를 리턴한다")
     void test() throws Exception {
@@ -160,7 +135,7 @@ public class ConsumeControllerTest implements CommonTestGiven {
 
       mockMvc
           .perform(
-              MockMvcRequestBuilders.post("/public/v1/consume/bulk")
+              MockMvcRequestBuilders.post("/v1/consume/bulk")
                   .contentType(MediaType.APPLICATION_JSON)
                   .content(objectMapper.writeValueAsString(bulkConsumePointRequests))
           )
@@ -185,7 +160,6 @@ public class ConsumeControllerTest implements CommonTestGiven {
       return requests;
     }
 
-    @WithUserDetails("admin")
     @Test
     @DisplayName("사용에 성공하면 성공한 요청 아이디를 리턴한다")
     void test1() throws Exception {
@@ -193,7 +167,7 @@ public class ConsumeControllerTest implements CommonTestGiven {
 
       mockMvc
           .perform(
-              MockMvcRequestBuilders.post("/public/v1/consume/bulk")
+              MockMvcRequestBuilders.post("/v1/consume/bulk")
                   .contentType(MediaType.APPLICATION_JSON)
                   .content(objectMapper.writeValueAsString(bulkConsumePointRequests))
           )
@@ -204,96 +178,4 @@ public class ConsumeControllerTest implements CommonTestGiven {
           .andExpect(status().is(200));
     }
   }
-
-  @Nested
-  @DisplayName("주문 적립금 사용을 호출 할 때")
-  class DescribeOrderConsume {
-
-    @Nested
-    @DisplayName("값이 올바르면")
-    @ControllerTest
-    class Context0 {
-      @MockBean
-      ConsumePointPort consumePointPort;
-
-      @WithUserDetails
-      @Test
-      @DisplayName("적립금을 사용하고 응답코드는 204를 반환한다")
-      void test() throws Exception {
-        mockMvc
-            .perform(MockMvcRequestBuilders.post("/public/v1/consume/order")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(givenRequest())))
-            .andDo(MockMvcResultHandlers.print())
-            .andExpect(status().isNoContent());
-      }
-
-      OrderConsumePointRequest givenRequest() {
-        return OrderConsumePointRequest.builder()
-            .memberNumber(givenMemberNumber())
-            .orderNumber(givenOrderNumber())
-            .point(100)
-            .build();
-      }
-    }
-
-    @Nested
-    @DisplayName("다른사용자의 적립금 사용을 호출하면")
-    @ControllerTest
-    class Context1 {
-      @WithUserDetails
-      @Test
-      @DisplayName("응답코드 401을 반환한다")
-      void test() throws Exception {
-        mockMvc
-            .perform(MockMvcRequestBuilders.post("/public/v1/consume/order")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(givenRequest())))
-            .andDo(MockMvcResultHandlers.print())
-            .andExpect(status().isUnauthorized());
-      }
-
-      OrderConsumePointRequest givenRequest() {
-        return OrderConsumePointRequest.builder()
-            .memberNumber(givenMemberNumber() - 1)
-            .orderNumber(givenOrderNumber())
-            .point(100)
-            .build();
-      }
-    }
-  }
-
-  @Nested
-  @DisplayName("적립금 사용취소를 호출 할 때")
-  class DescribeCancelConsume {
-
-    @Nested
-    @DisplayName("값이 올바르면")
-    @ControllerTest
-    class Context0 {
-      @MockBean
-      ConsumePointPort consumePointPort;
-
-      @WithUserDetails("admin")
-      @Test
-      @DisplayName("적립금을 사용취소 하고 응답코드는 204를 반환한다")
-      void test() throws Exception {
-        mockMvc
-            .perform(MockMvcRequestBuilders.post("/public/v1/consume/cancel")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(givenRequest())))
-            .andDo(MockMvcResultHandlers.print())
-            .andExpect(status().isNoContent());
-      }
-
-      CancelOrderConsumePointRequest givenRequest() {
-        return CancelOrderConsumePointRequest.builder()
-            .orderNumber(givenOrderNumber())
-            .memberNumber(givenMemberNumber())
-            .point(100)
-            .build();
-      }
-    }
-  }
-
 }
