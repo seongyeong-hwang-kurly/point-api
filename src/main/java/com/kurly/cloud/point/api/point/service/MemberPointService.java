@@ -39,7 +39,7 @@ class MemberPointService {
   }
 
   MemberPoint createMemberPoint(long memberNumber, int freePoint, int cashPoint) {
-    return memberPointRepository.save(MemberPoint.builder()
+    return memberPointRepository.saveAndFlush(MemberPoint.builder()
         .memberNumber(memberNumber)
         .cashPoint(cashPoint)
         .freePoint(freePoint)

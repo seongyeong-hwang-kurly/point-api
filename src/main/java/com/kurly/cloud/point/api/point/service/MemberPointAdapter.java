@@ -32,6 +32,7 @@ class MemberPointAdapter implements MemberPointPort {
         -> MemberPointHistoryDto.fromEntity(memberPointHistory, request.isIncludeMemo()));
   }
 
+  @Transactional(readOnly = true)
   @Override public MemberPointSummary getMemberPointSummary(long memberNumber) {
     MemberPoint memberPoint = memberPointService.getOrCreateMemberPoint(memberNumber);
     if (memberPoint.getTotalPoint() == 0) {
