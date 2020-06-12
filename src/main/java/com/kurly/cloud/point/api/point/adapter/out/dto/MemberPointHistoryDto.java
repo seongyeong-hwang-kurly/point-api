@@ -30,10 +30,10 @@ public class MemberPointHistoryDto {
   String memo;
   @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
   ZonedDateTime regDateTime;
-  long regTimeStamp;
+  long regTimestamp;
   @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
   ZonedDateTime expireDateTime;
-  long expireTimeStamp;
+  long expireTimestamp;
 
   /**
    * Entity 를 Dto로 변환한다.
@@ -47,9 +47,9 @@ public class MemberPointHistoryDto {
         .detail(memberPointHistory.getDetail())
         .memo(includeMemo ? memberPointHistory.getMemo() : null)
         .regDateTime(DateTimeUtil.toZonedDateTime(memberPointHistory.getRegTime()))
-        .regTimeStamp(Timestamp.valueOf(memberPointHistory.getRegTime()).getTime())
+        .regTimestamp(Timestamp.valueOf(memberPointHistory.getRegTime()).getTime())
         .expireDateTime(DateTimeUtil.toZonedDateTime(memberPointHistory.getExpireTime()))
-        .expireTimeStamp(Timestamp.valueOf(memberPointHistory.getExpireTime()).getTime())
+        .expireTimestamp(Timestamp.valueOf(memberPointHistory.getExpireTime()).getTime())
         .build();
   }
 }

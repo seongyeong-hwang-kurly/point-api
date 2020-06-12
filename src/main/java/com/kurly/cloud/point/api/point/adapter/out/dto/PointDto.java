@@ -23,10 +23,10 @@ public class PointDto {
   boolean settle;
   @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
   ZonedDateTime regTime;
-  long regTimeStamp;
+  long regTimestamp;
   @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
   ZonedDateTime expireTime;
-  long expireTimeStamp;
+  long expireTimestamp;
 
   /**
    * Entity에서 인스턴스 생성.
@@ -44,9 +44,9 @@ public class PointDto {
         .payment(point.isPayment())
         .settle(point.isSettle())
         .regTime(DateTimeUtil.toZonedDateTime((point.getRegTime())))
-        .regTimeStamp(Timestamp.valueOf(point.getRegTime()).getTime())
+        .regTimestamp(Timestamp.valueOf(point.getRegTime()).getTime())
         .expireTime(DateTimeUtil.toZonedDateTime(point.getExpireTime()))
-        .expireTimeStamp(Timestamp.valueOf(point.getExpireTime()).getTime())
+        .expireTimestamp(Timestamp.valueOf(point.getExpireTime()).getTime())
         .build();
   }
 }

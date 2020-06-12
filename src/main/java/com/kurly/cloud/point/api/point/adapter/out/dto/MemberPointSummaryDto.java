@@ -14,7 +14,7 @@ public class MemberPointSummaryDto {
   int amount;
   @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
   ZonedDateTime nextExpireDate;
-  long nextExpireTimeStamp;
+  long nextExpireTimestamp;
   int nextExpireAmount;
 
   /**
@@ -24,7 +24,7 @@ public class MemberPointSummaryDto {
     return MemberPointSummaryDto.builder()
         .amount(memberPointSummary.getAmount())
         .nextExpireDate(DateTimeUtil.toZonedDateTime(memberPointSummary.getNextExpireDate()))
-        .nextExpireTimeStamp(Timestamp.valueOf(memberPointSummary.getNextExpireDate()).getTime())
+        .nextExpireTimestamp(Timestamp.valueOf(memberPointSummary.getNextExpireDate()).getTime())
         .build();
   }
 }
