@@ -47,9 +47,9 @@ public class MemberPointHistoryDto {
         .detail(memberPointHistory.getDetail())
         .memo(includeMemo ? memberPointHistory.getMemo() : null)
         .regDateTime(DateTimeUtil.toZonedDateTime(memberPointHistory.getRegTime()))
-        .regTimestamp(Timestamp.valueOf(memberPointHistory.getRegTime()).getTime())
+        .regTimestamp(DateTimeUtil.toTimestamp(memberPointHistory.getRegTime()))
         .expireDateTime(DateTimeUtil.toZonedDateTime(memberPointHistory.getExpireTime()))
-        .expireTimestamp(Timestamp.valueOf(memberPointHistory.getExpireTime()).getTime())
+        .expireTimestamp(DateTimeUtil.toTimestamp(memberPointHistory.getExpireTime()))
         .build();
   }
 }

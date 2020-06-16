@@ -44,9 +44,9 @@ public class PointDto {
         .payment(point.isPayment())
         .settle(point.isSettle())
         .regTime(DateTimeUtil.toZonedDateTime((point.getRegTime())))
-        .regTimestamp(Timestamp.valueOf(point.getRegTime()).getTime())
+        .regTimestamp(DateTimeUtil.toTimestamp(point.getRegTime()))
         .expireTime(DateTimeUtil.toZonedDateTime(point.getExpireTime()))
-        .expireTimestamp(Timestamp.valueOf(point.getExpireTime()).getTime())
+        .expireTimestamp(DateTimeUtil.toTimestamp(point.getExpireTime()))
         .build();
   }
 }

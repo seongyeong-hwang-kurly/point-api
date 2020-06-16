@@ -24,7 +24,7 @@ public class MemberPointSummaryDto {
     return MemberPointSummaryDto.builder()
         .amount(memberPointSummary.getAmount())
         .nextExpireDate(DateTimeUtil.toZonedDateTime(memberPointSummary.getNextExpireDate()))
-        .nextExpireTimestamp(Timestamp.valueOf(memberPointSummary.getNextExpireDate()).getTime())
+        .nextExpireTimestamp(DateTimeUtil.toTimestamp(memberPointSummary.getNextExpireDate()))
         .nextExpireAmount(memberPointSummary.getNextExpireAmount())
         .build();
   }

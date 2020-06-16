@@ -1,5 +1,6 @@
 package com.kurly.cloud.point.api.point.util;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -24,5 +25,15 @@ public class DateTimeUtil {
       return null;
     }
     return zonedDateTime.toLocalDateTime();
+  }
+
+  /**
+   * LocalDateTime을 unixtimestamp 로 변환한다.
+   */
+  public static long toTimestamp(LocalDateTime localDateTime) {
+    if (Objects.isNull(localDateTime)) {
+      return 0;
+    }
+    return Timestamp.valueOf(localDateTime).getTime();
   }
 }
