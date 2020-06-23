@@ -10,6 +10,7 @@
 package com.kurly.cloud.point.api.point.domain.consume;
 
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,7 +28,7 @@ public class CancelOrderConsumePointRequest {
   Long orderNumber;
   @NotNull
   Long memberNumber;
-  @NotNull
+  @NotNull @Min(1)
   Integer point;
   long actionMemberNumber;
 
