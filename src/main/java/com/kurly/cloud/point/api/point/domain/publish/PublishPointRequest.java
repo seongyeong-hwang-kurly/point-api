@@ -16,6 +16,7 @@ import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Objects;
+import javax.validation.constraints.Future;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -44,6 +45,7 @@ public class PublishPointRequest {
   boolean settle;
   boolean unlimitedDate;
   @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+  @Future
   ZonedDateTime expireDate;
 
   @Builder.Default
