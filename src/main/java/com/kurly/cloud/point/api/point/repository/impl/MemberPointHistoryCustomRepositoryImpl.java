@@ -43,7 +43,7 @@ class MemberPointHistoryCustomRepositoryImpl implements MemberPointHistoryCustom
     CriteriaQuery<MemberPointHistory> query = cb.createQuery(MemberPointHistory.class);
     Root<MemberPointHistory> from = query.from(MemberPointHistory.class);
     query.where(getPredicate(request, cb, from));
-    query.orderBy(cb.desc(from.get("regTime")));
+    query.orderBy(cb.desc(from.get("regTime")), cb.desc(from.get("seq")));
     return em.createQuery(query.select(from))
         .setMaxResults(request.getSize())
         .setFirstResult(request.getPage() * request.getSize())
