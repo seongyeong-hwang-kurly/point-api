@@ -31,11 +31,15 @@ class MemberPointService {
   }
 
   MemberPoint getOrCreateMemberPoint(long memberNumber) {
-    Optional<MemberPoint> memberPoint = memberPointRepository.findById(memberNumber);
+    Optional<MemberPoint> memberPoint = getMemberPoint(memberNumber);
     return memberPoint.orElseGet(() -> {
       log.debug("회원의 적립금 정보가 존재하지 않아 새로 생성합니다.[{}]", memberNumber);
       return createMemberPoint(memberNumber, 0, 0);
     });
+  }
+
+  Optional<MemberPoint> getMemberPoint(long memberNumber) {
+    return memberPointRepository.findById(memberNumber);
   }
 
   MemberPoint createMemberPoint(long memberNumber, int freePoint, int cashPoint) {

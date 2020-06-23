@@ -24,15 +24,9 @@ public class PointExpireDateCalculator {
     DEFAULT_STRATEGY = strategy;
   }
 
-  /**
-   * N일 이후 만료 정책을 기반으로 만료일을 계산한다.
-   *
-   * @param from   시작 기준일
-   * @param offset N일
-   * @return 만료일
-   */
-  public static LocalDateTime calculateDaysAfter(LocalDateTime from, int offset) {
-    return withEndOfDate(from.plusDays(offset));
+  @Value("${pointExpireDefaultStrategy:QUARTER}")
+  public void setStrategy(String strategy) {
+    DEFAULT_STRATEGY = strategy;
   }
 
   /**
@@ -62,32 +56,40 @@ public class PointExpireDateCalculator {
   }
 
   /**
-   * 내년 분기 말일 만료 정책을 기반으로 만료일을 계산한다.
+   * 시스템의 다음 만료 수행일을 계산한다.
    *
    * @param from 시작 기준 일
-   * @return 만료일
+   * @return 다음 만료 수행 일
    */
-  public static LocalDateTime calculateNextYearQuarter(LocalDateTime from) {
+  public static LocalDateTime calculateNext(LocalDateTime from) {
+    switch (DEFAULT_STRATEGY) {
+      case "QUARTER":
+        return calculateNextQuarter(from);
+      case "NEXT_YEAR":
+        return calculateNextDate(from);
+      default:
+        throw new IllegalStateException("존재하지 않는 적립금 만료 정책입니다");
+    }
+  }
+
+  private static LocalDateTime calculateNextDate(LocalDateTime from) {
+    return withEndOfDate(from).plusDays(1);
+  }
+
+  private static LocalDateTime calculateNextQuarter(LocalDateTime from) {
     int quarter = Integer.parseInt(from.format(dateTimeFormatter));
     int quarterMonth = quarter * 3; // 분기에 3을 곱하면 분기 말월
     LocalDateTime quarterMonthLastDay = LocalDateTime.of(from.getYear(), quarterMonth, 1, 0, 0);
     //분기 말월의 다음달 1일에서 -1일을 하면 분기 말일
     quarterMonthLastDay = quarterMonthLastDay.plusMonths(1).minusDays(1);
-    return withEndOfDate(quarterMonthLastDay.plusYears(1));
+    return withEndOfDate(quarterMonthLastDay);
   }
 
-  /**
-   * 1년 만료 정책을 기반으로 만료일을 계산한다.
-   *
-   * @param from 시작 기준일
-   * @return 만료일
-   */
-  public static LocalDateTime calculateNextYear(LocalDateTime from) {
-    return withEndOfDate(from.plusYears(1));
+  private static LocalDateTime calculateNextYearQuarter(LocalDateTime from) {
+    return calculateNextQuarter(from).plusYears(1);
   }
 
-  @Value("${pointExpireDefaultStrategy:QUARTER}")
-  public void setStrategy(String strategy) {
-    DEFAULT_STRATEGY = strategy;
+  private static LocalDateTime calculateNextYear(LocalDateTime from) {
+    return withEndOfDate(from).plusYears(1);
   }
 }

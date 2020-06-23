@@ -182,7 +182,7 @@ class MemberPointAdapterTest implements CommonTestGiven {
         MemberPointSummary memberPointSummary = subject();
         assertThat(memberPointSummary.getAmount()).isEqualTo(0);
         assertThat(memberPointSummary.getNextExpireDate())
-            .isEqualTo(PointExpireDateCalculator.calculateDefault(LocalDateTime.now()));
+            .isEqualTo(PointExpireDateCalculator.calculateNext(LocalDateTime.now()));
         assertThat(memberPointSummary.getNextExpireAmount()).isEqualTo(0);
 
       }
@@ -200,7 +200,7 @@ class MemberPointAdapterTest implements CommonTestGiven {
         MemberPointSummary memberPointSummary = subject();
         assertThat(memberPointSummary.getAmount()).isEqualTo(givenPointAmount());
         assertThat(memberPointSummary.getNextExpireDate())
-            .isEqualTo(PointExpireDateCalculator.calculateDefault(LocalDateTime.now()));
+            .isEqualTo(PointExpireDateCalculator.calculateNext(LocalDateTime.now()));
         assertThat(memberPointSummary.getNextExpireAmount()).isEqualTo(0);
 
       }
@@ -236,7 +236,7 @@ class MemberPointAdapterTest implements CommonTestGiven {
           assertThat(memberPointSummary.getAmount()).isEqualTo(givenPointAmount());
           assertThat(memberPointSummary.getNextExpireDate())
               .isEqualTo(PointExpireDateCalculator
-                  .calculateDefault(LocalDateTime.now().minusYears(1)));
+                  .calculateNext(LocalDateTime.now()));
           assertThat(memberPointSummary.getNextExpireAmount()).isEqualTo(givenPointAmount());
         }
 
@@ -249,7 +249,7 @@ class MemberPointAdapterTest implements CommonTestGiven {
               .detail("")
               .memo("")
               .expireDate(PointExpireDateCalculator
-                  .calculateDefault(LocalDateTime.now().minusYears(1)))
+                  .calculateNext(LocalDateTime.now()))
               .build());
         }
       }
@@ -285,7 +285,7 @@ class MemberPointAdapterTest implements CommonTestGiven {
 
         LocalDateTime givenExpireDate() {
           return PointExpireDateCalculator
-              .calculateDefault(LocalDateTime.now().minusYears(1)).minusDays(1);
+              .calculateNext(LocalDateTime.now()).minusDays(1);
         }
       }
 
@@ -300,7 +300,7 @@ class MemberPointAdapterTest implements CommonTestGiven {
           MemberPointSummary memberPointSummary = subject();
           assertThat(memberPointSummary.getAmount()).isEqualTo(givenPointAmount());
           assertThat(memberPointSummary.getNextExpireDate())
-              .isEqualTo(PointExpireDateCalculator.calculateDefault(LocalDateTime.now()));
+              .isEqualTo(PointExpireDateCalculator.calculateNext(LocalDateTime.now()));
           assertThat(memberPointSummary.getNextExpireAmount()).isEqualTo(0);
         }
 
@@ -338,7 +338,7 @@ class MemberPointAdapterTest implements CommonTestGiven {
                   givenPointAmount() * givenCount() + givenPointAmount() + givenPointAmount());
           assertThat(memberPointSummary.getNextExpireDate())
               .isEqualTo(PointExpireDateCalculator
-                  .calculateDefault(LocalDateTime.now().minusYears(1)));
+                  .calculateNext(LocalDateTime.now()));
           assertThat(memberPointSummary.getNextExpireAmount())
               .isEqualTo(givenPointAmount() * givenCount());
         }
@@ -353,7 +353,7 @@ class MemberPointAdapterTest implements CommonTestGiven {
                 .detail("")
                 .memo("")
                 .expireDate(PointExpireDateCalculator
-                    .calculateDefault(LocalDateTime.now().minusYears(1)))
+                    .calculateNext(LocalDateTime.now()))
                 .build());
           }
         }

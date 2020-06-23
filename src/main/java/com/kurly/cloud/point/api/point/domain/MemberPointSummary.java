@@ -19,7 +19,7 @@ public class MemberPointSummary {
     return MemberPointSummary.builder()
         .amount(pointAmount)
         .nextExpireAmount(0)
-        .nextExpireDate(PointExpireDateCalculator.calculateDefault(LocalDateTime.now()))
+        .nextExpireDate(PointExpireDateCalculator.calculateNext(LocalDateTime.now()))
         .build();
   }
 }
