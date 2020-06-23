@@ -34,19 +34,20 @@ class MemberPointAdapter implements MemberPointPort {
 
   @Transactional(readOnly = true)
   @Override public MemberPointSummary getMemberPointSummary(long memberNumber) {
-    MemberPoint memberPoint = memberPointService.getOrCreateMemberPoint(memberNumber);
-    if (memberPoint.getTotalPoint() == 0) {
+    int totalPoint = memberPointService.getMemberPoint(memberNumber)
+        .orElseGet(MemberPoint::new).getTotalPoint();
+    if (totalPoint == 0) {
       return MemberPointSummary.byEmptyExpireAmount(0);
     }
 
     Optional<LocalDateTime> memberPointNextExpireDate =
         pointService.getMemberPointNextExpireDate(memberNumber);
     LocalDateTime nextSystemExpireDate =
-        PointExpireDateCalculator.calculateDefault(LocalDateTime.now().minusYears(1));
+        PointExpireDateCalculator.calculateNext(LocalDateTime.now());
 
     if (memberPointNextExpireDate.isEmpty()
         || nextSystemExpireDate.isBefore(memberPointNextExpireDate.get())) {
-      return MemberPointSummary.byEmptyExpireAmount(memberPoint.getTotalPoint());
+      return MemberPointSummary.byEmptyExpireAmount(totalPoint);
     }
 
     List<Point> expirePoints =
@@ -55,7 +56,7 @@ class MemberPointAdapter implements MemberPointPort {
     int expireAmount = expirePoints.stream().mapToInt(Point::getRemain).sum();
 
     return MemberPointSummary.builder()
-        .amount(memberPoint.getTotalPoint())
+        .amount(totalPoint)
         .nextExpireAmount(expireAmount)
         .nextExpireDate(memberPointNextExpireDate.get())
         .build();
