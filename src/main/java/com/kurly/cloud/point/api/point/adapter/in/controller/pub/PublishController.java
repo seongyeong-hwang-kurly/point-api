@@ -56,7 +56,7 @@ public class PublishController {
 
   @Secured("ROLE_ADMIN")
   @PostMapping(value = "/public/v1/publish/order-cancel")
-  ResponseEntity cancelPublish(CancelPublishOrderPointRequest request,
+  ResponseEntity cancelPublish(@RequestBody CancelPublishOrderPointRequest request,
                                @AuthenticationPrincipal KurlyUserPrincipal principal) {
     request.setActionMemberNumber(principal.getNo());
     publishPointPort.cancelPublishByOrder(request);
