@@ -37,6 +37,6 @@ public class CancelOrderConsumePointRequest {
   }
 
   public String getDetail() {
-    return HistoryType.TYPE_2.buildMessage(orderNumber);
+    return HistoryType.TYPE_2.buildMessage(String.valueOf(orderNumber));
   }
 }

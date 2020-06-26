@@ -37,6 +37,6 @@ public class CancelPublishOrderPointRequest {
   }
 
   public String getDetail() {
-    return HistoryType.TYPE_101.buildMessage(orderNumber);
+    return HistoryType.TYPE_101.buildMessage(String.valueOf(orderNumber));
   }
 }

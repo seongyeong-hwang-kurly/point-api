@@ -28,6 +28,6 @@ public class OrderConsumePointRequest {
   }
 
   public String getDetail() {
-    return HistoryType.TYPE_100.buildMessage(orderNumber);
+    return HistoryType.TYPE_100.buildMessage(String.valueOf(orderNumber));
   }
 }
