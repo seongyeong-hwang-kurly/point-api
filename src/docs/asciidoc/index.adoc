@@ -112,3 +112,5 @@ include::pub-cancel-consume.adoc[]
 include::pri-consume.adoc[]
 
 include::pri-bulk-consume.adoc[]
+
+include::pri-cancel-consume.adoc[]

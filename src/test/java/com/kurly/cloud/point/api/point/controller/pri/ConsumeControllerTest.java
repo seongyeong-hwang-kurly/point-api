@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.ControllerTest;
 import com.kurly.cloud.point.api.point.domain.consume.BulkConsumePointRequest;
+import com.kurly.cloud.point.api.point.domain.consume.CancelOrderConsumePointRequest;
 import com.kurly.cloud.point.api.point.domain.consume.ConsumePointRequest;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.port.in.ConsumePointPort;
@@ -176,6 +177,38 @@ public class ConsumeControllerTest implements CommonTestGiven {
               "{\"success\":true,\"message\":null,\"data\":{\"succeed\":[1,2,3],\"failed\":[]}}"
           ))
           .andExpect(status().is(200));
+    }
+  }
+
+  @Nested
+  @DisplayName("적립금 사용취소를 호출 할 때")
+  class DescribeCancelConsume {
+
+    @Nested
+    @DisplayName("값이 올바르면")
+    @ControllerTest
+    class Context0 {
+      @MockBean
+      ConsumePointPort consumePointPort;
+
+      @Test
+      @DisplayName("적립금을 사용취소 하고 응답코드는 204를 반환한다")
+      void test() throws Exception {
+        mockMvc
+            .perform(MockMvcRequestBuilders.post("/v1/consume/cancel")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(givenRequest())))
+            .andDo(MockMvcResultHandlers.print())
+            .andExpect(status().isNoContent());
+      }
+
+      CancelOrderConsumePointRequest givenRequest() {
+        return CancelOrderConsumePointRequest.builder()
+            .orderNumber(givenOrderNumber())
+            .memberNumber(givenMemberNumber())
+            .point(100)
+            .build();
+      }
     }
   }
 }

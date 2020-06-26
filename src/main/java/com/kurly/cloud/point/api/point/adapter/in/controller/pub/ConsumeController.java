@@ -65,7 +65,7 @@ public class ConsumeController {
 
   @Secured("ROLE_ADMIN")
   @PostMapping(value = "/public/v1/consume/cancel", consumes = MediaType.APPLICATION_JSON_VALUE)
-  ResponseEntity cancelConsume(CancelOrderConsumePointRequest request,
+  ResponseEntity cancelConsume(@RequestBody @Valid CancelOrderConsumePointRequest request,
                                @AuthenticationPrincipal KurlyUserPrincipal principal)
       throws CancelAmountExceedException {
     request.setActionMemberNumber(principal.getNo());

@@ -4,7 +4,9 @@ import com.kurly.cloud.api.common.domain.exception.ApiErrorResponse;
 import com.kurly.cloud.api.common.util.logging.FileBeatLogger;
 import com.kurly.cloud.point.api.point.domain.BulkJobResult;
 import com.kurly.cloud.point.api.point.domain.consume.BulkConsumePointRequest;
+import com.kurly.cloud.point.api.point.domain.consume.CancelOrderConsumePointRequest;
 import com.kurly.cloud.point.api.point.domain.consume.ConsumePointRequest;
+import com.kurly.cloud.point.api.point.exception.CancelAmountExceedException;
 import com.kurly.cloud.point.api.point.exception.NotEnoughPointException;
 import com.kurly.cloud.point.api.point.port.in.ConsumePointPort;
 import java.util.List;
@@ -48,5 +50,13 @@ public class ConsumeController {
       }
     });
     return result;
+  }
+
+  @PostMapping(value = "/v1/consume/cancel", consumes = MediaType.APPLICATION_JSON_VALUE)
+  ResponseEntity cancelConsume(@RequestBody @Valid CancelOrderConsumePointRequest request)
+      throws CancelAmountExceedException {
+    request.setActionMemberNumber(request.getMemberNumber());
+    consumePointPort.cancelConsumeByOrder(request);
+    return ResponseEntity.noContent().build();
   }
 }

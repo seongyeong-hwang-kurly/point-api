@@ -25,7 +25,6 @@ import com.kurly.cloud.point.api.point.documentation.ApiDocumentUtils;
 import com.kurly.cloud.point.api.point.domain.consume.BulkConsumePointRequest;
 import com.kurly.cloud.point.api.point.domain.consume.CancelOrderConsumePointRequest;
 import com.kurly.cloud.point.api.point.domain.consume.ConsumePointRequest;
-import com.kurly.cloud.point.api.point.domain.consume.OrderConsumePointRequest;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.port.in.ConsumePointPort;
 import java.util.ArrayList;
@@ -45,7 +44,6 @@ import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -168,5 +166,40 @@ public class ConsumeDocumentationTest implements CommonTestGiven {
       requests.add(request);
     }
     return requests;
+  }
+
+  @Test
+  @DisplayName("RestDoc - 주문 적립금 사용 취소")
+  void cancelConsume() throws Exception {
+    ResultActions resultActions = mockMvc.perform(
+        RestDocumentationRequestBuilders.post("/v1/consume/cancel")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(givenCancelConsumeRequest()))
+    );
+
+    resultActions
+        .andExpect(status().isNoContent())
+        .andDo(
+            document("point/pri/{method-name}"
+                , ApiDocumentUtils.getDocumentRequest()
+                , ApiDocumentUtils.getDocumentResponse()
+                , requestFields(
+                    fieldWithPath("memberNumber").type(JsonFieldType.NUMBER).description("회원번호")
+                    , fieldWithPath("point").type(JsonFieldType.NUMBER).description("취소 금액")
+                    , fieldWithPath("orderNumber").type(JsonFieldType.NUMBER).description("주문번호")
+                    , fieldWithPath("actionMemberNumber").ignored()
+                    , fieldWithPath("historyType").ignored()
+                    , fieldWithPath("detail").ignored()
+                )
+            )
+        );
+  }
+
+  CancelOrderConsumePointRequest givenCancelConsumeRequest() {
+    return CancelOrderConsumePointRequest.builder()
+        .orderNumber(givenOrderNumber())
+        .memberNumber(givenMemberNumber())
+        .point(1000)
+        .build();
   }
 }
