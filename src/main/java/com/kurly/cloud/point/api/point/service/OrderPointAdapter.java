@@ -10,6 +10,7 @@
 package com.kurly.cloud.point.api.point.service;
 
 import com.kurly.cloud.point.api.point.entity.Point;
+import com.kurly.cloud.point.api.point.exception.OrderPublishedNotFoundException;
 import com.kurly.cloud.point.api.point.port.out.OrderPointPort;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,12 @@ public class OrderPointAdapter implements OrderPointPort {
   private final PointService pointService;
 
   @Transactional(readOnly = true)
-  @Override public Optional<Point> getOrderPublished(long orderNumber) {
-    return pointService.getPublishedByOrderNumber(orderNumber);
+  @Override public Point getOrderPublished(long orderNumber)
+      throws OrderPublishedNotFoundException {
+    Optional<Point> published = pointService.getPublishedByOrderNumber(orderNumber);
+    if (published.isEmpty()) {
+      throw new OrderPublishedNotFoundException(orderNumber);
+    }
+    return published.get();
   }
 }

@@ -59,7 +59,7 @@ public class OrderPointControllerTest implements CommonTestGiven {
         .perform(MockMvcRequestBuilders.get("/public/v1/order-published-amount/{orderNumber}"
             , givenOrderNumber()))
         .andDo(MockMvcResultHandlers.print())
-        .andExpect(status().isInternalServerError());
+        .andExpect(status().isNotFound());
   }
 
   @WithUserDetails

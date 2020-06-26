@@ -1,8 +1,8 @@
 package com.kurly.cloud.point.api.point.port.out;
 
 import com.kurly.cloud.point.api.point.entity.Point;
-import java.util.Optional;
+import com.kurly.cloud.point.api.point.exception.OrderPublishedNotFoundException;
 
 public interface OrderPointPort {
-  Optional<Point> getOrderPublished(long orderNumber);
+  Point getOrderPublished(long orderNumber) throws OrderPublishedNotFoundException;
 }

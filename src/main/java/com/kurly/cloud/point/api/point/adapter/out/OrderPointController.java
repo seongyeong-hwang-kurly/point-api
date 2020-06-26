@@ -9,12 +9,12 @@
 
 package com.kurly.cloud.point.api.point.adapter.out;
 
+import com.kurly.cloud.api.common.domain.exception.ApiErrorResponse;
 import com.kurly.cloud.point.api.point.adapter.out.dto.PointDto;
-import com.kurly.cloud.point.api.point.entity.Point;
 import com.kurly.cloud.point.api.point.exception.OrderPublishedNotFoundException;
 import com.kurly.cloud.point.api.point.port.out.OrderPointPort;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,9 +29,11 @@ public class OrderPointController {
   @Secured({"ROLE_USER", "ROLE_ADMIN"})
   @GetMapping("/public/v1/order-published-amount/{orderNumber}")
   PointDto getOrderPublishedAmount(@PathVariable long orderNumber) {
-    Optional<Point> orderPublished = orderPointPort.getOrderPublished(orderNumber);
-    return PointDto.fromEntity(orderPublished.orElseThrow(()
-        -> new OrderPublishedNotFoundException(orderNumber)));
+    try {
+      return PointDto.fromEntity(orderPointPort.getOrderPublished(orderNumber));
+    } catch (OrderPublishedNotFoundException e) {
+      throw new ApiErrorResponse(HttpStatus.NOT_FOUND, e.getMessage());
+    }
   }
 
 }
