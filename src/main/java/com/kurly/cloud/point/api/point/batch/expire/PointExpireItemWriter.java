@@ -32,7 +32,7 @@ public class PointExpireItemWriter implements ItemWriter<Long> {
   private String expireTime;
 
   @Override public void write(List<? extends Long> items) throws Exception {
-    items.forEach(memberNumber -> {
+    items.parallelStream().forEach(memberNumber -> {
       PointExpireResult result = expirePointPort.expireMemberPoint(memberNumber,
           LocalDateTime.parse(expireTime, PointExpireJobConfig.DATE_TIME_FORMATTER));
 

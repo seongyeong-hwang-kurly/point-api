@@ -32,7 +32,7 @@ public class PointOrderPublishItemWriter implements ItemWriter<PublishPointReque
   private StepExecution stepExecution;
 
   @Override public void write(List<? extends PublishPointRequest> items) throws Exception {
-    items.forEach(publishPointRequest -> {
+    items.parallelStream().forEach(publishPointRequest -> {
       try {
         publishPointPort.publishByOrder(publishPointRequest);
 
