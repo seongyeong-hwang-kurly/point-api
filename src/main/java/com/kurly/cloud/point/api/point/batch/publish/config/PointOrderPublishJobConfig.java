@@ -7,6 +7,7 @@ import com.kurly.cloud.point.api.point.batch.publish.PointOrderPublishItemReader
 import com.kurly.cloud.point.api.point.batch.publish.PointOrderPublishItemWriter;
 import com.kurly.cloud.point.api.point.batch.publish.PointOrderPublishJobListener;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
+import com.kurly.cloud.point.api.point.util.SlackBot;
 import java.time.format.DateTimeFormatter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
@@ -28,6 +29,7 @@ public class PointOrderPublishJobConfig {
   private final StepBuilderFactory stepBuilderFactory;
   private final PointOrderPublishItemWriter pointOrderPublishItemWriter;
   private final OrderRepository orderRepository;
+  private final SlackBot slackBot;
 
   @Value("${batch.publish.chunkSize:1000}")
   public void setChunkSize(int chunkSize) {
@@ -37,7 +39,7 @@ public class PointOrderPublishJobConfig {
   @Bean
   Job pointOrderPublishJob(JobBuilderFactory jobBuilderFactory) {
     return jobBuilderFactory.get("pointOrderPublishJob")
-        .listener(new PointOrderPublishJobListener())
+        .listener(new PointOrderPublishJobListener(slackBot))
         .start(pointOrderPublishJobStep(stepBuilderFactory))
         .build();
   }
