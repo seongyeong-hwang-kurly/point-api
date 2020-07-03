@@ -8,6 +8,8 @@ POST
 
 ==== HTTP request
 
+===== Private
+
 include::{snippets}/point/pri/consume/http-request.adoc[]
 
 ==== Request Fields
@@ -17,7 +19,3 @@ include::{snippets}/point/pri/consume/request-fields.adoc[]
 ==== Response fields
 
 이 API 는 `Http Status Code 204` 를 반환합니다
-
-==== Response body
-
-include::{snippets}/point/pri/consume/response-body.adoc[]

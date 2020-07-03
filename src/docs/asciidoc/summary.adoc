@@ -8,16 +8,22 @@ GET
 
 ==== HTTP request
 
-include::{snippets}/point/summary/http-request.adoc[]
+===== Private
+
+include::{snippets}/point/pri/summary/http-request.adoc[]
+
+===== Public
+
+include::{snippets}/point/pub/summary/http-request.adoc[]
 
 ==== Path Parameters
 
-include::{snippets}/point/summary/path-parameters.adoc[]
+include::{snippets}/point/pub/summary/path-parameters.adoc[]
 
 ==== Response fields
 
-include::{snippets}/point/summary/response-fields-data.adoc[]
+include::{snippets}/point/pub/summary/response-fields-data.adoc[]
 
 ==== Response body
 
-include::{snippets}/point/summary/response-body.adoc[]
+include::{snippets}/point/pub/summary/response-body.adoc[]

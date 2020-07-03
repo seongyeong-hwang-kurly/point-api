@@ -9,6 +9,7 @@
 
 package com.kurly.cloud.point.api.point.domain.consume;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -32,10 +33,12 @@ public class CancelOrderConsumePointRequest {
   Integer point;
   long actionMemberNumber;
 
+  @JsonIgnore
   public Integer getHistoryType() {
     return HistoryType.TYPE_2.getValue();
   }
 
+  @JsonIgnore
   public String getDetail() {
     return HistoryType.TYPE_2.buildMessage(String.valueOf(orderNumber));
   }

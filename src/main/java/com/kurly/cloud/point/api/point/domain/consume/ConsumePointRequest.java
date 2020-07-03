@@ -27,5 +27,6 @@ public class ConsumePointRequest {
   String memo = "";
   @NotNull
   String detail;
+  @NotNull @Min(0)
   long actionMemberNumber;
 }

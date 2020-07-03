@@ -7,9 +7,10 @@
  * 1)
  */
 
-package com.kurly.cloud.point.api.point.controller;
+package com.kurly.cloud.point.api.point.controller.pub;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.ControllerTest;
@@ -29,6 +30,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
+@DisplayName("PublicMemberPointControllerTest")
 @ControllerTest
 public class MemberPointControllerTest implements CommonTestGiven {
 

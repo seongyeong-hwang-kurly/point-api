@@ -12,6 +12,7 @@ import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.config.SpringSecurityTestConfig;
@@ -41,7 +42,6 @@ import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -109,10 +109,8 @@ public class PublishDocumentationTest implements CommonTestGiven {
                         .optional()
                     , fieldWithPath("hidden").type(JsonFieldType.BOOLEAN).description("이력 숨김 여부")
                         .optional()
-                    , fieldWithPath("actionMemberNumber").ignored()
-                    , fieldWithPath("pointRatio").ignored()
-                    , fieldWithPath("unlimitedDate").ignored()
-                    , fieldWithPath("orderNumber").ignored()
+                    , fieldWithPath("actionMemberNumber").type(JsonFieldType.NUMBER)
+                        .description("작업자 회원 번호")
                 )
                 , responseFields(
                     beneathPath("data").withSubsectionId("data")
@@ -200,9 +198,6 @@ public class PublishDocumentationTest implements CommonTestGiven {
                     , fieldWithPath("[].detail").ignored()
                     , fieldWithPath("[].actionMemberNumber").ignored()
                     , fieldWithPath("[].hidden").ignored()
-                    , fieldWithPath("[].pointRatio").ignored()
-                    , fieldWithPath("[].unlimitedDate").ignored()
-                    , fieldWithPath("[].orderNumber").ignored()
                 )
                 , responseFields(
                     beneathPath("data").withSubsectionId("data")
@@ -230,6 +225,41 @@ public class PublishDocumentationTest implements CommonTestGiven {
       requests.add(request);
     }
     return requests;
+  }
+
+  @Test
+  @DisplayName("RestDoc - 적립금 주문 발급 취소")
+  void cancelOrderPublish() throws Exception {
+    ResultActions resultActions = mockMvc.perform(
+        RestDocumentationRequestBuilders.post("/v1/publish/order-cancel")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(givenCancelOrderRequest()))
+    );
+
+    resultActions
+        .andExpect(status().isNoContent())
+        .andDo(
+            document("point/pri/{method-name}"
+                , ApiDocumentUtils.getDocumentRequest()
+                , ApiDocumentUtils.getDocumentResponse()
+                , requestFields(
+                    fieldWithPath("memberNumber").type(JsonFieldType.NUMBER).description("회원번호")
+                    , fieldWithPath("point").type(JsonFieldType.NUMBER).description("적립 금액")
+                    , fieldWithPath("orderNumber").type(JsonFieldType.NUMBER).description("주문 번호")
+                    , fieldWithPath("actionMemberNumber").type(JsonFieldType.NUMBER)
+                        .description("작업자 회원 번호")
+                )
+            )
+        );
+  }
+
+  CancelPublishOrderPointRequest givenCancelOrderRequest() {
+    return CancelPublishOrderPointRequest.builder()
+        .memberNumber(givenMemberNumber())
+        .orderNumber(givenOrderNumber())
+        .point(1000)
+        .actionMemberNumber(0L)
+        .build();
   }
 
 }

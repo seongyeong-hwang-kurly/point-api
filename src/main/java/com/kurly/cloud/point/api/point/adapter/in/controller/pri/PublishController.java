@@ -4,6 +4,7 @@ import com.kurly.cloud.api.common.util.logging.FileBeatLogger;
 import com.kurly.cloud.point.api.point.adapter.in.dto.PublishResultDto;
 import com.kurly.cloud.point.api.point.domain.BulkJobResult;
 import com.kurly.cloud.point.api.point.domain.publish.BulkPublishPointRequest;
+import com.kurly.cloud.point.api.point.domain.publish.CancelPublishOrderPointRequest;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
 import com.kurly.cloud.point.api.point.entity.Point;
 import com.kurly.cloud.point.api.point.port.in.PublishPointPort;
@@ -11,6 +12,7 @@ import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,5 +43,11 @@ public class PublishController {
       }
     });
     return result;
+  }
+
+  @PostMapping(value = "/v1/publish/order-cancel")
+  ResponseEntity<?> cancelPublish(@RequestBody @Valid CancelPublishOrderPointRequest request) {
+    publishPointPort.cancelPublishByOrder(request);
+    return ResponseEntity.noContent().build();
   }
 }

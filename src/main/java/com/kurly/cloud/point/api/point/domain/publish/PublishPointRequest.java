@@ -9,6 +9,7 @@
 
 package com.kurly.cloud.point.api.point.domain.publish;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kurly.cloud.point.api.point.entity.Point;
 import com.kurly.cloud.point.api.point.util.DateTimeUtil;
 import com.kurly.cloud.point.api.point.util.PointExpireDateCalculator;
@@ -35,14 +36,17 @@ import org.springframework.lang.Nullable;
 public class PublishPointRequest {
   @NotNull
   Long memberNumber;
+  @JsonIgnore
   long orderNumber;
   @NotNull @Min(1)
   Integer point;
+  @JsonIgnore
   float pointRatio;
   @NotNull
   Integer historyType;
   boolean payment;
   boolean settle;
+  @JsonIgnore
   boolean unlimitedDate;
   @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
   @Future
@@ -51,6 +55,7 @@ public class PublishPointRequest {
   @Builder.Default
   String memo = "";
   String detail;
+  @NotNull @Min(0)
   long actionMemberNumber;
   boolean hidden;
 

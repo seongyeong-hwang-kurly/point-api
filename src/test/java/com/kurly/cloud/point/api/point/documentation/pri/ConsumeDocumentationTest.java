@@ -18,6 +18,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.config.SpringSecurityTestConfig;
@@ -25,6 +26,7 @@ import com.kurly.cloud.point.api.point.documentation.ApiDocumentUtils;
 import com.kurly.cloud.point.api.point.domain.consume.BulkConsumePointRequest;
 import com.kurly.cloud.point.api.point.domain.consume.CancelOrderConsumePointRequest;
 import com.kurly.cloud.point.api.point.domain.consume.ConsumePointRequest;
+import com.kurly.cloud.point.api.point.domain.consume.OrderConsumePointRequest;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.port.in.ConsumePointPort;
 import java.util.ArrayList;
@@ -53,7 +55,7 @@ import org.springframework.web.context.WebApplicationContext;
 @Import(SpringSecurityTestConfig.class)
 @ExtendWith({SpringExtension.class, RestDocumentationExtension.class})
 @SpringBootTest
-@DisplayName("PublicConsumeDocumentationTest")
+@DisplayName("PrivateConsumeDocumentationTest")
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = "gateway.cloud.dev.kurly.services/point", uriPort = 443)
 public class ConsumeDocumentationTest implements CommonTestGiven {
   MockMvc mockMvc;
@@ -100,7 +102,8 @@ public class ConsumeDocumentationTest implements CommonTestGiven {
                         .description("유상여부 - true이면 유상적립금만 사용합니다").optional()
                     , fieldWithPath("memo").type(JsonFieldType.STRING).description("사용 사유명(내부용)")
                         .optional()
-                    , fieldWithPath("actionMemberNumber").ignored()
+                    , fieldWithPath("actionMemberNumber").type(JsonFieldType.NUMBER)
+                        .description("작업지 회원 번호")
                 )
             )
         );
@@ -169,6 +172,34 @@ public class ConsumeDocumentationTest implements CommonTestGiven {
   }
 
   @Test
+  @DisplayName("RestDoc - 주문 적립금 사용")
+  void orderConsume() throws Exception {
+    ResultActions resultActions = mockMvc.perform(
+        RestDocumentationRequestBuilders.post("/v1/consume/order")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(givenOrderConsumeRequest()))
+    );
+
+    resultActions
+        .andExpect(status().isNoContent())
+        .andDo(
+            document("point/pri/{method-name}"
+                , ApiDocumentUtils.getDocumentRequest()
+                , ApiDocumentUtils.getDocumentResponse()
+                // PUBLIC 과 동
+            )
+        );
+  }
+
+  OrderConsumePointRequest givenOrderConsumeRequest() {
+    return OrderConsumePointRequest.builder()
+        .point(100)
+        .memberNumber(givenMemberNumber())
+        .orderNumber(givenOrderNumber())
+        .build();
+  }
+
+  @Test
   @DisplayName("RestDoc - 주문 적립금 사용 취소")
   void cancelConsume() throws Exception {
     ResultActions resultActions = mockMvc.perform(
@@ -187,9 +218,8 @@ public class ConsumeDocumentationTest implements CommonTestGiven {
                     fieldWithPath("memberNumber").type(JsonFieldType.NUMBER).description("회원번호")
                     , fieldWithPath("point").type(JsonFieldType.NUMBER).description("취소 금액")
                     , fieldWithPath("orderNumber").type(JsonFieldType.NUMBER).description("주문번호")
-                    , fieldWithPath("actionMemberNumber").ignored()
-                    , fieldWithPath("historyType").ignored()
-                    , fieldWithPath("detail").ignored()
+                    , fieldWithPath("actionMemberNumber").type(JsonFieldType.NUMBER)
+                        .description("작업자 회원 번호")
                 )
             )
         );

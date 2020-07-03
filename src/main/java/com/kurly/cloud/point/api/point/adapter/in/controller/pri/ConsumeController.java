@@ -6,6 +6,7 @@ import com.kurly.cloud.point.api.point.domain.BulkJobResult;
 import com.kurly.cloud.point.api.point.domain.consume.BulkConsumePointRequest;
 import com.kurly.cloud.point.api.point.domain.consume.CancelOrderConsumePointRequest;
 import com.kurly.cloud.point.api.point.domain.consume.ConsumePointRequest;
+import com.kurly.cloud.point.api.point.domain.consume.OrderConsumePointRequest;
 import com.kurly.cloud.point.api.point.exception.CancelAmountExceedException;
 import com.kurly.cloud.point.api.point.exception.NotEnoughPointException;
 import com.kurly.cloud.point.api.point.port.in.ConsumePointPort;
@@ -27,8 +28,18 @@ public class ConsumeController {
 
   private final ConsumePointPort consumePointPort;
 
+  @PostMapping(value = "/v1/consume/order", consumes = MediaType.APPLICATION_JSON_VALUE)
+  ResponseEntity<?> consumeByOrder(@RequestBody @Valid OrderConsumePointRequest request) {
+    try {
+      consumePointPort.consumeByOrder(request);
+    } catch (NotEnoughPointException e) {
+      throw new ApiErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
+    return ResponseEntity.noContent().build();
+  }
+  
   @PostMapping(value = "/v1/consume", consumes = MediaType.APPLICATION_JSON_VALUE)
-  ResponseEntity consume(@RequestBody @Valid ConsumePointRequest request) {
+  ResponseEntity<?> consume(@RequestBody @Valid ConsumePointRequest request) {
     try {
       consumePointPort.consume(request);
     } catch (NotEnoughPointException e) {
@@ -53,10 +64,11 @@ public class ConsumeController {
   }
 
   @PostMapping(value = "/v1/consume/cancel", consumes = MediaType.APPLICATION_JSON_VALUE)
-  ResponseEntity cancelConsume(@RequestBody @Valid CancelOrderConsumePointRequest request)
+  ResponseEntity<?> cancelConsume(@RequestBody @Valid CancelOrderConsumePointRequest request)
       throws CancelAmountExceedException {
     request.setActionMemberNumber(request.getMemberNumber());
     consumePointPort.cancelConsumeByOrder(request);
     return ResponseEntity.noContent().build();
   }
+
 }

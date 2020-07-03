@@ -7,9 +7,8 @@
  * 1)
  */
 
-package com.kurly.cloud.point.api.point.documentation;
+package com.kurly.cloud.point.api.point.documentation.pri;
 
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.payload.PayloadDocumentation.beneathPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -20,8 +19,10 @@ import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.config.SpringSecurityTestConfig;
+import com.kurly.cloud.point.api.point.documentation.ApiDocumentUtils;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
 import com.kurly.cloud.point.api.point.exception.AlreadyPublishedException;
 import com.kurly.cloud.point.api.point.port.in.PublishPointPort;
@@ -35,9 +36,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -49,6 +50,7 @@ import org.springframework.web.context.WebApplicationContext;
 @ExtendWith({SpringExtension.class, RestDocumentationExtension.class})
 @SpringBootTest
 @Transactional
+@DisplayName("PrivateOrderPointDocumentationTest")
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = "gateway.cloud.dev.kurly.services/point", uriPort = 443)
 public class OrderPointDocumentationTest implements CommonTestGiven {
 
@@ -67,20 +69,19 @@ public class OrderPointDocumentationTest implements CommonTestGiven {
         .build();
   }
 
-  @WithUserDetails
   @Test
   @DisplayName("RestDoc - 주문 적립금 조회")
   void orderPublishedAmount() throws Exception {
     givenOrderPoint();
     ResultActions resultActions = mockMvc.perform(
-        RestDocumentationRequestBuilders.get("/public/v1/order-published-amount/{orderNumber}"
+        RestDocumentationRequestBuilders.get("/v1/order-published-amount/{orderNumber}"
             , givenOrderNumber())
     );
 
     resultActions
         .andExpect(status().isOk())
         .andDo(
-            document("point/{method-name}"
+            MockMvcRestDocumentation.document("point/pri/{method-name}"
                 , ApiDocumentUtils.getDocumentRequest()
                 , ApiDocumentUtils.getDocumentResponse()
                 , pathParameters(

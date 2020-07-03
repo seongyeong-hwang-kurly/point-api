@@ -8,20 +8,26 @@ GET
 
 ==== HTTP request
 
-include::{snippets}/point/history/http-request.adoc[]
+===== Private
+
+include::{snippets}/point/pri/history/http-request.adoc[]
+
+===== Public
+
+include::{snippets}/point/pub/history/http-request.adoc[]
 
 ==== Path Parameters
 
-include::{snippets}/point/history/path-parameters.adoc[]
+include::{snippets}/point/pub/history/path-parameters.adoc[]
 
 ==== Request Parameters
 
-include::{snippets}/point/history/request-parameters.adoc[]
+include::{snippets}/point/pub/history/request-parameters.adoc[]
 
 ==== Response fields
 
-include::{snippets}/point/history/response-fields-data.adoc[]
+include::{snippets}/point/pub/history/response-fields-data.adoc[]
 
 ==== Response body
 
-include::{snippets}/point/history/response-body.adoc[]
+include::{snippets}/point/pub/history/response-body.adoc[]

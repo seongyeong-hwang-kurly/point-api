@@ -7,7 +7,7 @@
  * 1)
  */
 
-package com.kurly.cloud.point.api.point.documentation;
+package com.kurly.cloud.point.api.point.documentation.pub;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
@@ -21,8 +21,10 @@ import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.config.SpringSecurityTestConfig;
+import com.kurly.cloud.point.api.point.documentation.ApiDocumentUtils;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
 import com.kurly.cloud.point.api.point.port.in.PublishPointPort;
@@ -37,6 +39,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.test.context.support.WithUserDetails;
@@ -52,6 +55,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 @ExtendWith({SpringExtension.class, RestDocumentationExtension.class})
 @Transactional
 @SpringBootTest
+@DisplayName("PublicMemberPointDocumentationTest")
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = "gateway.cloud.dev.kurly.services/point", uriPort = 443)
 public class MemberPointDocumentationTest implements CommonTestGiven {
 
@@ -84,7 +88,7 @@ public class MemberPointDocumentationTest implements CommonTestGiven {
         .build());
   }
 
-  @WithUserDetails("admin")
+  @WithUserDetails
   @Test
   @DisplayName("RestDoc - 적립금 이력 조회")
   void history() throws Exception {
@@ -100,7 +104,7 @@ public class MemberPointDocumentationTest implements CommonTestGiven {
     resultActions
         .andExpect(status().isOk())
         .andDo(
-            document("point/{method-name}"
+            MockMvcRestDocumentation.document("point/pub/{method-name}"
                 , ApiDocumentUtils.getDocumentRequest()
                 , ApiDocumentUtils.getDocumentResponse()
                 , pathParameters(
@@ -129,7 +133,7 @@ public class MemberPointDocumentationTest implements CommonTestGiven {
                         .description("적립금")
                     , fieldWithPath("content[].detail").type(JsonFieldType.STRING)
                         .description("이력 내용(고객용)")
-                    , fieldWithPath("content[].memo").type(JsonFieldType.STRING)
+                    , fieldWithPath("content[].memo").optional().type(JsonFieldType.STRING)
                         .description("이력 내용(내부용) - 관리자 권한 일때만 노출 됩니다")
                     , fieldWithPath("content[].regDateTime").type(JsonFieldType.STRING)
                         .attributes(key("format").value("yyyy-MM-dd'T'HH:mm:ssXXX"))
@@ -169,7 +173,7 @@ public class MemberPointDocumentationTest implements CommonTestGiven {
     resultActions
         .andExpect(status().isOk())
         .andDo(
-            document("point/{method-name}"
+            document("point/pub/{method-name}"
                 , ApiDocumentUtils.getDocumentRequest()
                 , ApiDocumentUtils.getDocumentResponse()
                 , pathParameters(

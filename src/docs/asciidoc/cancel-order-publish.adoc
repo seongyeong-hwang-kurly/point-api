@@ -10,16 +10,14 @@ POST
 
 ==== HTTP request
 
-include::{snippets}/point/pub/cancel-order-publish/http-request.adoc[]
+===== Private
+
+include::{snippets}/point/pri/cancel-order-publish/http-request.adoc[]
 
 ==== Request Fields
 
-include::{snippets}/point/pub/cancel-order-publish/request-fields.adoc[]
+include::{snippets}/point/pri/cancel-order-publish/request-fields.adoc[]
 
 ==== Response fields
 
 이 API 는 `Http Status Code 204` 를 반환합니다
-
-==== Response body
-
-include::{snippets}/point/pub/cancel-order-publish/response-body.adoc[]

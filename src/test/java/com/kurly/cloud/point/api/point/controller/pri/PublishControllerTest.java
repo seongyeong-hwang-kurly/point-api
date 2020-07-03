@@ -6,11 +6,13 @@ import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.ControllerTest;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.domain.publish.BulkPublishPointRequest;
+import com.kurly.cloud.point.api.point.domain.publish.CancelPublishOrderPointRequest;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
 import com.kurly.cloud.point.api.point.entity.Point;
 import com.kurly.cloud.point.api.point.port.in.PublishPointPort;
@@ -161,6 +163,40 @@ public class PublishControllerTest implements CommonTestGiven {
               "{\"success\":true,\"message\":null,\"data\":{\"succeed\":[1,2,3],\"failed\":[],\"resultIds\":[{\"jobId\":1,\"pointSeq\":1},{\"jobId\":2,\"pointSeq\":2},{\"jobId\":3,\"pointSeq\":3}]}}"
           ))
           .andExpect(status().is(200));
+    }
+  }
+
+  @Nested
+  @DisplayName("적립금 주문 발급 취소를 호출 할 때")
+  class DescribeCancelOrderPublish {
+
+    CancelPublishOrderPointRequest givenRequest() {
+      return CancelPublishOrderPointRequest.builder()
+          .memberNumber(givenMemberNumber())
+          .orderNumber(givenOrderNumber())
+          .point(1000)
+          .actionMemberNumber(0L)
+          .build();
+    }
+
+    @Nested
+    @DisplayName("값이 올바르면")
+    @ControllerTest
+    class Context0 {
+
+      @MockBean
+      PublishPointPort publishPointPort;
+
+      @Test
+      @DisplayName("적립금 발급을 취소하고 204를 반환한다")
+      void test() throws Exception {
+        mockMvc
+            .perform(MockMvcRequestBuilders.post("/v1/publish/order-cancel")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(givenRequest())))
+            .andDo(MockMvcResultHandlers.print())
+            .andExpect(status().isNoContent());
+      }
     }
   }
 }

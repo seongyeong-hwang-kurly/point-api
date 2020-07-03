@@ -7,22 +7,17 @@
  * 1)
  */
 
-package com.kurly.cloud.point.api.point.controller;
+package com.kurly.cloud.point.api.point.controller.pri;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.ControllerTest;
-import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
-import com.kurly.cloud.point.api.point.exception.AlreadyPublishedException;
-import com.kurly.cloud.point.api.point.port.in.PublishPointPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -35,12 +30,10 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
+@DisplayName("PrivateMemberPointControllerTest")
 @ControllerTest
-public class OrderPointControllerTest implements CommonTestGiven {
-  @Autowired
-  ObjectMapper objectMapper;
-  @Autowired
-  PublishPointPort publishPointPort;
+public class MemberPointControllerTest implements CommonTestGiven {
+
   private MockMvc mockMvc;
 
   @BeforeEach
@@ -53,32 +46,27 @@ public class OrderPointControllerTest implements CommonTestGiven {
 
   @WithUserDetails
   @Test
-  @DisplayName("적립되지 않은 주문 적립금 조회")
+  @DisplayName("회원 적립금 이력을 조회 한다")
   void test() throws Exception {
     mockMvc
-        .perform(MockMvcRequestBuilders.get("/public/v1/order-published-amount/{orderNumber}"
-            , givenOrderNumber()))
-        .andDo(MockMvcResultHandlers.print())
-        .andExpect(status().isNotFound());
-  }
-
-  @WithUserDetails
-  @Test
-  @DisplayName("적립된 주문 적립금 조회")
-  void test1() throws Exception {
-    givenOrderPoint();
-    mockMvc
-        .perform(MockMvcRequestBuilders.get("/public/v1/order-published-amount/{orderNumber}"
-            , givenOrderNumber()))
+        .perform(
+            MockMvcRequestBuilders.get("/v1/history/{memberNumber}", givenMemberNumber())
+                .param("regDateTimeFrom", "2020-05-10T10:00:00+09:00")
+                .param("regDateTimeTo", "2020-05-10T10:00:00+09:00")
+        )
         .andDo(MockMvcResultHandlers.print())
         .andExpect(status().isOk());
   }
 
-  void givenOrderPoint() throws AlreadyPublishedException {
-    publishPointPort.publishByOrder(PublishPointRequest.builder()
-        .memberNumber(givenMemberNumber())
-        .orderNumber(givenOrderNumber())
-        .point(1000)
-        .build());
+  @WithUserDetails
+  @Test
+  @DisplayName("회원 적립금 요약을 조회 한다")
+  void test1() throws Exception {
+    mockMvc
+        .perform(
+            MockMvcRequestBuilders.get("/v1/summary/{memberNumber}", givenMemberNumber()))
+        .andDo(MockMvcResultHandlers.print())
+        .andExpect(status().isOk());
   }
+
 }

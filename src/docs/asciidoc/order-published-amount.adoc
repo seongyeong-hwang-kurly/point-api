@@ -8,16 +8,18 @@ GET
 
 ==== HTTP request
 
-include::{snippets}/point/order-published-amount/http-request.adoc[]
+===== Private
+
+include::{snippets}/point/pri/order-published-amount/http-request.adoc[]
 
 ==== Path Parameters
 
-include::{snippets}/point/order-published-amount/path-parameters.adoc[]
+include::{snippets}/point/pri/order-published-amount/path-parameters.adoc[]
 
 ==== Response fields
 
-include::{snippets}/point/order-published-amount/response-fields-data.adoc[]
+include::{snippets}/point/pri/order-published-amount/response-fields-data.adoc[]
 
 ==== Response body
 
-include::{snippets}/point/order-published-amount/response-body.adoc[]
+include::{snippets}/point/pri/order-published-amount/response-body.adoc[]

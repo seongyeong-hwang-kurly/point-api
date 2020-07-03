@@ -8,6 +8,8 @@ POST
 
 ==== HTTP request
 
+===== Private
+
 include::{snippets}/point/pri/bulk-publish/http-request.adoc[]
 
 ==== Request Fields
