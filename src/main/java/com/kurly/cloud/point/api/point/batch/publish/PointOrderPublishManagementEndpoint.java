@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.WriteOperation;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -29,7 +30,7 @@ public class PointOrderPublishManagementEndpoint {
   private final Job pointOrderPublishJob;
 
   @WriteOperation
-  void executeOrderPublishBatch(String publishDate) {
+  String executeOrderPublishBatch(@Nullable String publishDate) {
     if (StringUtils.isEmpty(publishDate)) {
       publishDate = LocalDateTime.now().format(PointOrderPublishJobConfig.DATE_TIME_FORMATTER);
     }
@@ -44,5 +45,6 @@ public class PointOrderPublishManagementEndpoint {
         FileBeatLogger.error(e);
       }
     }).start();
+    return "ok";
   }
 }

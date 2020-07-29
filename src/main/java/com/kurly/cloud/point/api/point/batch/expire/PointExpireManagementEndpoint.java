@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.WriteOperation;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -29,7 +30,7 @@ public class PointExpireManagementEndpoint {
   private final Job pointExpireJob;
 
   @WriteOperation
-  void executeExpireBatch(String expireTime) {
+  String executeExpireBatch(@Nullable String expireTime) {
     if (StringUtils.isEmpty(expireTime)) {
       expireTime = LocalDateTime.now().format(PointExpireJobConfig.DATE_TIME_FORMATTER);
     }
@@ -44,5 +45,6 @@ public class PointExpireManagementEndpoint {
         FileBeatLogger.error(e);
       }
     }).start();
+    return "ok";
   }
 }
