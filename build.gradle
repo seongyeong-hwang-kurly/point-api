@@ -50,6 +50,7 @@ dependencies {
 
 test {
     failFast(true)
+    maxHeapSize = "8192m"
     useJUnitPlatform()
 }
 
