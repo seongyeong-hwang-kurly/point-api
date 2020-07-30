@@ -2,7 +2,6 @@ package com.kurly.cloud.point.api.point.batch;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
 import com.kurly.cloud.point.api.point.batch.expire.config.PointExpireJobConfig;
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
@@ -12,6 +11,9 @@ import com.kurly.cloud.point.api.point.port.in.PublishPointPort;
 import com.kurly.cloud.point.api.point.repository.MemberPointRepository;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
+import java.util.stream.IntStream;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
@@ -99,20 +101,20 @@ public class PointExpireBatchTest implements CommonTestGiven {
         }
       }
 
-      void givenExpiredPoints() {
-        long memberNumber = givenMemberNumber();
-
-        for (int i = 0; i < givenSize(); i++) {
-          publishPointPort.publish(PublishPointRequest.builder()
-              .point(1000)
-              .memberNumber(memberNumber)
-              .historyType(HistoryType.TYPE_12.getValue())
-              .actionMemberNumber(memberNumber)
-              .expireDate(LocalDateTime.of(2020, 1, 1, 0, 0))
-              .detail("지급")
-              .build());
-          memberNumber = memberNumber - 1;
-        }
+      void givenExpiredPoints() throws ExecutionException, InterruptedException {
+        new ForkJoinPool(100).submit(() -> {
+          IntStream.range(0, givenSize()).parallel().forEach(i -> {
+            long memberNumber = givenMemberNumber() - i;
+            publishPointPort.publish(PublishPointRequest.builder()
+                .point(1000)
+                .memberNumber(memberNumber)
+                .historyType(HistoryType.TYPE_12.getValue())
+                .actionMemberNumber(memberNumber)
+                .expireDate(LocalDateTime.of(2020, 1, 1, 0, 0))
+                .detail("지급")
+                .build());
+          });
+        }).get();
       }
 
       void subject() throws Exception {

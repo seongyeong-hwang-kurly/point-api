@@ -28,19 +28,22 @@ public class PointExpireItemWriter implements ItemWriter<Long> {
       items.parallelStream().forEach(memberNumber -> {
         PointExpireResult result = expirePointPort.expireMemberPoint(memberNumber,
             LocalDateTime.parse(expireTime, PointExpireJobConfig.DATE_TIME_FORMATTER));
-
-        ExecutionContext executionContext = stepExecution.getJobExecution().getExecutionContext();
-        long totalMemberCount = executionContext.getLong("totalMemberCount", 0);
-        long totalExpiredPointAmount = executionContext.getLong("totalExpiredPointAmount", 0);
-        long totalExpiredPointCount = executionContext.getLong("totalExpiredPointCount", 0);
-
-        executionContext.putLong("totalMemberCount", totalMemberCount + 1);
-        executionContext.putLong("totalExpiredPointCount",
-            totalExpiredPointCount + result.getExpiredPointSeq().size());
-        executionContext.putLong("totalExpiredPointAmount",
-            totalExpiredPointAmount + result.getTotalExpired());
+        putSummary(result);
       });
     }).get();
+  }
+
+  private synchronized void putSummary(PointExpireResult result) {
+    ExecutionContext executionContext = stepExecution.getJobExecution().getExecutionContext();
+    long totalMemberCount = executionContext.getLong("totalMemberCount", 0);
+    long totalExpiredPointAmount = executionContext.getLong("totalExpiredPointAmount", 0);
+    long totalExpiredPointCount = executionContext.getLong("totalExpiredPointCount", 0);
+
+    executionContext.putLong("totalMemberCount", totalMemberCount + 1);
+    executionContext.putLong("totalExpiredPointCount",
+        totalExpiredPointCount + result.getExpiredPointSeq().size());
+    executionContext.putLong("totalExpiredPointAmount",
+        totalExpiredPointAmount + result.getTotalExpired());
   }
 
   @BeforeStep
