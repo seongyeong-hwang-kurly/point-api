@@ -5,15 +5,18 @@ import com.kurly.cloud.point.api.recommend.domain.RecommendationDelayType;
 import com.kurly.cloud.point.api.recommend.domain.RecommendationPointReason;
 import com.kurly.cloud.point.api.recommend.domain.RecommendationPointStatus;
 import com.kurly.cloud.point.api.recommend.entity.converter.RecommendationDataTypeConverter;
+import com.kurly.cloud.point.api.recommend.entity.converter.RecommendationDelayTypeConverter;
 import com.kurly.cloud.point.api.recommend.entity.converter.RecommendationPointReasonConverter;
 import com.kurly.cloud.point.api.recommend.entity.converter.RecommendationPointStatusConverter;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import lombok.AllArgsConstructor;
@@ -85,6 +88,7 @@ public class RecommendationPointHistory {
   RecommendationDataType type;
 
   @Column(name = "is_delayed")
+  @Convert(converter = RecommendationDelayTypeConverter.class)
   RecommendationDelayType delayType;
 
   @Column(name = "created_at")
@@ -130,5 +134,12 @@ public class RecommendationPointHistory {
       maskedName = firstName.toString();
     }
     return maskedName;
+  }
+
+  @PrePersist
+  void prePersist() {
+    this.recommendationPhoneNumber = Objects.requireNonNullElse(this.recommendationPhoneNumber, "");
+    this.recommendationAddress = Objects.requireNonNullElse(this.recommendationAddress, "");
+    this.reason = Objects.requireNonNullElse(this.reason, RecommendationPointReason.DEFAULT);
   }
 }
