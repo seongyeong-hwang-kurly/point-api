@@ -1,6 +1,6 @@
-package com.kurly.cloud.point.api.point.batch.expire;
+package com.kurly.cloud.point.api.batch.expire;
 
-import com.kurly.cloud.point.api.point.batch.expire.config.PointExpireJobConfig;
+import com.kurly.cloud.point.api.batch.expire.config.PointExpireJobConfig;
 import com.kurly.cloud.point.api.point.domain.PointExpireResult;
 import com.kurly.cloud.point.api.point.port.in.ExpirePointPort;
 import java.time.LocalDateTime;

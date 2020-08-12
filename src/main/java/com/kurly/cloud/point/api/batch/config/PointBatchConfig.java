@@ -1,5 +1,6 @@
-package com.kurly.cloud.point.api.point.batch.config;
+package com.kurly.cloud.point.api.batch.config;
 
+import java.time.format.DateTimeFormatter;
 import javax.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.configuration.annotation.DefaultBatchConfigurer;
@@ -22,6 +23,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 @RequiredArgsConstructor
 public class PointBatchConfig extends DefaultBatchConfigurer implements SchedulingConfigurer {
 
+  public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ISO_DATE_TIME;
   private static final int SCHEDULER_POOL_SIZE = 5;
   private final EntityManagerFactory entityManagerFactory;
 

@@ -1,8 +1,8 @@
-package com.kurly.cloud.point.api.point.batch;
+package com.kurly.cloud.point.api.batch;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.kurly.cloud.point.api.point.batch.expire.config.PointExpireJobConfig;
+import com.kurly.cloud.point.api.batch.expire.config.PointExpireJobConfig;
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;

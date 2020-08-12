@@ -1,4 +1,4 @@
-package com.kurly.cloud.point.api.point.batch.expire;
+package com.kurly.cloud.point.api.batch.expire;
 
 import com.kurly.cloud.api.common.util.logging.FileBeatLogger;
 import com.kurly.cloud.point.api.point.util.SlackBot;

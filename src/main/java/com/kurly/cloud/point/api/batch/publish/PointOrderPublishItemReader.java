@@ -1,8 +1,8 @@
-package com.kurly.cloud.point.api.point.batch.publish;
+package com.kurly.cloud.point.api.batch.publish;
 
+import com.kurly.cloud.point.api.batch.publish.config.PointOrderPublishJobConfig;
 import com.kurly.cloud.point.api.order.entity.Order;
 import com.kurly.cloud.point.api.order.repository.OrderRepository;
-import com.kurly.cloud.point.api.point.batch.publish.config.PointOrderPublishJobConfig;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;

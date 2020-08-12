@@ -1,8 +1,8 @@
-package com.kurly.cloud.point.api.point.batch.expire;
+package com.kurly.cloud.point.api.batch.expire;
 
 import com.kurly.cloud.api.common.util.SlackNotifier;
 import com.kurly.cloud.api.common.util.logging.FileBeatLogger;
-import com.kurly.cloud.point.api.point.batch.expire.config.PointExpireJobConfig;
+import com.kurly.cloud.point.api.batch.expire.config.PointExpireJobConfig;
 import java.time.LocalDateTime;
 import java.util.Date;
 import lombok.RequiredArgsConstructor;

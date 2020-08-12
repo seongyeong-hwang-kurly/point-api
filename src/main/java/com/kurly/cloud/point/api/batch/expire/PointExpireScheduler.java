@@ -1,6 +1,6 @@
-package com.kurly.cloud.point.api.point.batch.publish;
+package com.kurly.cloud.point.api.batch.expire;
 
-import static com.kurly.cloud.point.api.point.batch.expire.config.PointExpireJobConfig.DATE_TIME_FORMATTER;
+import static com.kurly.cloud.point.api.batch.expire.config.PointExpireJobConfig.DATE_TIME_FORMATTER;
 
 import com.kurly.cloud.api.common.util.SlackNotifier;
 import com.kurly.cloud.api.common.util.logging.FileBeatLogger;
@@ -22,54 +22,53 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class PointOrderPublishScheduler {
-  @Qualifier("pointOrderPublishJob")
-  private final Job pointOrderPublishJob;
+public class PointExpireScheduler {
+  @Qualifier("pointExpireJob")
+  private final Job pointExpireJob;
   private final JobLauncher jobLauncher;
 
   /**
-   * 스케쥴 실행.
+   * 스케줄 실행.
    */
-  @Scheduled(cron = "0 0 7 * * *")
+  @Scheduled(cron = "0 0 0 * * *")
   public void execute() {
-    String publishDate = LocalDateTime.now().format(DATE_TIME_FORMATTER);
+    String expireTime = LocalDateTime.now().format(DATE_TIME_FORMATTER);
     try {
       FileBeatLogger.info(new HashMap<>() {
         {
-          put("batch", "PointOrderPublishScheduler");
+          put("batch", "PointExpireScheduler");
           put("action", "STARTED");
-          put("param", publishDate);
+          put("param", expireTime);
         }
       });
       JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
-      jobParametersBuilder.addString("publishDate", publishDate);
-      JobExecution run =
-          jobLauncher.run(pointOrderPublishJob, jobParametersBuilder.toJobParameters());
+      jobParametersBuilder.addString("expireTime", expireTime);
+      JobExecution run = jobLauncher.run(pointExpireJob, jobParametersBuilder.toJobParameters());
       if (run.getExitStatus().getExitCode().equals(ExitStatus.FAILED.getExitCode())) {
         String exitDescription = run.getExitStatus().getExitDescription();
         SlackNotifier.notify(exitDescription);
         FileBeatLogger.info(new HashMap<>() {
           {
-            put("batch", "PointOrderPublishScheduler");
+            put("batch", "PointExpireScheduler");
             put("action", "FAILED");
-            put("param", publishDate);
+            put("param", expireTime);
           }
         });
       } else {
         FileBeatLogger.info(new HashMap<>() {
           {
-            put("batch", "PointOrderPublishScheduler");
+            put("batch", "PointExpireScheduler");
             put("action", "COMPLETED");
-            put("param", publishDate);
+            put("param", expireTime);
           }
         });
       }
     } catch (Exception e) {
       FileBeatLogger.info(new HashMap<>() {
         {
-          put("batch", "PointOrderPublishScheduler");
+          put("batch", "PointExpireScheduler");
           put("action", "FAILED");
-          put("param", publishDate);
+          put("param", expireTime);
         }
       });
       FileBeatLogger.error(e);

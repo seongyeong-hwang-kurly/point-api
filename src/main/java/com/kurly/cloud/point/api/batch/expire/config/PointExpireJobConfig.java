@@ -1,8 +1,8 @@
-package com.kurly.cloud.point.api.point.batch.expire.config;
+package com.kurly.cloud.point.api.batch.expire.config;
 
-import com.kurly.cloud.point.api.point.batch.expire.PointExpireItemReader;
-import com.kurly.cloud.point.api.point.batch.expire.PointExpireItemWriter;
-import com.kurly.cloud.point.api.point.batch.expire.PointExpireJobListener;
+import com.kurly.cloud.point.api.batch.expire.PointExpireItemReader;
+import com.kurly.cloud.point.api.batch.expire.PointExpireItemWriter;
+import com.kurly.cloud.point.api.batch.expire.PointExpireJobListener;
 import com.kurly.cloud.point.api.point.port.in.ExpirePointPort;
 import com.kurly.cloud.point.api.point.repository.PointRepository;
 import com.kurly.cloud.point.api.point.util.SlackBot;

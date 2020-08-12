@@ -1,11 +1,10 @@
-package com.kurly.cloud.point.api.point.batch;
+package com.kurly.cloud.point.api.batch;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
+import com.kurly.cloud.point.api.batch.publish.config.PointOrderPublishJobConfig;
 import com.kurly.cloud.point.api.order.entity.Order;
 import com.kurly.cloud.point.api.order.entity.OrderDynamicColumn;
-import com.kurly.cloud.point.api.point.batch.publish.config.PointOrderPublishJobConfig;
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.entity.MemberPoint;
 import com.kurly.cloud.point.api.point.repository.MemberPointRepository;

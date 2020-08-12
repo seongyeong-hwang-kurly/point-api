@@ -1,8 +1,8 @@
-package com.kurly.cloud.point.api.point.batch.publish;
+package com.kurly.cloud.point.api.batch.publish;
 
 import com.kurly.cloud.api.common.util.SlackNotifier;
 import com.kurly.cloud.api.common.util.logging.FileBeatLogger;
-import com.kurly.cloud.point.api.point.batch.publish.config.PointOrderPublishJobConfig;
+import com.kurly.cloud.point.api.batch.publish.config.PointOrderPublishJobConfig;
 import java.time.LocalDateTime;
 import java.util.Date;
 import lombok.RequiredArgsConstructor;
