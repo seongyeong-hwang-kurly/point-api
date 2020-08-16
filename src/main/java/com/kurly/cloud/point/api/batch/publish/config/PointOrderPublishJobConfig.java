@@ -1,0 +1,63 @@
+package com.kurly.cloud.point.api.batch.publish.config;
+
+import com.kurly.cloud.point.api.batch.publish.PointOrderPublishItemProcessor;
+import com.kurly.cloud.point.api.batch.publish.PointOrderPublishItemReader;
+import com.kurly.cloud.point.api.batch.publish.PointOrderPublishItemWriter;
+import com.kurly.cloud.point.api.batch.publish.PointOrderPublishJobListener;
+import com.kurly.cloud.point.api.order.entity.Order;
+import com.kurly.cloud.point.api.order.repository.OrderRepository;
+import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
+import com.kurly.cloud.point.api.point.util.SlackBot;
+import java.time.format.DateTimeFormatter;
+import lombok.RequiredArgsConstructor;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.Step;
+import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.JobScope;
+import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.item.database.AbstractPagingItemReader;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@RequiredArgsConstructor
+public class PointOrderPublishJobConfig {
+
+  public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ISO_DATE_TIME;
+  public static int CHUNK_SIZE = 1000;
+  private final StepBuilderFactory stepBuilderFactory;
+  private final PointOrderPublishItemWriter pointOrderPublishItemWriter;
+  private final OrderRepository orderRepository;
+  private final SlackBot slackBot;
+
+  @Value("${batch.publish.chunkSize:1000}")
+  public void setChunkSize(int chunkSize) {
+    CHUNK_SIZE = chunkSize;
+  }
+
+  @Bean
+  Job pointOrderPublishJob(JobBuilderFactory jobBuilderFactory) {
+    return jobBuilderFactory.get("pointOrderPublishJob")
+        .listener(new PointOrderPublishJobListener(slackBot))
+        .start(pointOrderPublishJobStep(stepBuilderFactory))
+        .build();
+  }
+
+  Step pointOrderPublishJobStep(StepBuilderFactory stepBuilderFactory) {
+    return stepBuilderFactory.get("pointOrderPublishJobStep")
+        .<Order, PublishPointRequest>chunk(CHUNK_SIZE)
+        .reader(pointPublishOrderReader(null))
+        .processor(new PointOrderPublishItemProcessor())
+        .writer(pointOrderPublishItemWriter)
+        .build();
+  }
+
+  @JobScope
+  @Bean
+  public AbstractPagingItemReader<Order> pointPublishOrderReader(
+      @Value("#{jobParameters[publishDate]}") String publishDate) {
+    return new PointOrderPublishItemReader(orderRepository, CHUNK_SIZE, publishDate);
+  }
+}
+
