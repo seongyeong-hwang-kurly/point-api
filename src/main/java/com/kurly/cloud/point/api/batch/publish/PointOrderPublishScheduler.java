@@ -18,7 +18,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-@ConditionalOnProperty("batch.enable")
+@ConditionalOnProperty("batch.publish.enable")
 @Component
 @Slf4j
 @RequiredArgsConstructor
