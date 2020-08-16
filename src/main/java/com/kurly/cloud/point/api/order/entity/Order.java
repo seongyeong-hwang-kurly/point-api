@@ -57,17 +57,21 @@ public class Order {
   @Column(name = "mobileorder")
   String mobile;
 
+  @Builder.Default
   @Column(name = "address")
-  String jibunFullAddress;
+  String jibunFullAddress = "";
 
+  @Builder.Default
   @Column(name = "road_address")
-  String roadFullAddress;
+  String roadFullAddress = "";
 
+  @Builder.Default
   @Column(name = "addr_divide1")
-  String address;
+  String address = "";
 
+  @Builder.Default
   @Column(name = "addr_divide2")
-  String addressSub;
+  String addressSub = "";
 
   public String getFullAddress() {
     return roadFullAddress.isEmpty() ? jibunFullAddress : roadFullAddress;

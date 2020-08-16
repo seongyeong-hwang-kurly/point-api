@@ -3,6 +3,7 @@ package com.kurly.cloud.point.api.batch;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.kurly.cloud.point.api.batch.publish.config.PointOrderPublishJobConfig;
+import com.kurly.cloud.point.api.member.entity.Member;
 import com.kurly.cloud.point.api.order.entity.Order;
 import com.kurly.cloud.point.api.order.entity.OrderDynamicColumn;
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
@@ -109,7 +110,7 @@ public class PointOrderPublishBatchTest implements CommonTestGiven {
           .orderNumber(givenOrderNumber())
           .orderStatus(1)
           .orderProcessCode(0)
-          .memberNumber(givenMemberNumber())
+          .member(Member.builder().memberNumber(givenMemberNumber()).build())
           .payDateTime(givenPayDate())
           .payPrice(givenPayPrice())
           .build();
