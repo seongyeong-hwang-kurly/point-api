@@ -1,8 +1,8 @@
-package com.kurly.cloud.point.api.batch.publish;
+package com.kurly.cloud.point.api.batch.recommend;
 
 import com.kurly.cloud.api.common.util.SlackNotifier;
 import com.kurly.cloud.api.common.util.logging.FileBeatLogger;
-import com.kurly.cloud.point.api.batch.publish.config.PointOrderPublishJobConfig;
+import com.kurly.cloud.point.api.batch.config.PointBatchConfig;
 import java.time.LocalDateTime;
 import java.util.Date;
 import lombok.RequiredArgsConstructor;
@@ -20,26 +20,27 @@ import org.springframework.util.StringUtils;
 
 @Slf4j
 @Component
-@ConditionalOnProperty("batch.publish.enable")
+@ConditionalOnProperty("batch.recommend.enable")
 @RequiredArgsConstructor
-@Endpoint(id = "pointOrderPublish")
-public class PointOrderPublishManagementEndpoint {
+@Endpoint(id = "recommendPublish")
+public class RecommendPublishManagementEndpoint {
 
   private final JobLauncher jobLauncher;
-  @Qualifier("pointOrderPublishJob")
-  private final Job pointOrderPublishJob;
+  @Qualifier("recommendPublishJob")
+  private final Job recommendPublishJob;
 
   @WriteOperation
-  String executeOrderPublishBatch(@Nullable String publishDate) {
-    if (StringUtils.isEmpty(publishDate)) {
-      publishDate = LocalDateTime.now().format(PointOrderPublishJobConfig.DATE_TIME_FORMATTER);
+  String executeRecommendPublishBatch(@Nullable String deliveredDate) {
+    if (StringUtils.isEmpty(deliveredDate)) {
+      deliveredDate =
+          LocalDateTime.now().minusDays(1).format(PointBatchConfig.DATE_TIME_FORMATTER);
     }
     JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
     jobParametersBuilder.addDate("now", new Date());
-    jobParametersBuilder.addString("publishDate", publishDate);
+    jobParametersBuilder.addString("deliveredDate", deliveredDate);
     new Thread(() -> {
       try {
-        jobLauncher.run(pointOrderPublishJob, jobParametersBuilder.toJobParameters());
+        jobLauncher.run(recommendPublishJob, jobParametersBuilder.toJobParameters());
       } catch (Exception e) {
         SlackNotifier.notify(e);
         FileBeatLogger.error(e);

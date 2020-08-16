@@ -20,7 +20,7 @@ import org.springframework.util.StringUtils;
 
 @Slf4j
 @Component
-@ConditionalOnProperty("batch.enable")
+@ConditionalOnProperty("batch.expire.enable")
 @RequiredArgsConstructor
 @Endpoint(id = "pointExpire")
 public class PointExpireManagementEndpoint {
