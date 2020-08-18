@@ -79,6 +79,8 @@ application/json;charset=utf-8 +
 
 include::history.adoc[]
 
+include::publish-history.adoc[]
+
 include::summary.adoc[]
 
 include::order-published-amount.adoc[]

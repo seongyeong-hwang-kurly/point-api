@@ -1,0 +1,25 @@
+=== 적립금 지급 이력 조회
+
+적립금 지급 이력을 조회 합니다
+
+==== HTTP method
+
+GET
+
+==== HTTP request
+
+===== Private
+
+include::{snippets}/point/pri/publish-history/http-request.adoc[]
+
+==== Request fields
+
+include::{snippets}/point/pri/publish-history/request-fields.adoc[]
+
+==== Response fields
+
+include::{snippets}/point/pri/publish-history/response-fields-data.adoc[]
+
+==== Response body
+
+include::{snippets}/point/pri/publish-history/response-body.adoc[]
