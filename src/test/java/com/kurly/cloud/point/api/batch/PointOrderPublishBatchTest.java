@@ -5,11 +5,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.kurly.cloud.point.api.batch.publish.config.PointOrderPublishJobConfig;
 import com.kurly.cloud.point.api.member.entity.Member;
 import com.kurly.cloud.point.api.order.entity.Order;
-import com.kurly.cloud.point.api.order.entity.OrderDynamicColumn;
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.entity.MemberPoint;
 import com.kurly.cloud.point.api.point.repository.MemberPointRepository;
-import com.kurly.cloud.point.api.point.util.PointCalculator;
 import java.time.LocalDateTime;
 import java.util.Date;
 import javax.persistence.EntityManager;
@@ -60,11 +58,6 @@ public class PointOrderPublishBatchTest implements CommonTestGiven {
         .executeUpdate();
 
     entityManager
-        .createQuery("DELETE FROM OrderDynamicColumn odc WHERE odc.orderNumber = :orderNumber")
-        .setParameter("orderNumber", givenOrderNumber())
-        .executeUpdate();
-
-    entityManager
         .createQuery("DELETE FROM MemberPoint mp WHERE mp.memberNumber = :memberNumber")
         .setParameter("memberNumber", givenMemberNumber())
         .executeUpdate();
@@ -91,7 +84,7 @@ public class PointOrderPublishBatchTest implements CommonTestGiven {
   @DisplayName("적립금 지급 배치를 실행 할 때")
   class DescribeOrderPublish {
     int givenPoint() {
-      return PointCalculator.calculateOrderPoint(givenPayPrice(), givenPointRatio());
+      return 1000;
     }
 
     int givenPayPrice() {
@@ -113,14 +106,9 @@ public class PointOrderPublishBatchTest implements CommonTestGiven {
           .member(Member.builder().memberNumber(givenMemberNumber()).build())
           .payDateTime(givenPayDate())
           .payPrice(givenPayPrice())
+          .publishPoint(givenPoint())
           .build();
       entityManager.persist(order);
-      OrderDynamicColumn orderDynamicColumn = OrderDynamicColumn.builder()
-          .orderNumber(order.getOrderNumber())
-          .column("point_ratio")
-          .value(String.valueOf(givenPointRatio()))
-          .build();
-      entityManager.persist(orderDynamicColumn);
       tx.commit();
     }
 
