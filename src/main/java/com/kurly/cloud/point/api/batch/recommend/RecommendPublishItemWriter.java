@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.stereotype.Component;
 
@@ -48,8 +49,26 @@ public class RecommendPublishItemWriter implements ItemWriter<RecommendationPoin
             .build()
         );
       }
+      putSummary(item);
       recommendationPointHistoryService.save(item);
     });
+  }
+
+  private synchronized void putSummary(RecommendationPointHistory result) {
+    ExecutionContext executionContext = stepExecution.getJobExecution().getExecutionContext();
+    long totalOrderCount = executionContext.getLong("totalOrderCount", 0);
+    long totalValidCount = executionContext.getLong("totalValidCount", 0);
+    long totalPublishPointAmount = executionContext.getLong("totalPublishPointAmount", 0);
+    long totalPublishPointCount = executionContext.getLong("totalPublishPointCount", 0);
+
+    executionContext.putLong("totalOrderCount", totalOrderCount + 1);
+    if (RecommendationPointStatus.PAID.equals(result.getStatus())) {
+      executionContext.putLong("totalValidCount", totalValidCount + 1);
+      executionContext
+          .putLong("totalPublishPointAmount", totalPublishPointAmount + result.getPoint() * 2);
+      executionContext
+          .putLong("totalPublishPointCount", totalPublishPointCount + 2);
+    }
   }
 
   @BeforeStep

@@ -3,6 +3,7 @@ package com.kurly.cloud.point.api.batch.recommend.config;
 import com.kurly.cloud.point.api.batch.recommend.RecommendPublishItemProcessor;
 import com.kurly.cloud.point.api.batch.recommend.RecommendPublishItemReader;
 import com.kurly.cloud.point.api.batch.recommend.RecommendPublishItemWriter;
+import com.kurly.cloud.point.api.batch.recommend.RecommendPublishJobListener;
 import com.kurly.cloud.point.api.order.entity.Order;
 import com.kurly.cloud.point.api.point.util.SlackBot;
 import com.kurly.cloud.point.api.recommend.entity.RecommendationPointHistory;
@@ -37,6 +38,7 @@ public class RecommendPublishJobConfig {
   @Bean
   Job recommendPublishJob(JobBuilderFactory jobBuilderFactory) {
     return jobBuilderFactory.get("recommendPublishJob")
+        .listener(new RecommendPublishJobListener(slackBot))
         .start(recommendPublishJobStep(stepBuilderFactory))
         .build();
   }

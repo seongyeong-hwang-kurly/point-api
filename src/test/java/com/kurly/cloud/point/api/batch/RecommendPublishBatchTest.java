@@ -7,9 +7,15 @@ import com.kurly.cloud.point.api.order.entity.Order;
 import com.kurly.cloud.point.api.order.repository.OrderRepository;
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
-import org.junit.jupiter.api.Disabled;
+import java.util.stream.IntStream;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,6 +32,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @DisplayName("RecommendPublishBatch class")
 public class RecommendPublishBatchTest implements CommonTestGiven {
   @Autowired
+  EntityManagerFactory entityManagerFactory;
+
+  @Autowired
   JobLauncher jobLauncher;
 
   @Autowired
@@ -37,6 +46,9 @@ public class RecommendPublishBatchTest implements CommonTestGiven {
 
   @Autowired
   OrderRepository orderRepository;
+
+  List<Long> memberNumbers = new ArrayList<>();
+  List<Long> orderNumbers = new ArrayList<>();
 
   void subject() throws Exception {
     JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
@@ -57,6 +69,7 @@ public class RecommendPublishBatchTest implements CommonTestGiven {
         .recommendMemberId("")
         .build();
     memberRepository.saveAndFlush(member);
+    memberNumbers.add(member.getMemberNumber());
     return member;
   }
 
@@ -69,6 +82,7 @@ public class RecommendPublishBatchTest implements CommonTestGiven {
         .recommendMemberId(recommenderId)
         .build();
     memberRepository.saveAndFlush(member);
+    memberNumbers.add(member.getMemberNumber());
     return member;
   }
 
@@ -85,15 +99,83 @@ public class RecommendPublishBatchTest implements CommonTestGiven {
         .mobile(orderMember.getMobile())
         .build();
     orderRepository.saveAndFlush(order);
+    orderNumbers.add(order.getOrderNumber());
     return order;
   }
 
-  @Disabled("Rollback을 구현 해야 함")
+  void createData(int size) {
+    IntStream.range(0, size).forEach(index -> {
+      Member recommender = givenRecommenderMember(index);
+      Member recommendee = givenRecommendeeMember(recommender.getMemberId(), index);
+      givenDeliveredOrder(recommendee, LocalDateTime.now());
+    });
+  }
+
+  @DisplayName("친구 초대 적립금 지급 배치 테스트")
   @Test
   void test() throws Exception {
-    Member recommender = givenRecommenderMember(0);
-    Member recommendee = givenRecommendeeMember(recommender.getMemberId(), 0);
-    Order order = givenDeliveredOrder(recommendee, LocalDateTime.now());
+    createData(2);
     subject();
+  }
+
+  @AfterEach
+  void clear() {
+    EntityManager entityManager = entityManagerFactory.createEntityManager();
+    EntityTransaction tx = entityManager.getTransaction();
+    tx.begin();
+
+    orderNumbers.forEach(orderNumber -> {
+      entityManager
+          .createQuery("DELETE FROM Order o WHERE o.orderNumber = :orderNumber")
+          .setParameter("orderNumber", orderNumber)
+          .executeUpdate();
+
+      entityManager
+          .createQuery("DELETE FROM PointHistory ph WHERE ph.orderNumber = :orderNumber")
+          .setParameter("orderNumber", orderNumber)
+          .executeUpdate();
+
+      entityManager
+          .createQuery(
+              "DELETE FROM RecommendationPointHistory rh WHERE rh.orderNumber = :orderNumber")
+          .setParameter("orderNumber", orderNumber)
+          .executeUpdate();
+    });
+
+    memberNumbers.forEach(memberNumber -> {
+      entityManager
+          .createQuery("DELETE FROM Member m WHERE m.memberNumber = :memberNumber")
+          .setParameter("memberNumber", memberNumber)
+          .executeUpdate();
+
+      entityManager
+          .createQuery(
+              "DELETE FROM RecommendationPointHistory rh WHERE rh.orderMemberNumber = :memberNumber")
+          .setParameter("memberNumber", memberNumber)
+          .executeUpdate();
+
+      entityManager
+          .createQuery(
+              "DELETE FROM RecommendationPointHistory rh WHERE rh.recommendationMemberNumber = :memberNumber")
+          .setParameter("memberNumber", memberNumber)
+          .executeUpdate();
+
+      entityManager
+          .createQuery("DELETE FROM MemberPoint mp WHERE mp.memberNumber = :memberNumber")
+          .setParameter("memberNumber", memberNumber)
+          .executeUpdate();
+
+      entityManager
+          .createQuery("DELETE FROM Point p WHERE p.memberNumber = :memberNumber")
+          .setParameter("memberNumber", memberNumber)
+          .executeUpdate();
+
+      entityManager
+          .createQuery("DELETE FROM MemberPointHistory ph WHERE ph.memberNumber = :memberNumber")
+          .setParameter("memberNumber", memberNumber)
+          .executeUpdate();
+    });
+
+    tx.commit();
   }
 }
