@@ -15,6 +15,7 @@ public class RecommendPublishItemReader extends JpaPagingItemReader<Order> {
     setEntityManagerFactory(entityManagerFactory);
     setPageSize(pageSize);
     setQueryString(getQueryString());
+    setSaveState(false);
     LocalDateTime date = LocalDateTime.parse(deliveredDate, PointBatchConfig.DATE_TIME_FORMATTER);
     setParameterValues(getParameterValues(date.withHour(0).withMinute(0).withSecond(0).withNano(0),
         date.withHour(23).withMinute(59).withSecond(59).withNano(0)));
@@ -29,6 +30,7 @@ public class RecommendPublishItemReader extends JpaPagingItemReader<Order> {
 
   private String getQueryString() {
     String query = "SELECT o FROM Order o" +
+        " JOIN FETCH o.member " +
         " WHERE o.member.recommendMemberId <> '' " +
         " AND o.orderStatus = 4 " +
         " AND o.orderProcessCode IN (0, 21, 22) " +

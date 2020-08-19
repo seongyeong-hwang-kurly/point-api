@@ -25,8 +25,10 @@ import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+@TestPropertySource(properties = {"batch.recommend.chunkSize=1", "batch.recommend.poolSize=2"})
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @DisplayName("RecommendPublishBatch class")

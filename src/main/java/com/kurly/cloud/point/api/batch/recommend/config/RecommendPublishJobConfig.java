@@ -15,15 +15,19 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.database.JpaPagingItemReader;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.task.TaskExecutor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 @Configuration
 @RequiredArgsConstructor
 public class RecommendPublishJobConfig {
-  public static int CHUNK_SIZE = 1000;
+  private int chunkSize = 1000;
+  private int poolSize = 10;
   private final StepBuilderFactory stepBuilderFactory;
   private final SlackBot slackBot;
   private final EntityManagerFactory entityManagerFactory;
@@ -32,7 +36,22 @@ public class RecommendPublishJobConfig {
 
   @Value("${batch.recommend.chunkSize:1000}")
   public void setChunkSize(int chunkSize) {
-    CHUNK_SIZE = chunkSize;
+    this.chunkSize = chunkSize;
+  }
+
+  @Value("${batch.recommend.poolSize:10}")
+  public void setPoolSize(int poolSize) {
+    this.poolSize = poolSize;
+  }
+
+  public TaskExecutor executor() {
+    ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+    executor.setCorePoolSize(poolSize);
+    executor.setMaxPoolSize(poolSize);
+    executor.setThreadNamePrefix("recommend-multi-thread-");
+    executor.setWaitForTasksToCompleteOnShutdown(Boolean.TRUE);
+    executor.initialize();
+    return executor;
   }
 
   @Bean
@@ -43,20 +62,23 @@ public class RecommendPublishJobConfig {
         .build();
   }
 
+  @JobScope
   Step recommendPublishJobStep(StepBuilderFactory stepBuilderFactory) {
     return stepBuilderFactory.get("recommendPublishJobStep")
-        .<Order, RecommendationPointHistory>chunk(CHUNK_SIZE)
+        .<Order, RecommendationPointHistory>chunk(chunkSize)
         .reader(recommendPublishItemReader(null))
         .processor(new RecommendPublishItemProcessor(recommendationPointHistoryService))
         .writer(recommendPublishItemWriter)
+        .taskExecutor(executor())
+        .throttleLimit(poolSize)
         .build();
   }
 
-  @JobScope
+  @StepScope
   @Bean
   public JpaPagingItemReader<Order> recommendPublishItemReader(
       @Value("#{jobParameters[deliveredDate]}") String deliveredDate) {
-    return new RecommendPublishItemReader(entityManagerFactory, CHUNK_SIZE, deliveredDate);
+    return new RecommendPublishItemReader(entityManagerFactory, chunkSize, deliveredDate);
   }
 
 }
