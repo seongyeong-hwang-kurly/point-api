@@ -31,10 +31,10 @@ public class RecommendPublishItemWriter implements ItemWriter<RecommendationPoin
         publishPointPort.publish(PublishPointRequest
             .builder()
             .orderNumber(item.getOrderNumber())
-            .historyType(HistoryType.TYPE_29.getValue())
+            .historyType(HistoryType.TYPE_12.getValue())
             .point(item.getPoint())
             .memberNumber(item.getOrderMemberNumber())
-            .detail(item.getHistoryMsg())
+            .detail(HistoryType.TYPE_12.buildMessage())
             .build()
         );
 
@@ -42,10 +42,10 @@ public class RecommendPublishItemWriter implements ItemWriter<RecommendationPoin
         publishPointPort.publish(PublishPointRequest
             .builder()
             .orderNumber(item.getOrderNumber())
-            .historyType(HistoryType.TYPE_29.getValue())
+            .historyType(HistoryType.TYPE_13.getValue())
             .point(item.getPoint())
             .memberNumber(item.getRecommendationMemberNumber())
-            .detail(item.getRecommenderHistoryMsg())
+            .detail(HistoryType.TYPE_13.buildMessage(item.getMaskedName(item.getOrderMemberName())))
             .build()
         );
       }

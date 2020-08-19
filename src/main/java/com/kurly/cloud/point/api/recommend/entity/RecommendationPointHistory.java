@@ -112,17 +112,7 @@ public class RecommendationPointHistory {
   }
 
   @Transient
-  public String getHistoryMsg() {
-    return "[이벤트적립금] 친구초대적립금";
-  }
-
-  @Transient
-  public String getRecommenderHistoryMsg() {
-    return String.format("%s (%s)", getHistoryMsg(), getMaskedName(orderMemberName));
-  }
-
-  @Transient
-  String getMaskedName(String name) {
+  public String getMaskedName(String name) {
     String maskedName = "*";
     if (name.length() > 1) {
       StringBuilder firstName = new StringBuilder(name.substring(0, 1));
