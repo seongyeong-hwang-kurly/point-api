@@ -21,6 +21,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import javax.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -58,6 +59,9 @@ public class PointHistoryDocumentationTest implements CommonTestGiven {
   @Autowired
   PublishPointPort publishPointPort;
 
+  @Autowired
+  EntityManager em;
+
   @BeforeEach
   void setUp(WebApplicationContext webApplicationContext,
              RestDocumentationContextProvider restDocumentation) {
@@ -77,6 +81,8 @@ public class PointHistoryDocumentationTest implements CommonTestGiven {
         .orderNumber(givenOrderNumber())
         .actionMemberNumber(givenMemberNumber())
         .build());
+    em.flush();
+    em.clear();
   }
 
   Map getParams() {
@@ -90,7 +96,7 @@ public class PointHistoryDocumentationTest implements CommonTestGiven {
   }
 
   @Test
-  @DisplayName("RestDoc - 주문 적립금 조회")
+  @DisplayName("RestDoc - 발급 적립금 내역 조회")
   void publishHistory() throws Exception {
     givenPoint();
     ResultActions resultActions = mockMvc.perform(
@@ -135,6 +141,8 @@ public class PointHistoryDocumentationTest implements CommonTestGiven {
                         .description("사용 사유명(내부용)")
                     , fieldWithPath("content[].settle").type(JsonFieldType.BOOLEAN)
                         .description("유상여부 - 무상을 제외한 모든 적립금은 유상입니다.")
+                    , fieldWithPath("content[].memberNumber").type(JsonFieldType.NUMBER)
+                        .description("회원 번호")
                     , fieldWithPath("content[].actionMemberNumber").type(JsonFieldType.NUMBER)
                         .description("지급자 회원 번호")
                     , fieldWithPath("content[].regDateTime").type(JsonFieldType.STRING)

@@ -18,6 +18,7 @@ public class PointHistoryDto {
   String detail;
   String memo;
   boolean settle;
+  long memberNumber;
   long actionMemberNumber;
   @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
   ZonedDateTime regDateTime;
@@ -37,6 +38,7 @@ public class PointHistoryDto {
         .settle(pointHistory.isSettle())
         .actionMemberNumber(pointHistory.getActionMemberNumber())
         .regDateTime(DateTimeUtil.toZonedDateTime(pointHistory.getRegTime()))
+        .memberNumber(pointHistory.getPoint().getMemberNumber())
         .build();
   }
 }
