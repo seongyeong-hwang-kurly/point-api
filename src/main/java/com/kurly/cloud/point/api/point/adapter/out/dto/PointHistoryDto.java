@@ -15,6 +15,7 @@ public class PointHistoryDto {
   long orderNumber;
   int amount;
   int historyType;
+  String historyTypeDesc;
   String detail;
   String memo;
   boolean settle;
@@ -33,6 +34,7 @@ public class PointHistoryDto {
         .orderNumber(pointHistory.getOrderNumber())
         .amount(pointHistory.getAmount())
         .historyType(pointHistory.getHistoryType())
+        .historyTypeDesc(pointHistory.getHistoryTypeDesc())
         .detail(pointHistory.getDetail())
         .memo(pointHistory.getMemo())
         .settle(pointHistory.isSettle())

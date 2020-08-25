@@ -1,7 +1,9 @@
 package com.kurly.cloud.point.api.point.domain.history;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.kurly.cloud.point.api.point.exception.HistoryTypeNotFoundException;
 import java.text.MessageFormat;
+import java.util.Arrays;
 
 public enum HistoryType {
 
@@ -20,13 +22,13 @@ public enum HistoryType {
   TYPE_21(21, "인스타후기이벤트", ""),
   TYPE_22(22, "파워블로거/VIP", ""),
   TYPE_23(23, "블로그후기이벤트", ""),
-  TYPE_24(24, "설문 사례용", ""),
-  TYPE_25(25, "인터뷰 사례용", ""),
-  TYPE_26(26, "컨텐츠 촬영용", ""),
+  TYPE_24(24, "고객설문", ""),
+  TYPE_25(25, "인터뷰", ""),
+  TYPE_26(26, "컨텐츠 촬영", ""),
   TYPE_27(27, "HR 복지금", ""),
   TYPE_28(28, "기타", ""),
-  TYPE_29(29, "기타 (마이컬리 알림 됨)", ""),
-  TYPE_30(30, "쇼핑지원금(마이컬리 알림 됨)", ""),
+  TYPE_29(29, "이벤트", ""),
+  TYPE_30(30, "쇼핑지원금", ""),
   TYPE_50(50, "채무 적립금 상환", "[적립지급] 마이너스 적립금 상쇄"),
   TYPE_100(100, "주문 시 사용", "[사용] 주문({0}) 결제 시 사용"),
   TYPE_101(101, "주문 취소", "[적립취소] 주문({0}) 취소"),
@@ -48,6 +50,17 @@ public enum HistoryType {
   @JsonValue
   public int getValue() {
     return value;
+  }
+
+  public String getDesc() {
+    return desc;
+  }
+
+  public static HistoryType getByValue(int value) throws HistoryTypeNotFoundException {
+    return Arrays.stream(HistoryType.values())
+        .filter(deliveryPolicyType -> deliveryPolicyType.getValue() == value)
+        .findAny()
+        .orElseThrow(() -> new HistoryTypeNotFoundException(value));
   }
 
   public String buildMessage(Object... params) {

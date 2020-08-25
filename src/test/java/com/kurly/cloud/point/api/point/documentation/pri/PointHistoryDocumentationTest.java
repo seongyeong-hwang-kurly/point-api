@@ -135,6 +135,8 @@ public class PointHistoryDocumentationTest implements CommonTestGiven {
                         .description("지급 포인트")
                     , fieldWithPath("content[].historyType").type(JsonFieldType.NUMBER)
                         .description("사유 번호")
+                    , fieldWithPath("content[].historyTypeDesc").type(JsonFieldType.STRING)
+                        .description("사유 설명")
                     , fieldWithPath("content[].detail").type(JsonFieldType.STRING)
                         .description("발급 사유명(고객용)")
                     , fieldWithPath("content[].memo").type(JsonFieldType.STRING)

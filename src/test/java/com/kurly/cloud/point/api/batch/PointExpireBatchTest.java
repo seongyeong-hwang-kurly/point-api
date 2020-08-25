@@ -80,6 +80,11 @@ public class PointExpireBatchTest implements CommonTestGiven {
           .setParameter("memberNumber", startMemberNumber)
           .executeUpdate();
 
+      entityManager
+          .createQuery("DELETE FROM PointHistory ph WHERE ph.actionMemberNumber >= :memberNumber")
+          .setParameter("memberNumber", startMemberNumber)
+          .executeUpdate();
+
       tx.commit();
     }
 
