@@ -28,9 +28,11 @@ public interface PointRepository extends JpaRepository<Point, Long> {
       @Param("memberNumber") long memberNumber,
       @Param("expireTime") LocalDateTime expireTime);
 
-  Optional<Point> findByMemberNumberAndOrderNumberAndRemainGreaterThan(long memberNumber,
-                                                                       long orderNumber,
-                                                                       int remain);
+  @Query("SELECT p FROM Point p WHERE " +
+      " p.memberNumber = :memberNumber AND p.orderNumber = :orderNumber AND " +
+      " p.historyType = 1 AND p.remain > 0")
+  Optional<Point> findAvailableOrderPublishedPoint(@Param("memberNumber") long memberNumber,
+                                                   @Param("orderNumber") long orderNumber);
 
   @Query("SELECT p FROM Point p WHERE p.memberNumber = :memberNumber AND p.remain < 0")
   List<Point> findAllDebtMemberPoint(@Param("memberNumber") long memberNumber);

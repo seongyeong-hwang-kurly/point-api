@@ -25,8 +25,8 @@ class PointService {
   }
 
   PointConsumeResult consumeOrderPoint(long memberNumber, long orderNumber, int amount) {
-    Optional<Point> orderPoint = pointRepository
-        .findByMemberNumberAndOrderNumberAndRemainGreaterThan(memberNumber, orderNumber, 0);
+    Optional<Point> orderPoint =
+        pointRepository.findAvailableOrderPublishedPoint(memberNumber, orderNumber);
 
     PointConsumeResult pointConsumeResult = new PointConsumeResult(amount);
     if (orderPoint.isPresent()) {
