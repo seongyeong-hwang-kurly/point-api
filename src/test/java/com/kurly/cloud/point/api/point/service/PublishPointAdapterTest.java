@@ -3,7 +3,6 @@ package com.kurly.cloud.point.api.point.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.TransactionalTest;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
@@ -84,7 +83,8 @@ class PublishPointAdapterTest implements CommonTestGiven {
         assertThat(memberPointHistory.getCashPoint()).isEqualTo(0);
         assertThat(memberPointHistory.isHidden()).isEqualTo(false);
         assertThat(memberPointHistory.getExpireTime())
-            .isEqualTo(PointExpireDateCalculator.calculateDefault(LocalDateTime.now()));
+            .isEqualToIgnoringNanos(
+                PointExpireDateCalculator.calculateDefault(LocalDateTime.now()));
 
         List<Point> availableMemberPoint =
             pointService.getAvailableMemberPoint(givenMemberNumber());

@@ -3,12 +3,9 @@ package com.kurly.cloud.point.api.point.util;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.MonthDay;
-import java.util.Collection;
-import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -81,6 +78,21 @@ public class PointExpireDateCalculatorTest {
           }
         }
       }
+
+      @Nested
+      @DisplayName("기본설정이 'NEXT_YEAR_LAST_MONTH_DATE'로 설정 된다면")
+      class Context3 {
+
+        @Test
+        @DisplayName("2021-1-31 23:59:59를 리턴한다")
+        public void test() {
+          givenCalculator("NEXT_YEAR_LAST_MONTH_DATE");
+          LocalDateTime expireDate = PointExpireDateCalculator.calculateDefault(입력일);
+          assertThat(expireDate).isEqualToIgnoringSeconds(
+              LocalDateTime.of(2021, 입력일.getMonth(), 31, 23, 59, 59)
+          );
+        }
+      }
     }
   }
 
@@ -128,6 +140,22 @@ public class PointExpireDateCalculatorTest {
           );
         }
       }
+
+      @Nested
+      @DisplayName("기본설정이 'NEXT_YEAR_LAST_MONTH_DATE'로 설정 된다면")
+      class Context2 {
+
+        @Test
+        @DisplayName("2020-1-31 23:59:59를 리턴한다")
+        public void test() {
+          givenCalculator("NEXT_YEAR_LAST_MONTH_DATE");
+          LocalDateTime expireDate = PointExpireDateCalculator.calculateNext(입력일);
+          assertThat(expireDate).isEqualToIgnoringSeconds(
+              LocalDateTime.of(2020, 입력일.getMonth(), 31, 23, 59, 59)
+          );
+        }
+      }
+
     }
   }
 }

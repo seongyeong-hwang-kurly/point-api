@@ -235,8 +235,7 @@ class MemberPointAdapterTest implements CommonTestGiven {
 
           assertThat(memberPointSummary.getAmount()).isEqualTo(givenPointAmount());
           assertThat(memberPointSummary.getNextExpireDate())
-              .isEqualTo(PointExpireDateCalculator
-                  .calculateNext(LocalDateTime.now()));
+              .isEqualTo(PointExpireDateCalculator.calculateNext(LocalDateTime.now()));
           assertThat(memberPointSummary.getNextExpireAmount()).isEqualTo(givenPointAmount());
         }
 

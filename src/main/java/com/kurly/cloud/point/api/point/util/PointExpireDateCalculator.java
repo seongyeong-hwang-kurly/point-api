@@ -9,13 +9,13 @@ import org.springframework.beans.factory.annotation.Value;
 public class PointExpireDateCalculator {
 
   static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("Q");
-  private static String DEFAULT_STRATEGY = "QUARTER";
+  private static String DEFAULT_STRATEGY = "NEXT_YEAR_LAST_MONTH_DATE";
 
   public PointExpireDateCalculator(String strategy) {
     DEFAULT_STRATEGY = strategy;
   }
 
-  @Value("${pointExpireDefaultStrategy:QUARTER}")
+  @Value("${pointExpireDefaultStrategy:NEXT_YEAR_LAST_MONTH_DATE}")
   public void setStrategy(String strategy) {
     DEFAULT_STRATEGY = strategy;
   }
@@ -26,7 +26,7 @@ public class PointExpireDateCalculator {
    * @return 23:59:59
    */
   public static LocalDateTime withEndOfDate(LocalDateTime from) {
-    return from.withHour(23).withMinute(59).withSecond(59);
+    return from.withHour(23).withMinute(59).withSecond(59).withNano(0);
   }
 
   /**
@@ -41,6 +41,8 @@ public class PointExpireDateCalculator {
         return calculateNextYearQuarter(from);
       case "NEXT_YEAR":
         return calculateNextYear(from);
+      case "NEXT_YEAR_LAST_MONTH_DATE":
+        return calculateNextYearLastMonthDate(from);
       default:
         throw new IllegalStateException("존재하지 않는 적립금 만료 정책입니다");
     }
@@ -58,6 +60,8 @@ public class PointExpireDateCalculator {
         return calculateNextQuarter(from);
       case "NEXT_YEAR":
         return calculateNextDate(from);
+      case "NEXT_YEAR_LAST_MONTH_DATE":
+        return calculateNextLastMonthDate(from);
       default:
         throw new IllegalStateException("존재하지 않는 적립금 만료 정책입니다");
     }
@@ -83,4 +87,13 @@ public class PointExpireDateCalculator {
   private static LocalDateTime calculateNextYear(LocalDateTime from) {
     return withEndOfDate(from).plusYears(1);
   }
+
+  private static LocalDateTime calculateNextLastMonthDate(LocalDateTime from) {
+    return withEndOfDate(from).plusMonths(1).withDayOfMonth(1).minusDays(1);
+  }
+
+  private static LocalDateTime calculateNextYearLastMonthDate(LocalDateTime from) {
+    return calculateNextLastMonthDate(from.plusYears(1));
+  }
+
 }
