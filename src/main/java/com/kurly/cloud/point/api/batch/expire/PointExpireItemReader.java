@@ -1,6 +1,6 @@
 package com.kurly.cloud.point.api.batch.expire;
 
-import com.kurly.cloud.point.api.batch.expire.config.PointExpireJobConfig;
+import com.kurly.cloud.point.api.batch.config.PointBatchConfig;
 import com.kurly.cloud.point.api.point.repository.PointRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ public class PointExpireItemReader extends AbstractPagingItemReader<Long> {
     setName("expirePointMemberNumberReader");
     setPageSize(pageSize);
     this.pointRepository = pointRepository;
-    this.expireTime = LocalDateTime.parse(expireTime, PointExpireJobConfig.DATE_TIME_FORMATTER);
+    this.expireTime = LocalDateTime.parse(expireTime, PointBatchConfig.DATE_TIME_FORMATTER);
   }
 
   @Override protected void doReadPage() {

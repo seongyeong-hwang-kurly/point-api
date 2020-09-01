@@ -2,6 +2,7 @@ package com.kurly.cloud.point.api.batch;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.kurly.cloud.point.api.batch.config.PointBatchConfig;
 import com.kurly.cloud.point.api.batch.publish.config.PointOrderPublishJobConfig;
 import com.kurly.cloud.point.api.member.entity.Member;
 import com.kurly.cloud.point.api.order.entity.Order;
@@ -10,6 +11,7 @@ import com.kurly.cloud.point.api.point.entity.MemberPoint;
 import com.kurly.cloud.point.api.point.repository.MemberPointRepository;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.stream.IntStream;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
@@ -46,6 +48,9 @@ public class PointOrderPublishBatchTest implements CommonTestGiven {
   @Autowired
   MemberPointRepository memberPointRepository;
 
+  private long fromOrderNumber = givenOrderNumber();
+  private long fromMemberNumber = givenMemberNumber();
+
   @AfterEach
   void clear() {
     EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -53,30 +58,41 @@ public class PointOrderPublishBatchTest implements CommonTestGiven {
     tx.begin();
 
     entityManager
-        .createQuery("DELETE FROM Order o WHERE o.orderNumber = :orderNumber")
-        .setParameter("orderNumber", givenOrderNumber())
+        .createQuery(
+            "DELETE FROM Order o WHERE o.orderNumber BETWEEN :fromOrderNumber AND :toOrderNumber")
+        .setParameter("fromOrderNumber", fromOrderNumber)
+        .setParameter("toOrderNumber", givenOrderNumber())
         .executeUpdate();
 
     entityManager
-        .createQuery("DELETE FROM MemberPoint mp WHERE mp.memberNumber = :memberNumber")
-        .setParameter("memberNumber", givenMemberNumber())
+        .createQuery(
+            "DELETE FROM MemberPoint mp WHERE mp.memberNumber BETWEEN :fromMemberNumber AND :toMemberNumber")
+        .setParameter("fromMemberNumber", fromMemberNumber)
+        .setParameter("toMemberNumber", givenMemberNumber())
         .executeUpdate();
 
     entityManager
-        .createQuery("DELETE FROM Point p WHERE p.memberNumber = :memberNumber")
-        .setParameter("memberNumber", givenMemberNumber())
+        .createQuery(
+            "DELETE FROM Point p WHERE p.memberNumber BETWEEN :fromMemberNumber AND :toMemberNumber")
+        .setParameter("fromMemberNumber", fromMemberNumber)
+        .setParameter("toMemberNumber", givenMemberNumber())
         .executeUpdate();
 
     entityManager
-        .createQuery("DELETE FROM PointHistory ph WHERE ph.orderNumber = :orderNumber")
-        .setParameter("orderNumber", givenOrderNumber())
+        .createQuery(
+            "DELETE FROM PointHistory ph WHERE ph.orderNumber BETWEEN :fromOrderNumber AND :toOrderNumber")
+        .setParameter("fromOrderNumber", fromOrderNumber)
+        .setParameter("toOrderNumber", givenOrderNumber())
         .executeUpdate();
 
     entityManager
-        .createQuery("DELETE FROM MemberPointHistory ph WHERE ph.memberNumber = :memberNumber")
-        .setParameter("memberNumber", givenMemberNumber())
+        .createQuery(
+            "DELETE FROM MemberPointHistory ph WHERE ph.memberNumber BETWEEN :fromMemberNumber AND :toMemberNumber")
+        .setParameter("fromMemberNumber", fromMemberNumber)
+        .setParameter("toMemberNumber", givenMemberNumber())
         .executeUpdate();
 
+    entityManager.close();
     tx.commit();
   }
 
@@ -91,24 +107,21 @@ public class PointOrderPublishBatchTest implements CommonTestGiven {
       return 3333;
     }
 
-    float givenPointRatio() {
-      return 5;
-    }
-
-    private void givenOrder() {
+    private void givenOrder(long orderNumber, long memberNumber) {
       EntityManager entityManager = entityManagerFactory.createEntityManager();
       EntityTransaction tx = entityManager.getTransaction();
       tx.begin();
       Order order = Order.builder()
-          .orderNumber(givenOrderNumber())
+          .orderNumber(orderNumber)
           .orderStatus(1)
           .orderProcessCode(0)
-          .member(Member.builder().memberNumber(givenMemberNumber()).build())
+          .member(Member.builder().memberNumber(memberNumber).build())
           .payDateTime(givenPayDate())
           .payPrice(givenPayPrice())
           .publishPoint(givenPoint())
           .build();
       entityManager.persist(order);
+      entityManager.close();
       tx.commit();
     }
 
@@ -120,17 +133,25 @@ public class PointOrderPublishBatchTest implements CommonTestGiven {
       JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
       jobParametersBuilder.addDate("now", new Date());
       jobParametersBuilder.addString("publishDate",
-          givenPayDate().plusDays(1).format(PointOrderPublishJobConfig.DATE_TIME_FORMATTER));
+          givenPayDate().plusDays(1).format(PointBatchConfig.DATE_TIME_FORMATTER));
       jobLauncher.run(pointOrderPublishJob, jobParametersBuilder.toJobParameters());
     }
 
     @Nested
     @DisplayName("적립 가능한 주문이 있다면")
     class Context0 {
+      void givenOrderBySize(int size) {
+        IntStream.range(0, size).parallel().forEach(i -> {
+          givenOrder(givenOrderNumber() - i, givenMemberNumber() - i);
+        });
+        fromOrderNumber = givenOrderNumber() - size;
+        fromMemberNumber = givenMemberNumber() - size;
+      }
+
       @DisplayName("모두 적립 된다")
       @Test
       void test() throws Exception {
-        givenOrder();
+        givenOrderBySize(10);
         subject();
         MemberPoint memberPoint = memberPointRepository.findById(givenMemberNumber()).get();
 
@@ -147,7 +168,7 @@ public class PointOrderPublishBatchTest implements CommonTestGiven {
       @DisplayName("한번만 적립 된다")
       @Test
       void test() throws Exception {
-        givenOrder();
+        givenOrder(givenOrderNumber(), givenMemberNumber());
         subject();
         subject();
         MemberPoint memberPoint = memberPointRepository.findById(givenMemberNumber()).get();

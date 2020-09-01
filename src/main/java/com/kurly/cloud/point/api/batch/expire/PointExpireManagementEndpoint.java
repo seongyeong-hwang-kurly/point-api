@@ -2,7 +2,7 @@ package com.kurly.cloud.point.api.batch.expire;
 
 import com.kurly.cloud.api.common.util.SlackNotifier;
 import com.kurly.cloud.api.common.util.logging.FileBeatLogger;
-import com.kurly.cloud.point.api.batch.expire.config.PointExpireJobConfig;
+import com.kurly.cloud.point.api.batch.config.PointBatchConfig;
 import java.time.LocalDateTime;
 import java.util.Date;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@ public class PointExpireManagementEndpoint {
   @WriteOperation
   String executeExpireBatch(@Nullable String expireTime) {
     if (StringUtils.isEmpty(expireTime)) {
-      expireTime = LocalDateTime.now().format(PointExpireJobConfig.DATE_TIME_FORMATTER);
+      expireTime = LocalDateTime.now().format(PointBatchConfig.DATE_TIME_FORMATTER);
     }
     JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
     jobParametersBuilder.addDate("now", new Date());

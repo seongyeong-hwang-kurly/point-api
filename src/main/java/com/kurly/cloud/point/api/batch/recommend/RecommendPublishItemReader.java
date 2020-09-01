@@ -17,8 +17,9 @@ public class RecommendPublishItemReader extends JpaPagingItemReader<Order> {
     setQueryString(getQueryString());
     setSaveState(false);
     LocalDateTime date = LocalDateTime.parse(deliveredDate, PointBatchConfig.DATE_TIME_FORMATTER);
-    setParameterValues(getParameterValues(date.withHour(0).withMinute(0).withSecond(0).withNano(0),
-        date.withHour(23).withMinute(59).withSecond(59).withNano(0)));
+    LocalDateTime from = date.withHour(0).withMinute(0).withSecond(0).withNano(0);
+    LocalDateTime to = date.withHour(23).withMinute(59).withSecond(59).withNano(0);
+    setParameterValues(getParameterValues(from, to));
   }
 
   Map<String, Object> getParameterValues(LocalDateTime from, LocalDateTime to) {

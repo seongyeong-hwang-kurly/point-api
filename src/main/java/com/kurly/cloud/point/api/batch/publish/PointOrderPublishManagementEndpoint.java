@@ -2,7 +2,7 @@ package com.kurly.cloud.point.api.batch.publish;
 
 import com.kurly.cloud.api.common.util.SlackNotifier;
 import com.kurly.cloud.api.common.util.logging.FileBeatLogger;
-import com.kurly.cloud.point.api.batch.publish.config.PointOrderPublishJobConfig;
+import com.kurly.cloud.point.api.batch.config.PointBatchConfig;
 import java.time.LocalDateTime;
 import java.util.Date;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@ public class PointOrderPublishManagementEndpoint {
   @WriteOperation
   String executeOrderPublishBatch(@Nullable String publishDate) {
     if (StringUtils.isEmpty(publishDate)) {
-      publishDate = LocalDateTime.now().format(PointOrderPublishJobConfig.DATE_TIME_FORMATTER);
+      publishDate = LocalDateTime.now().format(PointBatchConfig.DATE_TIME_FORMATTER);
     }
     JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
     jobParametersBuilder.addDate("now", new Date());

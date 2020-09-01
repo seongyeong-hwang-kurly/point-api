@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.item.ExecutionContext;
@@ -37,16 +38,19 @@ public class PointExpireJobListener implements JobExecutionListener {
     long totalExpiredPointCount = executionContext.getLong("totalExpiredPointCount", 0);
     long totalExpiredPointAmount = executionContext.getLong("totalExpiredPointAmount", 0);
 
-    doLog(startTime, endTime, totalMemberCount, totalExpiredPointCount, totalExpiredPointAmount);
+    doLog(jobExecution.getExitStatus(), startTime, endTime, totalMemberCount,
+        totalExpiredPointCount, totalExpiredPointAmount);
 
   }
 
-  void doLog(Date startTime, Date endTime, long totalMemberCount, long totalExpiredPointCount,
+  void doLog(ExitStatus exitStatus, Date startTime, Date endTime,
+             long totalMemberCount, long totalExpiredPointCount,
              long totalExpiredPointAmount) {
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
     long totalExecutionTimeInSeconds = (endTime.getTime() - startTime.getTime()) / 1000;
     List<String> messages = Arrays.asList(
         "*적립금 만료 배치를 완료하였습니다*",
+        MessageFormat.format("실행결과 : {0}", exitStatus.getExitCode()),
         MessageFormat.format("시작시간 : {0}", sdf.format(startTime)),
         MessageFormat.format("종료시간 : {0}", sdf.format(endTime)),
         MessageFormat.format("걸린시간 : {0}초", totalExecutionTimeInSeconds),

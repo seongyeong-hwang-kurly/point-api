@@ -1,6 +1,6 @@
 package com.kurly.cloud.point.api.batch.expire;
 
-import com.kurly.cloud.point.api.batch.expire.config.PointExpireJobConfig;
+import com.kurly.cloud.point.api.batch.config.PointBatchConfig;
 import com.kurly.cloud.point.api.point.domain.PointExpireResult;
 import com.kurly.cloud.point.api.point.port.in.ExpirePointPort;
 import java.time.LocalDateTime;
@@ -27,7 +27,7 @@ public class PointExpireItemWriter implements ItemWriter<Long> {
     forkJoinPool.submit(() -> {
       items.parallelStream().forEach(memberNumber -> {
         PointExpireResult result = expirePointPort.expireMemberPoint(memberNumber,
-            LocalDateTime.parse(expireTime, PointExpireJobConfig.DATE_TIME_FORMATTER));
+            LocalDateTime.parse(expireTime, PointBatchConfig.DATE_TIME_FORMATTER));
         putSummary(result);
       });
     }).get();

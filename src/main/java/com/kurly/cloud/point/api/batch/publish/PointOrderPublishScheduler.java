@@ -1,9 +1,8 @@
 package com.kurly.cloud.point.api.batch.publish;
 
-import static com.kurly.cloud.point.api.batch.expire.config.PointExpireJobConfig.DATE_TIME_FORMATTER;
-
 import com.kurly.cloud.api.common.util.SlackNotifier;
 import com.kurly.cloud.api.common.util.logging.FileBeatLogger;
+import com.kurly.cloud.point.api.batch.config.PointBatchConfig;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +31,7 @@ public class PointOrderPublishScheduler {
    */
   @Scheduled(cron = "0 0 7 * * *")
   public void execute() {
-    String publishDate = LocalDateTime.now().format(DATE_TIME_FORMATTER);
+    String publishDate = LocalDateTime.now().format(PointBatchConfig.DATE_TIME_FORMATTER);
     try {
       FileBeatLogger.info(new HashMap<>() {
         {

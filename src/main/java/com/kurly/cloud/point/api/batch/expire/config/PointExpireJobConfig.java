@@ -6,7 +6,6 @@ import com.kurly.cloud.point.api.batch.expire.PointExpireJobListener;
 import com.kurly.cloud.point.api.point.port.in.ExpirePointPort;
 import com.kurly.cloud.point.api.point.repository.PointRepository;
 import com.kurly.cloud.point.api.point.util.SlackBot;
-import java.time.format.DateTimeFormatter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -23,7 +22,6 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 public class PointExpireJobConfig {
 
-  public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ISO_DATE_TIME;
   private int chunkSize = 10_000;
   private int poolSize = 10;
   private final StepBuilderFactory stepBuilderFactory;

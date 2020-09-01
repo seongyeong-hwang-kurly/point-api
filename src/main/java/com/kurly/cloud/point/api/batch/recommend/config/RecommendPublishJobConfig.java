@@ -26,7 +26,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @Configuration
 @RequiredArgsConstructor
 public class RecommendPublishJobConfig {
-  private int chunkSize = 1000;
+  private int chunkSize = 100;
   private int poolSize = 10;
   private final StepBuilderFactory stepBuilderFactory;
   private final SlackBot slackBot;
@@ -34,7 +34,7 @@ public class RecommendPublishJobConfig {
   private final RecommendationPointHistoryService recommendationPointHistoryService;
   private final RecommendPublishItemWriter recommendPublishItemWriter;
 
-  @Value("${batch.recommend.chunkSize:1000}")
+  @Value("${batch.recommend.chunkSize:100}")
   public void setChunkSize(int chunkSize) {
     this.chunkSize = chunkSize;
   }
@@ -44,11 +44,11 @@ public class RecommendPublishJobConfig {
     this.poolSize = poolSize;
   }
 
-  public TaskExecutor executor() {
+  TaskExecutor executor() {
     ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
     executor.setCorePoolSize(poolSize);
     executor.setMaxPoolSize(poolSize);
-    executor.setThreadNamePrefix("recommend-multi-thread-");
+    executor.setThreadNamePrefix("recommend-publish-");
     executor.setWaitForTasksToCompleteOnShutdown(Boolean.TRUE);
     executor.initialize();
     return executor;

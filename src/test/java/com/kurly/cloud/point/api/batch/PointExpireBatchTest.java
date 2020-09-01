@@ -2,7 +2,7 @@ package com.kurly.cloud.point.api.batch;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.kurly.cloud.point.api.batch.expire.config.PointExpireJobConfig;
+import com.kurly.cloud.point.api.batch.config.PointBatchConfig;
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
@@ -130,7 +130,7 @@ public class PointExpireBatchTest implements CommonTestGiven {
 
       String givenExpireDateTime() {
         LocalDateTime dateTime = LocalDateTime.of(2020, 1, 2, 0, 0, 0);
-        return dateTime.format(PointExpireJobConfig.DATE_TIME_FORMATTER);
+        return dateTime.format(PointBatchConfig.DATE_TIME_FORMATTER);
       }
     }
   }

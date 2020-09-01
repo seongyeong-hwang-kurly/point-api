@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.item.ExecutionContext;
@@ -41,17 +42,19 @@ public class RecommendPublishJobListener implements JobExecutionListener {
     long totalPublishPointAmount = executionContext.getLong("totalPublishPointAmount", 0);
     long totalPublishPointCount = executionContext.getLong("totalPublishPointCount", 0);
 
-    doLog(startTime, endTime, totalOrderCount, totalValidCount, totalPublishPointAmount,
-        totalPublishPointCount);
+    doLog(jobExecution.getExitStatus(), startTime, endTime, totalOrderCount, totalValidCount,
+        totalPublishPointAmount, totalPublishPointCount);
 
   }
 
-  void doLog(Date startTime, Date endTime, long totalOrderCount, long totalValidCount,
+  void doLog(ExitStatus exitStatus, Date startTime, Date endTime,
+             long totalOrderCount, long totalValidCount,
              long totalPublishPointAmount, long totalPublishPointCount) {
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
     long totalExecutionTimeInSeconds = (endTime.getTime() - startTime.getTime()) / 1000;
     List<String> messages = Arrays.asList(
         "*친구 초대 적립금 적립 배치를 완료하였습니다*",
+        MessageFormat.format("실행결과 : {0}", exitStatus.getExitCode()),
         MessageFormat.format("시작시간 : {0}", sdf.format(startTime)),
         MessageFormat.format("종료시간 : {0}", sdf.format(endTime)),
         MessageFormat.format("걸린시간 : {0}초", totalExecutionTimeInSeconds),

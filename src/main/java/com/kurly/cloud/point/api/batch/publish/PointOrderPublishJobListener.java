@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.item.ExecutionContext;
@@ -35,15 +36,19 @@ public class PointOrderPublishJobListener implements JobExecutionListener {
     long totalPublishCount = executionContext.getLong("totalPublishCount", 0);
     long totalPublishPointAmount = executionContext.getLong("totalPublishPointAmount", 0);
 
-    doLog(startTime, endTime, totalPublishCount, totalPublishPointAmount);
+    doLog(jobExecution.getExitStatus(), startTime, endTime, totalPublishCount,
+        totalPublishPointAmount);
   }
 
-  private void doLog(Date startTime, Date endTime, long totalPublishCount,
+  private void doLog(ExitStatus exitStatus, Date startTime,
+                     Date endTime, long totalPublishCount,
                      long totalPublishPointAmount) {
     long totalExecutionTimeInSeconds = (endTime.getTime() - startTime.getTime()) / 1000;
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+
     List<String> messages = Arrays.asList(
         "*주문 적립금 적립 배치를 완료하였습니다*",
+        MessageFormat.format("실행결과 : {0}", exitStatus.getExitCode()),
         MessageFormat.format("시작시간 : {0}", sdf.format(startTime)),
         MessageFormat.format("종료시간 : {0}", sdf.format(endTime)),
         MessageFormat.format("걸린시간 : {0}초", totalExecutionTimeInSeconds),
