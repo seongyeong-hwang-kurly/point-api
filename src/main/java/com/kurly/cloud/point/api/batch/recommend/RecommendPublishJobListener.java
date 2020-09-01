@@ -1,9 +1,12 @@
 package com.kurly.cloud.point.api.batch.recommend;
 
 import com.kurly.cloud.api.common.util.logging.FileBeatLogger;
+import com.kurly.cloud.point.api.batch.config.PointBatchConfig;
+import com.kurly.cloud.point.api.point.util.PointExpireDateCalculator;
 import com.kurly.cloud.point.api.point.util.SlackBot;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -55,7 +58,9 @@ public class RecommendPublishJobListener implements JobExecutionListener {
         MessageFormat.format("검사 한 총 주문 수 : {0}", totalOrderCount),
         MessageFormat.format("지급 대상 총 주문 수 : {0}", totalValidCount),
         MessageFormat.format("지급 된 총 적립금 수 : {0}", totalPublishPointCount),
-        MessageFormat.format("지급 된 총 적립금 : {0}", totalPublishPointAmount)
+        MessageFormat.format("지급 된 총 적립금 : {0}", totalPublishPointAmount),
+        MessageFormat.format("적용 만료일 : {0}", PointExpireDateCalculator.calculateDefault(
+            LocalDateTime.now()).format(PointBatchConfig.DATE_TIME_FORMATTER))
     );
 
     messages.forEach(log::debug);
