@@ -6,6 +6,7 @@ import com.kurly.cloud.point.api.batch.config.PointBatchConfig;
 import com.kurly.cloud.point.api.batch.publish.config.PointOrderPublishJobConfig;
 import com.kurly.cloud.point.api.member.entity.Member;
 import com.kurly.cloud.point.api.order.entity.Order;
+import com.kurly.cloud.point.api.order.entity.OrderDynamicColumn;
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.entity.MemberPoint;
 import com.kurly.cloud.point.api.point.repository.MemberPointRepository;
@@ -66,6 +67,13 @@ public class PointOrderPublishBatchTest implements CommonTestGiven {
 
     entityManager
         .createQuery(
+            "DELETE FROM OrderDynamicColumn odc WHERE odc.orderNumber BETWEEN :fromOrderNumber AND :toOrderNumber")
+        .setParameter("fromOrderNumber", fromOrderNumber)
+        .setParameter("toOrderNumber", givenOrderNumber())
+        .executeUpdate();
+
+    entityManager
+        .createQuery(
             "DELETE FROM MemberPoint mp WHERE mp.memberNumber BETWEEN :fromMemberNumber AND :toMemberNumber")
         .setParameter("fromMemberNumber", fromMemberNumber)
         .setParameter("toMemberNumber", givenMemberNumber())
@@ -107,6 +115,10 @@ public class PointOrderPublishBatchTest implements CommonTestGiven {
       return 3333;
     }
 
+    private Integer givenPointRatio() {
+      return 7;
+    }
+    
     private void givenOrder(long orderNumber, long memberNumber) {
       EntityManager entityManager = entityManagerFactory.createEntityManager();
       EntityTransaction tx = entityManager.getTransaction();
@@ -121,6 +133,12 @@ public class PointOrderPublishBatchTest implements CommonTestGiven {
           .publishPoint(givenPoint())
           .build();
       entityManager.persist(order);
+      OrderDynamicColumn orderDynamicColumn = OrderDynamicColumn.builder()
+          .orderNumber(order.getOrderNumber())
+          .column("point_ratio")
+          .value(String.valueOf(givenPointRatio()))
+          .build();
+      entityManager.persist(orderDynamicColumn);
       entityManager.close();
       tx.commit();
     }
