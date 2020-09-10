@@ -30,13 +30,13 @@ public class PointExpireManagementEndpoint {
   private final Job pointExpireJob;
 
   @WriteOperation
-  String executeExpireBatch(@Nullable String expireTime) {
-    if (StringUtils.isEmpty(expireTime)) {
-      expireTime = LocalDateTime.now().format(PointBatchConfig.DATE_TIME_FORMATTER);
+  String executeExpireBatch(@Nullable String date) {
+    if (StringUtils.isEmpty(date)) {
+      date = LocalDateTime.now().format(PointBatchConfig.DATE_TIME_FORMATTER);
     }
     JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
     jobParametersBuilder.addDate("now", new Date());
-    jobParametersBuilder.addString("expireTime", expireTime);
+    jobParametersBuilder.addString("expireTime", date);
     new Thread(() -> {
       try {
         jobLauncher.run(pointExpireJob, jobParametersBuilder.toJobParameters());

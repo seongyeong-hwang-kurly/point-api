@@ -30,14 +30,14 @@ public class RecommendPublishManagementEndpoint {
   private final Job recommendPublishJob;
 
   @WriteOperation
-  String executeRecommendPublishBatch(@Nullable String deliveredDate) {
-    if (StringUtils.isEmpty(deliveredDate)) {
-      deliveredDate =
+  String executeRecommendPublishBatch(@Nullable String date) {
+    if (StringUtils.isEmpty(date)) {
+      date =
           LocalDateTime.now().minusDays(1).format(PointBatchConfig.DATE_TIME_FORMATTER);
     }
     JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
     jobParametersBuilder.addDate("now", new Date());
-    jobParametersBuilder.addString("deliveredDate", deliveredDate);
+    jobParametersBuilder.addString("deliveredDate", date);
     new Thread(() -> {
       try {
         jobLauncher.run(recommendPublishJob, jobParametersBuilder.toJobParameters());

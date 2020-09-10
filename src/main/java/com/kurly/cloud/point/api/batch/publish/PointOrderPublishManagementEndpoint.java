@@ -30,13 +30,13 @@ public class PointOrderPublishManagementEndpoint {
   private final Job pointOrderPublishJob;
 
   @WriteOperation
-  String executeOrderPublishBatch(@Nullable String publishDate) {
-    if (StringUtils.isEmpty(publishDate)) {
-      publishDate = LocalDateTime.now().format(PointBatchConfig.DATE_TIME_FORMATTER);
+  String executeOrderPublishBatch(@Nullable String date) {
+    if (StringUtils.isEmpty(date)) {
+      date = LocalDateTime.now().format(PointBatchConfig.DATE_TIME_FORMATTER);
     }
     JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
     jobParametersBuilder.addDate("now", new Date());
-    jobParametersBuilder.addString("publishDate", publishDate);
+    jobParametersBuilder.addString("publishDate", date);
     new Thread(() -> {
       try {
         jobLauncher.run(pointOrderPublishJob, jobParametersBuilder.toJobParameters());
