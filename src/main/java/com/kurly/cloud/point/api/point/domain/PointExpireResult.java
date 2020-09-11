@@ -9,10 +9,10 @@ import lombok.Setter;
 @Setter
 public class PointExpireResult {
   long memberNumber;
-  int totalExpired;
+  long totalExpired;
   List<Long> expiredPointSeq = new ArrayList<>();
 
-  public void add(long pointSeq, int amount) {
+  public void add(long pointSeq, long amount) {
     expiredPointSeq.add(pointSeq);
     totalExpired = totalExpired + amount;
   }

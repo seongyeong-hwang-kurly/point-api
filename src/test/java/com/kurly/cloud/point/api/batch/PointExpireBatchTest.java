@@ -111,7 +111,7 @@ public class PointExpireBatchTest implements CommonTestGiven {
           IntStream.range(0, givenSize()).parallel().forEach(i -> {
             long memberNumber = givenMemberNumber() - i;
             publishPointPort.publish(PublishPointRequest.builder()
-                .point(1000)
+                .point(1000L)
                 .memberNumber(memberNumber)
                 .historyType(HistoryType.TYPE_12.getValue())
                 .actionMemberNumber(memberNumber)

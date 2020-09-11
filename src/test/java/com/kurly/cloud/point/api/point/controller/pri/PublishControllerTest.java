@@ -6,7 +6,6 @@ import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.ControllerTest;
@@ -59,7 +58,7 @@ public class PublishControllerTest implements CommonTestGiven {
     PublishPointRequest givenRequest() {
       return PublishPointRequest.builder()
           .memberNumber(givenMemberNumber())
-          .point(1000)
+          .point(1000L)
           .historyType(HistoryType.TYPE_1.getValue())
           .build();
     }
@@ -136,7 +135,7 @@ public class PublishControllerTest implements CommonTestGiven {
         BulkPublishPointRequest request = new BulkPublishPointRequest();
         request.setJobSeq(i + 1);
         request.setMemberNumber(givenMemberNumber());
-        request.setPoint(100);
+        request.setPoint(100L);
         request.setHistoryType(HistoryType.TYPE_1.getValue());
         requests.add(request);
       }
@@ -174,7 +173,7 @@ public class PublishControllerTest implements CommonTestGiven {
       return CancelPublishOrderPointRequest.builder()
           .memberNumber(givenMemberNumber())
           .orderNumber(givenOrderNumber())
-          .point(1000)
+          .point(1000L)
           .actionMemberNumber(0L)
           .build();
     }

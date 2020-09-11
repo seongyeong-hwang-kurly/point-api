@@ -48,13 +48,13 @@ public class MemberPointHistory {
   Integer historyType;
 
   @Column(name = "total_point")
-  int totalPoint;
+  long totalPoint;
 
   @Column(name = "free_point")
-  int freePoint;
+  long freePoint;
 
   @Column(name = "cash_point")
-  int cashPoint;
+  long cashPoint;
 
   @Column(name = "detail")
   String detail;

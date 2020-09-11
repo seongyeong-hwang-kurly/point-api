@@ -10,7 +10,6 @@ import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.config.SpringSecurityTestConfig;
 import com.kurly.cloud.point.api.point.documentation.ApiDocumentUtils;
@@ -112,7 +111,7 @@ public class OrderPointDocumentationTest implements CommonTestGiven {
     publishPointPort.publishByOrder(PublishPointRequest.builder()
         .memberNumber(givenMemberNumber())
         .orderNumber(givenOrderNumber())
-        .point(1000)
+        .point(1000L)
         .build());
   }
 }

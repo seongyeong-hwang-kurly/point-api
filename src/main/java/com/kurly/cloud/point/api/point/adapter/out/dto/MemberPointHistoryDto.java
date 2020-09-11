@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.kurly.cloud.point.api.point.entity.MemberPointHistory;
 import com.kurly.cloud.point.api.point.util.DateTimeUtil;
-import java.sql.Timestamp;
 import java.time.ZonedDateTime;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,7 +14,7 @@ public class MemberPointHistoryDto {
 
   long seq;
   long orderNumber;
-  int point;
+  long point;
   String detail;
   @JsonInclude(JsonInclude.Include.NON_NULL)
   String memo;

@@ -2,7 +2,6 @@ package com.kurly.cloud.point.api.point.controller.pub;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.ControllerTest;
@@ -42,7 +41,7 @@ public class ConsumeControllerTest implements CommonTestGiven {
         .addFilters(new CharacterEncodingFilter("UTF-8", true))
         .build();
   }
-  
+
   @Nested
   @DisplayName("주문 적립금 사용을 호출 할 때")
   class DescribeOrderConsume {
@@ -70,7 +69,7 @@ public class ConsumeControllerTest implements CommonTestGiven {
         return OrderConsumePointRequest.builder()
             .memberNumber(givenMemberNumber())
             .orderNumber(givenOrderNumber())
-            .point(100)
+            .point(100L)
             .build();
       }
     }
@@ -95,7 +94,7 @@ public class ConsumeControllerTest implements CommonTestGiven {
         return OrderConsumePointRequest.builder()
             .memberNumber(givenMemberNumber() - 1)
             .orderNumber(givenOrderNumber())
-            .point(100)
+            .point(100L)
             .build();
       }
     }

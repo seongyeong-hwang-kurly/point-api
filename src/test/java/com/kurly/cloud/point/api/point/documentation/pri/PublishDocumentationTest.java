@@ -12,7 +12,6 @@ import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.config.SpringSecurityTestConfig;
@@ -139,7 +138,7 @@ public class PublishDocumentationTest implements CommonTestGiven {
   PublishPointRequest givenPublishRequest() {
     return PublishPointRequest.builder()
         .memberNumber(givenMemberNumber())
-        .point(1000)
+        .point(1000L)
         .historyType(HistoryType.TYPE_1.getValue())
         .payment(false)
         .settle(false)
@@ -220,7 +219,7 @@ public class PublishDocumentationTest implements CommonTestGiven {
       BulkPublishPointRequest request = new BulkPublishPointRequest();
       request.setJobSeq(i + 1);
       request.setMemberNumber(givenMemberNumber());
-      request.setPoint(100);
+      request.setPoint(100L);
       request.setHistoryType(HistoryType.TYPE_1.getValue());
       requests.add(request);
     }
@@ -257,7 +256,7 @@ public class PublishDocumentationTest implements CommonTestGiven {
     return CancelPublishOrderPointRequest.builder()
         .memberNumber(givenMemberNumber())
         .orderNumber(givenOrderNumber())
-        .point(1000)
+        .point(1000L)
         .actionMemberNumber(0L)
         .build();
   }

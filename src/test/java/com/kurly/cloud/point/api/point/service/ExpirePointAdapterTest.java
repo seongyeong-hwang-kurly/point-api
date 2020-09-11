@@ -2,7 +2,6 @@ package com.kurly.cloud.point.api.point.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.TransactionalTest;
 import com.kurly.cloud.point.api.point.domain.PointExpireResult;
@@ -61,8 +60,8 @@ public class ExpirePointAdapterTest implements CommonTestGiven {
           .build());
     }
 
-    int givenPointAmount() {
-      return 1000;
+    long givenPointAmount() {
+      return 1000L;
     }
 
     @TransactionalTest

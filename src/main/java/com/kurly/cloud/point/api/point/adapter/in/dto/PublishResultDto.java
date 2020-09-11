@@ -13,7 +13,7 @@ public class PublishResultDto {
   long seq;
   Long memberNumber;
   long orderNumber;
-  Integer charge;
+  Long charge;
   float pointRatio;
   Integer historyType;
   boolean payment;

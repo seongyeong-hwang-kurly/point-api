@@ -27,13 +27,13 @@ public class MemberPoint {
   long memberNumber;
 
   @Column(name = "total_point")
-  int totalPoint;
+  long totalPoint;
 
   @Column(name = "free_point")
-  int freePoint;
+  long freePoint;
 
   @Column(name = "cash_point")
-  int cashPoint;
+  long cashPoint;
 
   @Convert(converter = UnixTimestampConverter.class)
   @Column(name = "update_time")
@@ -43,7 +43,7 @@ public class MemberPoint {
    * 적립금을 더함.
    */
   @Transient
-  public void plusPoint(int freePoint, int cashPoint) {
+  public void plusPoint(long freePoint, long cashPoint) {
     setTotalPoint(getTotalPoint() + freePoint + cashPoint);
     setFreePoint(getFreePoint() + freePoint);
     setCashPoint(getCashPoint() + cashPoint);
@@ -54,7 +54,7 @@ public class MemberPoint {
    * 적립금을 뺌.
    */
   @Transient
-  public void minusPoint(int freePoint, int cashPoint) {
+  public void minusPoint(long freePoint, long cashPoint) {
     setTotalPoint(getTotalPoint() - freePoint - cashPoint);
     setFreePoint(getFreePoint() - freePoint);
     setCashPoint(getCashPoint() - cashPoint);
@@ -65,12 +65,12 @@ public class MemberPoint {
    * 상환할 빚이 있는지 계산 한다.
    */
   @Transient
-  public int getRepayAmount(int publishedAmount) {
+  public long getRepayAmount(long publishedAmount) {
     if (getTotalPoint() >= publishedAmount) {
       return 0;
     }
 
-    int repayAmount;
+    long repayAmount;
     if (getTotalPoint() < 0) { // 아직도 빚이 남아있는 상태
       repayAmount = publishedAmount;
     } else {
@@ -84,7 +84,7 @@ public class MemberPoint {
    * 적립금을 사용하기에 충분히 가지고 있는지 계산한다.
    */
   @Transient
-  public boolean isEnough(Integer point, boolean settle) {
+  public boolean isEnough(Long point, boolean settle) {
     return settle ? getCashPoint() >= point : getTotalPoint() >= point;
   }
 }

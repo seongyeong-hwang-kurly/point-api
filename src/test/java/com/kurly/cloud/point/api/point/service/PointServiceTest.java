@@ -68,7 +68,7 @@ class PointServiceTest implements CommonTestGiven {
         pointService.publishPoint(PublishPointRequest.builder()
             .orderNumber(givenOrderNumber())
             .memberNumber(givenMemberNumber())
-            .point(1000)
+            .point(1000L)
             .historyType(HistoryType.TYPE_1.getValue())
             .build());
       }
@@ -100,7 +100,7 @@ class PointServiceTest implements CommonTestGiven {
       PublishPointRequest givenRequest() {
         return PublishPointRequest.builder()
             .historyType(HistoryType.TYPE_1.getValue())
-            .point(100)
+            .point(100L)
             .build();
       }
     }
@@ -144,7 +144,7 @@ class PointServiceTest implements CommonTestGiven {
       PublishPointRequest givenRequest() {
         return PublishPointRequest.builder()
             .memberNumber(givenMemberNumber())
-            .point(100)
+            .point(100L)
             .build();
       }
     }
@@ -178,7 +178,7 @@ class PointServiceTest implements CommonTestGiven {
         return PublishPointRequest.builder()
             .historyType(HistoryType.TYPE_1.getValue())
             .memberNumber(givenMemberNumber())
-            .point(100)
+            .point(100L)
             .build();
       }
     }
@@ -203,7 +203,7 @@ class PointServiceTest implements CommonTestGiven {
         return PublishPointRequest.builder()
             .historyType(HistoryType.TYPE_1.getValue())
             .memberNumber(givenMemberNumber())
-            .point(100)
+            .point(100L)
             .expireDate(LocalDateTime.now().plusDays(1))
             .build();
       }
@@ -226,7 +226,7 @@ class PointServiceTest implements CommonTestGiven {
         return PublishPointRequest.builder()
             .historyType(HistoryType.TYPE_1.getValue())
             .memberNumber(givenMemberNumber())
-            .point(100)
+            .point(100L)
             .expireDate(LocalDateTime.now().plusDays(1))
             .unlimitedDate(true)
             .build();
@@ -238,7 +238,7 @@ class PointServiceTest implements CommonTestGiven {
   @DisplayName("회원의 사용 가능한 적립금을 조회 할 때")
   class DescribeGetAvailableMemberPoint {
 
-    void publishPoint(int point, boolean unlimitedDate, LocalDateTime expireDate) {
+    void publishPoint(long point, boolean unlimitedDate, LocalDateTime expireDate) {
       pointService.publishPoint(PublishPointRequest.builder()
           .historyType(HistoryType.TYPE_1.getValue())
           .memberNumber(givenMemberNumber())
@@ -335,12 +335,12 @@ class PointServiceTest implements CommonTestGiven {
       return 10000;
     }
 
-    int getMemberPoint() {
+    long getMemberPoint() {
       return pointService.getAvailableMemberPoint(givenMemberNumber())
-          .stream().mapToInt(Point::getRemain).sum();
+          .stream().mapToLong(Point::getRemain).sum();
     }
 
-    void publishPoint(int amount) {
+    void publishPoint(long amount) {
       pointService.publishPoint(PublishPointRequest.builder()
           .memberNumber(givenMemberNumber())
           .point(amount)
@@ -410,12 +410,12 @@ class PointServiceTest implements CommonTestGiven {
       return 10000;
     }
 
-    int getMemberPoint() {
+    long getMemberPoint() {
       return pointService.getAvailableMemberPoint(givenMemberNumber())
-          .stream().mapToInt(Point::getRemain).sum();
+          .stream().mapToLong(Point::getRemain).sum();
     }
 
-    void publishCashPoint(int amount) {
+    void publishCashPoint(long amount) {
       pointService.publishPoint(PublishPointRequest.builder()
           .memberNumber(givenMemberNumber())
           .point(amount)
@@ -424,7 +424,7 @@ class PointServiceTest implements CommonTestGiven {
           .build());
     }
 
-    void publishFreePoint(int amount) {
+    void publishFreePoint(long amount) {
       pointService.publishPoint(PublishPointRequest.builder()
           .memberNumber(givenMemberNumber())
           .point(amount)
@@ -500,7 +500,7 @@ class PointServiceTest implements CommonTestGiven {
           .build());
     }
 
-    int givenOrderPointAmount() {
+    long givenOrderPointAmount() {
       return 1000;
     }
 
@@ -512,7 +512,7 @@ class PointServiceTest implements CommonTestGiven {
           .build());
     }
 
-    int givenNonOrderPointAmount() {
+    long givenNonOrderPointAmount() {
       return 2000;
     }
 
@@ -606,7 +606,7 @@ class PointServiceTest implements CommonTestGiven {
           .build());
     }
 
-    int givenDebtAmount() {
+    long givenDebtAmount() {
       return 1000;
     }
 
@@ -703,7 +703,7 @@ class PointServiceTest implements CommonTestGiven {
             .historyType(HistoryType.TYPE_1.getValue())
             .expireDate(givenExpiredDateTime())
             .memberNumber(givenMemberNumber())
-            .point(100)
+            .point(100L)
             .build());
       }
     }
@@ -725,7 +725,7 @@ class PointServiceTest implements CommonTestGiven {
             .historyType(HistoryType.TYPE_1.getValue())
             .expireDate(givenNonExpiredDateTime())
             .memberNumber(givenMemberNumber())
-            .point(100)
+            .point(100L)
             .build());
       }
     }
@@ -762,7 +762,7 @@ class PointServiceTest implements CommonTestGiven {
             .historyType(HistoryType.TYPE_1.getValue())
             .expireDate(givenExpiredDateTime())
             .memberNumber(givenMemberNumber())
-            .point(100)
+            .point(100L)
             .build());
       }
     }

@@ -107,8 +107,8 @@ class ConsumePointAdapter implements ConsumePointPort {
     List<PointHistory> consumedByOrderNumber =
         pointHistoryService.getConsumedByOrderNumber(request.getOrderNumber());
 
-    int totalConsumedAmount =
-        consumedByOrderNumber.stream().mapToInt(PointHistory::getAmount).sum();
+    long totalConsumedAmount =
+        consumedByOrderNumber.stream().mapToLong(PointHistory::getAmount).sum();
 
     if (request.getPoint() > Math.abs(totalConsumedAmount)) {
       throw new CancelAmountExceedException(request.getOrderNumber(), request.getPoint());
@@ -157,7 +157,7 @@ class ConsumePointAdapter implements ConsumePointPort {
     });
   }
 
-  private void minusMemberPoint(Long memberNumber, int freePoint, int cashPoint) {
+  private void minusMemberPoint(Long memberNumber, long freePoint, long cashPoint) {
     if (freePoint > 0) {
       memberPointService.minusFreePoint(memberNumber, freePoint);
     }

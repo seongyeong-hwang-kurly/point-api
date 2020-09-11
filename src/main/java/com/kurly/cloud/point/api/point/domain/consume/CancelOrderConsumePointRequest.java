@@ -21,7 +21,7 @@ public class CancelOrderConsumePointRequest {
   @NotNull
   Long memberNumber;
   @NotNull @Min(1)
-  Integer point;
+  Long point;
   long actionMemberNumber;
 
   @JsonIgnore

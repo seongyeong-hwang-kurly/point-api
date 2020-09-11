@@ -59,7 +59,7 @@ public class ConsumeControllerTest implements CommonTestGiven {
           .historyType(HistoryType.TYPE_101.getValue())
           .detail("사용사유(고객용)")
           .memo("사용사유(내부용)")
-          .point(1000)
+          .point(1000L)
           .settle(false)
           .build();
     }
@@ -153,7 +153,7 @@ public class ConsumeControllerTest implements CommonTestGiven {
         BulkConsumePointRequest request = new BulkConsumePointRequest();
         request.setJobSeq(i + 1);
         request.setMemberNumber(givenMemberNumber());
-        request.setPoint(100);
+        request.setPoint(100L);
         request.setHistoryType(HistoryType.TYPE_100.getValue());
         request.setDetail("사유");
         requests.add(request);
@@ -206,7 +206,7 @@ public class ConsumeControllerTest implements CommonTestGiven {
         return CancelOrderConsumePointRequest.builder()
             .orderNumber(givenOrderNumber())
             .memberNumber(givenMemberNumber())
-            .point(100)
+            .point(100L)
             .build();
       }
     }

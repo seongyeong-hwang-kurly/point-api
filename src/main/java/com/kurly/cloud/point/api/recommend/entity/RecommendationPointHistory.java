@@ -73,7 +73,7 @@ public class RecommendationPointHistory {
   int recommendationAddressPaidCount;
 
   @Column(name = "paid_point")
-  int point;
+  long point;
 
   @Convert(converter = RecommendationPointReasonConverter.class)
   @Column(name = "paid_point_reason")

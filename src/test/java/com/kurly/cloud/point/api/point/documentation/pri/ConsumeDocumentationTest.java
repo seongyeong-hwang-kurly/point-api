@@ -9,7 +9,6 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.config.SpringSecurityTestConfig;
@@ -106,7 +105,7 @@ public class ConsumeDocumentationTest implements CommonTestGiven {
         .historyType(HistoryType.TYPE_101.getValue())
         .detail("사용사유(고객용)")
         .memo("사용사유(내부용)")
-        .point(1000)
+        .point(1000L)
         .settle(false)
         .build();
   }
@@ -154,7 +153,7 @@ public class ConsumeDocumentationTest implements CommonTestGiven {
       BulkConsumePointRequest request = new BulkConsumePointRequest();
       request.setJobSeq(i + 1);
       request.setMemberNumber(givenMemberNumber());
-      request.setPoint(100);
+      request.setPoint(100L);
       request.setHistoryType(HistoryType.TYPE_100.getValue());
       request.setDetail("발급 사유명(고객용)");
       requests.add(request);
@@ -184,7 +183,7 @@ public class ConsumeDocumentationTest implements CommonTestGiven {
 
   OrderConsumePointRequest givenOrderConsumeRequest() {
     return OrderConsumePointRequest.builder()
-        .point(100)
+        .point(100L)
         .memberNumber(givenMemberNumber())
         .orderNumber(givenOrderNumber())
         .build();
@@ -220,7 +219,7 @@ public class ConsumeDocumentationTest implements CommonTestGiven {
     return CancelOrderConsumePointRequest.builder()
         .orderNumber(givenOrderNumber())
         .memberNumber(givenMemberNumber())
-        .point(1000)
+        .point(1000L)
         .build();
   }
 }

@@ -76,7 +76,7 @@ public class PointHistoryDocumentationTest implements CommonTestGiven {
   void givenPoint() {
     publishPointPort.publish(PublishPointRequest.builder()
         .historyType(HistoryType.TYPE_1.getValue())
-        .point(1000)
+        .point(1000L)
         .memberNumber(givenMemberNumber())
         .orderNumber(givenOrderNumber())
         .actionMemberNumber(givenMemberNumber())

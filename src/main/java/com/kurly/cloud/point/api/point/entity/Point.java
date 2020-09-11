@@ -48,11 +48,11 @@ public class Point {
 
   @NotNull
   @Column(name = "charge")
-  Integer charge;
+  Long charge;
 
   @NotNull
   @Column(name = "remain")
-  Integer remain;
+  Long remain;
 
   @Column(name = "point_ratio")
   float pointRatio;
@@ -82,6 +82,6 @@ public class Point {
 
   @Transient
   public void expire() {
-    this.remain = 0;
+    this.remain = 0L;
   }
 }

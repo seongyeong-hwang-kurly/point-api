@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PointConsumeResult {
-  int requested;
+  long requested;
   List<ConsumedPoint> consumed = new ArrayList<>();
 
-  public PointConsumeResult(int requested) {
+  public PointConsumeResult(long requested) {
     this.requested = requested;
   }
 
-  public void add(long pointSeq, int amount, boolean settle) {
+  public void add(long pointSeq, long amount, boolean settle) {
     consumed.add(new ConsumedPoint(pointSeq, amount, settle));
   }
 
@@ -27,21 +27,21 @@ public class PointConsumeResult {
     return consumed;
   }
 
-  public int getTotalFreePointConsumed() {
+  public long getTotalFreePointConsumed() {
     return consumed.stream().filter(consumedPoint -> !consumedPoint.isSettle())
-        .mapToInt(ConsumedPoint::getConsumed).sum();
+        .mapToLong(ConsumedPoint::getConsumed).sum();
   }
 
-  public int getTotalCashPointConsumed() {
+  public long getTotalCashPointConsumed() {
     return consumed.stream().filter(ConsumedPoint::isSettle)
-        .mapToInt(ConsumedPoint::getConsumed).sum();
+        .mapToLong(ConsumedPoint::getConsumed).sum();
   }
 
-  public int getRemain() {
+  public long getRemain() {
     return requested - getTotalConsumed();
   }
 
-  public int getTotalConsumed() {
-    return consumed.stream().mapToInt(ConsumedPoint::getConsumed).sum();
+  public long getTotalConsumed() {
+    return consumed.stream().mapToLong(ConsumedPoint::getConsumed).sum();
   }
 }

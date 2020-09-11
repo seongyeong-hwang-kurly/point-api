@@ -59,7 +59,7 @@ class PointHistoryServiceTest implements CommonTestGiven {
 
       private PointHistoryInsertRequest givenExceptPointSeq() {
         return PointHistoryInsertRequest.builder()
-            .amount(1000)
+            .amount(1000L)
             .historyType(HistoryType.TYPE_1.getValue())
             .build();
       }
@@ -106,7 +106,7 @@ class PointHistoryServiceTest implements CommonTestGiven {
       private PointHistoryInsertRequest givenExceptHistoryType() {
         return PointHistoryInsertRequest.builder()
             .pointSeq(1L)
-            .amount(1000)
+            .amount(1000L)
             .build();
       }
     }
@@ -137,7 +137,7 @@ class PointHistoryServiceTest implements CommonTestGiven {
       private PointHistoryInsertRequest given() {
         return PointHistoryInsertRequest.builder()
             .pointSeq(1L)
-            .amount(1000)
+            .amount(1000L)
             .historyType(HistoryType.TYPE_1.getValue())
             .actionMemberNumber(givenMemberNumber())
             .detail("detail")
@@ -161,7 +161,7 @@ class PointHistoryServiceTest implements CommonTestGiven {
     void 조회되지않아야하는이력() {
       Point point = pointService.publishPoint(PublishPointRequest.builder()
           .historyType(HistoryType.TYPE_1.getValue())
-          .point(1000)
+          .point(1000L)
           .memberNumber(givenMemberNumber())
           .orderNumber(1L)
           .build());
@@ -170,14 +170,14 @@ class PointHistoryServiceTest implements CommonTestGiven {
               .orderNumber(1L)
               .historyType(HistoryType.TYPE_1.getValue())
               .pointSeq(point.getSeq())
-              .amount(1000)
+              .amount(1000L)
               .build());
     }
 
     Point 조회되어야하는이력() {
       Point point = pointService.publishPoint(PublishPointRequest.builder()
           .historyType(HistoryType.TYPE_1.getValue())
-          .point(1000)
+          .point(1000L)
           .memberNumber(givenMemberNumber())
           .orderNumber(givenOrderNumber())
           .build());
@@ -186,7 +186,7 @@ class PointHistoryServiceTest implements CommonTestGiven {
               .orderNumber(givenOrderNumber())
               .historyType(HistoryType.TYPE_1.getValue())
               .pointSeq(point.getSeq())
-              .amount(1000)
+              .amount(1000L)
               .build());
 
       return point;
@@ -226,7 +226,7 @@ class PointHistoryServiceTest implements CommonTestGiven {
       Point givenPoint() {
         Point point = pointService.publishPoint(PublishPointRequest.builder()
             .historyType(HistoryType.TYPE_1.getValue())
-            .point(1000)
+            .point(1000L)
             .memberNumber(givenMemberNumber())
             .orderNumber(givenOrderNumber())
             .build());
@@ -235,7 +235,7 @@ class PointHistoryServiceTest implements CommonTestGiven {
                 .orderNumber(givenOrderNumber())
                 .historyType(HistoryType.TYPE_1.getValue())
                 .pointSeq(point.getSeq())
-                .amount(1000)
+                .amount(1000L)
                 .build());
 
         return point;
@@ -267,7 +267,7 @@ class PointHistoryServiceTest implements CommonTestGiven {
       Point givenPoint(int historyType) {
         Point point = pointService.publishPoint(PublishPointRequest.builder()
             .historyType(historyType)
-            .point(1000)
+            .point(1000L)
             .memberNumber(givenMemberNumber())
             .orderNumber(givenOrderNumber())
             .build());
@@ -276,7 +276,7 @@ class PointHistoryServiceTest implements CommonTestGiven {
                 .orderNumber(givenOrderNumber())
                 .historyType(historyType)
                 .pointSeq(point.getSeq())
-                .amount(1000)
+                .amount(1000L)
                 .build());
 
         return point;
@@ -331,7 +331,7 @@ class PointHistoryServiceTest implements CommonTestGiven {
       Point givenPoint(int historyType, long actionMemberNumber) {
         Point point = pointService.publishPoint(PublishPointRequest.builder()
             .historyType(historyType)
-            .point(1000)
+            .point(1000L)
             .memberNumber(givenMemberNumber())
             .orderNumber(givenOrderNumber())
             .actionMemberNumber(actionMemberNumber)
@@ -342,7 +342,7 @@ class PointHistoryServiceTest implements CommonTestGiven {
                 .historyType(historyType)
                 .actionMemberNumber(actionMemberNumber)
                 .pointSeq(point.getSeq())
-                .amount(1000)
+                .amount(1000L)
                 .build());
 
         return point;
@@ -395,7 +395,7 @@ class PointHistoryServiceTest implements CommonTestGiven {
       Point 조회되어야하는이력(long actionMemberNumber) {
         Point point = pointService.publishPoint(PublishPointRequest.builder()
             .historyType(HistoryType.TYPE_1.getValue())
-            .point(1000)
+            .point(1000L)
             .memberNumber(givenMemberNumber())
             .orderNumber(givenOrderNumber())
             .actionMemberNumber(actionMemberNumber)
@@ -406,7 +406,7 @@ class PointHistoryServiceTest implements CommonTestGiven {
                 .historyType(HistoryType.TYPE_1.getValue())
                 .actionMemberNumber(actionMemberNumber)
                 .pointSeq(point.getSeq())
-                .amount(1000)
+                .amount(1000L)
                 .build());
 
         return point;

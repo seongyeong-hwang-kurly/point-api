@@ -24,14 +24,14 @@ class PointService {
     return pointRepository.save(request.toEntity());
   }
 
-  PointConsumeResult consumeOrderPoint(long memberNumber, long orderNumber, int amount) {
+  PointConsumeResult consumeOrderPoint(long memberNumber, long orderNumber, long amount) {
     Optional<Point> orderPoint =
         pointRepository.findAvailableOrderPublishedPoint(memberNumber, orderNumber);
 
     PointConsumeResult pointConsumeResult = new PointConsumeResult(amount);
     if (orderPoint.isPresent()) {
       Point point = orderPoint.get();
-      int consume = Math.min(point.getRemain(), amount);
+      long consume = Math.min(point.getRemain(), amount);
       point.setRemain(point.getRemain() - consume);
       pointConsumeResult.add(point.getSeq(), consume, point.isSettle());
     }
@@ -43,11 +43,11 @@ class PointService {
     return pointConsumeResult;
   }
 
-  PointConsumeResult consumeMemberPoint(long memberNumber, int amount) {
+  PointConsumeResult consumeMemberPoint(long memberNumber, long amount) {
     return this.consumeMemberPoint(memberNumber, amount, false);
   }
 
-  PointConsumeResult consumeMemberPoint(long memberNumber, int amount, boolean onlySettle) {
+  PointConsumeResult consumeMemberPoint(long memberNumber, long amount, boolean onlySettle) {
     List<Point> availablePoints = getAvailableMemberPoint(memberNumber, onlySettle);
 
     PointConsumeResult pointConsumeResult = new PointConsumeResult(amount);
@@ -56,7 +56,7 @@ class PointService {
       if (amount == 0) {
         break;
       }
-      int consume = Math.min(point.getRemain(), amount);
+      long consume = Math.min(point.getRemain(), amount);
       amount = amount - consume;
       point.setRemain(point.getRemain() - consume);
       pointConsumeResult.add(point.getSeq(), consume, point.isSettle());
@@ -84,7 +84,7 @@ class PointService {
     return availablePoints;
   }
 
-  PointConsumeResult repayMemberPoint(Long memberNumber, int amount) {
+  PointConsumeResult repayMemberPoint(Long memberNumber, long amount) {
     List<Point> debtMemberPoint = pointRepository.findAllDebtMemberPoint(memberNumber);
     PointConsumeResult pointConsumeResult = new PointConsumeResult(amount);
 
@@ -92,7 +92,7 @@ class PointService {
       if (amount == 0) {
         break;
       }
-      int repay = Math.min(Math.abs(point.getRemain()), amount);
+      long repay = Math.min(Math.abs(point.getRemain()), amount);
       amount = amount - repay;
       point.setRemain(point.getRemain() + repay);
       pointConsumeResult.add(point.getSeq(), repay, point.isSettle());

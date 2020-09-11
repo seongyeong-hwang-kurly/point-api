@@ -3,7 +3,6 @@ package com.kurly.cloud.point.api.point.adapter.out.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kurly.cloud.point.api.point.entity.Point;
 import com.kurly.cloud.point.api.point.util.DateTimeUtil;
-import java.sql.Timestamp;
 import java.time.ZonedDateTime;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,8 +13,8 @@ public class PointDto {
   long seq;
   Long memberNumber;
   long orderNumber;
-  Integer charge;
-  Integer remain;
+  Long charge;
+  Long remain;
   float pointRatio;
   Integer historyType;
   int refundType;

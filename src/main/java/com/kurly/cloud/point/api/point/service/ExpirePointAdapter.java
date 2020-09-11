@@ -57,7 +57,7 @@ class ExpirePointAdapter implements ExpirePointPort {
     PointExpireResult pointExpireResult = new PointExpireResult();
 
     points.forEach(point -> {
-      int remain = point.getRemain();
+      long remain = point.getRemain();
       long pointSeq = point.getSeq();
       pointExpireResult.add(pointSeq, remain);
 

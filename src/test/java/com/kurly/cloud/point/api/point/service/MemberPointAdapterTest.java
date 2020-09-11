@@ -168,7 +168,7 @@ class MemberPointAdapterTest implements CommonTestGiven {
       return memberPointAdapter.getMemberPointSummary(givenMemberNumber());
     }
 
-    int givenPointAmount() {
+    long givenPointAmount() {
       return 1000;
     }
 

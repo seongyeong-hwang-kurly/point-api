@@ -7,7 +7,6 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.requestF
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.config.SpringSecurityTestConfig;
@@ -88,7 +87,7 @@ public class ConsumeDocumentationTest implements CommonTestGiven {
 
   OrderConsumePointRequest givenOrderConsumeRequest() {
     return OrderConsumePointRequest.builder()
-        .point(100)
+        .point(100L)
         .memberNumber(givenMemberNumber())
         .orderNumber(givenOrderNumber())
         .build();

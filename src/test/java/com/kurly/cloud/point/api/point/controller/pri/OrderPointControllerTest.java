@@ -2,7 +2,6 @@ package com.kurly.cloud.point.api.point.controller.pri;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.ControllerTest;
@@ -70,7 +69,7 @@ public class OrderPointControllerTest implements CommonTestGiven {
     publishPointPort.publishByOrder(PublishPointRequest.builder()
         .memberNumber(givenMemberNumber())
         .orderNumber(givenOrderNumber())
-        .point(1000)
+        .point(1000L)
         .build());
   }
 }

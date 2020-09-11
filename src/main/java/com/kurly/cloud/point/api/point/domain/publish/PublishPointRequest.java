@@ -30,7 +30,7 @@ public class PublishPointRequest {
   @JsonIgnore
   long orderNumber;
   @NotNull @Min(1)
-  Integer point;
+  Long point;
   @JsonIgnore
   float pointRatio;
   @NotNull
@@ -79,9 +79,9 @@ public class PublishPointRequest {
   /**
    * 적립금.
    */
-  public @Nullable Integer getPoint() {
+  public @Nullable Long getPoint() {
     if (Objects.nonNull(point)) {
-      return point < 0 ? 0 : point;
+      return point < 0 ? 0L : point;
     }
     return point;
   }

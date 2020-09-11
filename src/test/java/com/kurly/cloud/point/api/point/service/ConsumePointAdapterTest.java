@@ -3,7 +3,6 @@ package com.kurly.cloud.point.api.point.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.TransactionalTest;
 import com.kurly.cloud.point.api.point.domain.consume.CancelOrderConsumePointRequest;
@@ -38,7 +37,7 @@ class ConsumePointAdapterTest implements CommonTestGiven {
   @Autowired
   MemberPointService memberPointService;
 
-  void publishCashPoint(int amount) {
+  void publishCashPoint(long amount) {
     publishPointAdapter.publish(PublishPointRequest.builder()
         .memberNumber(givenMemberNumber())
         .point(amount)
@@ -47,7 +46,7 @@ class ConsumePointAdapterTest implements CommonTestGiven {
         .build());
   }
 
-  void publishFreePoint(int amount) {
+  void publishFreePoint(long amount) {
     publishPointAdapter.publish(PublishPointRequest.builder()
         .memberNumber(givenMemberNumber())
         .point(amount)
@@ -69,11 +68,11 @@ class ConsumePointAdapterTest implements CommonTestGiven {
       publishCashPoint(getCashAmount());
     }
 
-    int getFreeAmount() {
+    long getFreeAmount() {
       return 1000;
     }
 
-    int getCashAmount() {
+    long getCashAmount() {
       return 2000;
     }
 
@@ -96,7 +95,7 @@ class ConsumePointAdapterTest implements CommonTestGiven {
       ConsumePointRequest givenRequest() {
         return ConsumePointRequest.builder()
             .memberNumber(givenMemberNumber())
-            .point(10000)
+            .point(10000L)
             .historyType(HistoryType.TYPE_100.getValue())
             .build();
       }
@@ -229,11 +228,11 @@ class ConsumePointAdapterTest implements CommonTestGiven {
       publishCashPoint(getCashAmount());
     }
 
-    int getFreeAmount() {
+    long getFreeAmount() {
       return 1000;
     }
 
-    int getCashAmount() {
+    long getCashAmount() {
       return 2000;
     }
 
@@ -257,7 +256,7 @@ class ConsumePointAdapterTest implements CommonTestGiven {
         return OrderConsumePointRequest.builder()
             .orderNumber(givenOrderNumber())
             .memberNumber(givenMemberNumber())
-            .point(10000)
+            .point(10000L)
             .build();
       }
     }
@@ -333,11 +332,11 @@ class ConsumePointAdapterTest implements CommonTestGiven {
       }
     }
 
-    int givenFreeAmount() {
-      return 1000;
+    long givenFreeAmount() {
+      return 1000L;
     }
 
-    void subject(int amount) throws CancelAmountExceedException {
+    void subject(long amount) throws CancelAmountExceedException {
       consumePointPort.cancelConsumeByOrder(CancelOrderConsumePointRequest.builder()
           .actionMemberNumber(givenMemberNumber())
           .memberNumber(givenMemberNumber())

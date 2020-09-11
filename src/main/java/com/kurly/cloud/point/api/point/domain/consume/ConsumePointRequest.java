@@ -18,7 +18,7 @@ public class ConsumePointRequest {
   Long memberNumber;
   long orderNumber;
   @NotNull @Min(1)
-  Integer point;
+  Long point;
   @NotNull
   Integer historyType;
   boolean settle;

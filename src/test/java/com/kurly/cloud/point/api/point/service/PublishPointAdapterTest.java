@@ -48,7 +48,7 @@ class PublishPointAdapterTest implements CommonTestGiven {
       return PublishPointRequest.builder()
           .orderNumber(8888888888888L)
           .pointRatio(7)
-          .point(1000)
+          .point(1000L)
           .memberNumber(givenMemberNumber())
           .build();
     }
@@ -130,7 +130,7 @@ class PublishPointAdapterTest implements CommonTestGiven {
   class DescribePublish {
     PublishPointRequest given() {
       return PublishPointRequest.builder()
-          .point(1000)
+          .point(1000L)
           .memberNumber(givenMemberNumber())
           .historyType(HistoryType.TYPE_12.getValue())
           .actionMemberNumber(givenMemberNumber())
@@ -171,7 +171,7 @@ class PublishPointAdapterTest implements CommonTestGiven {
       return memberPointService.getOrCreateMemberPoint(givenMemberNumber());
     }
 
-    int givenDebtAmount() {
+    long givenDebtAmount() {
       return 1000;
     }
 
@@ -179,7 +179,7 @@ class PublishPointAdapterTest implements CommonTestGiven {
     @DisplayName("무상적립금을 지급하면")
     class ContextOnPublishFree {
 
-      void subject(int amount) {
+      void subject(long amount) {
         publishPointPort.publish(PublishPointRequest.builder()
             .point(amount)
             .memberNumber(givenMemberNumber())
@@ -246,7 +246,7 @@ class PublishPointAdapterTest implements CommonTestGiven {
     @DisplayName("유상적립금을 지급하면")
     class ContextOnCashPoint {
 
-      void subject(int amount) {
+      void subject(long amount) {
         publishPointPort.publish(PublishPointRequest.builder()
             .point(amount)
             .settle(true)
@@ -328,7 +328,7 @@ class PublishPointAdapterTest implements CommonTestGiven {
       );
     }
 
-    int givenOrderPointAmount() {
+    long givenOrderPointAmount() {
       return 1000;
     }
 
@@ -340,11 +340,11 @@ class PublishPointAdapterTest implements CommonTestGiven {
           .build());
     }
 
-    int givenNonOrderPointAmount() {
+    long givenNonOrderPointAmount() {
       return 2000;
     }
 
-    MemberPoint subject(int amount) {
+    MemberPoint subject(long amount) {
       publishPointPort.cancelPublishByOrder(CancelPublishOrderPointRequest.builder()
           .actionMemberNumber(givenMemberNumber())
           .memberNumber(givenMemberNumber())
@@ -369,7 +369,7 @@ class PublishPointAdapterTest implements CommonTestGiven {
             .isEqualTo(givenOrderPointAmount() + givenNonOrderPointAmount() - givenAmount());
       }
 
-      int givenAmount() {
+      long givenAmount() {
         return givenOrderPointAmount();
       }
     }

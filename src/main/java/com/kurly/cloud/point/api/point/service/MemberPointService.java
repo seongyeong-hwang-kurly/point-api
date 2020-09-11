@@ -15,7 +15,7 @@ class MemberPointService {
 
   private final MemberPointRepository memberPointRepository;
 
-  MemberPoint plusFreePoint(long memberNumber, int amount) {
+  MemberPoint plusFreePoint(long memberNumber, long amount) {
     MemberPoint memberPoint = getOrCreateMemberPoint(memberNumber);
     memberPoint.plusPoint(amount, 0);
     return memberPointRepository.save(memberPoint);
@@ -43,12 +43,12 @@ class MemberPointService {
         .build());
   }
 
-  MemberPoint plusCashPoint(long memberNumber, int amount) {
+  MemberPoint plusCashPoint(long memberNumber, long amount) {
     MemberPoint memberPoint = getOrCreateMemberPoint(memberNumber);
 
     if (memberPoint.getFreePoint() < 0) {
       //이 회원은 적립금을 빚진 상태
-      int repay = Math.min(Math.abs(memberPoint.getFreePoint()), amount);
+      long repay = Math.min(Math.abs(memberPoint.getFreePoint()), amount);
       amount = amount - repay;
       memberPoint.plusPoint(repay, 0);
     }
@@ -56,13 +56,13 @@ class MemberPointService {
     return memberPointRepository.save(memberPoint);
   }
 
-  MemberPoint minusFreePoint(long memberNumber, int amount) {
+  MemberPoint minusFreePoint(long memberNumber, long amount) {
     MemberPoint memberPoint = getOrCreateMemberPoint(memberNumber);
     memberPoint.minusPoint(amount, 0);
     return memberPointRepository.save(memberPoint);
   }
 
-  MemberPoint minusCashPoint(long memberNumber, int amount) {
+  MemberPoint minusCashPoint(long memberNumber, long amount) {
     MemberPoint memberPoint = getOrCreateMemberPoint(memberNumber);
     memberPoint.minusPoint(0, amount);
     return memberPointRepository.save(memberPoint);

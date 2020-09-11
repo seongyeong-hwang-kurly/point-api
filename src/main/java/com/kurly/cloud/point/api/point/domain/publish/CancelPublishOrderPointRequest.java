@@ -21,7 +21,7 @@ public class CancelPublishOrderPointRequest {
   @NotNull
   Long orderNumber;
   @NotNull @Min(1)
-  Integer point;
+  Long point;
   @NotNull @Min(0)
   Long actionMemberNumber;
 

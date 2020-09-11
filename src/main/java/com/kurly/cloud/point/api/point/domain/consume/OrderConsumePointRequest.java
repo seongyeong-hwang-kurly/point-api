@@ -21,7 +21,7 @@ public class OrderConsumePointRequest {
   @NotNull
   Long orderNumber;
   @NotNull @Min(1)
-  Integer point;
+  Long point;
   boolean settle;
 
   @JsonIgnore

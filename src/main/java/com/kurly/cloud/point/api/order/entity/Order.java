@@ -49,7 +49,7 @@ public class Order {
   int orderProcessCode;
 
   @Column(name = "reserve")
-  int publishPoint;
+  long publishPoint;
 
   @OneToMany(mappedBy = "order")
   @Column(name = "reserve")

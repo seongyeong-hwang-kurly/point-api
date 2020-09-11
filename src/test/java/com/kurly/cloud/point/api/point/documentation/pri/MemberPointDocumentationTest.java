@@ -5,7 +5,6 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.config.SpringSecurityTestConfig;
 import com.kurly.cloud.point.api.point.documentation.ApiDocumentUtils;
@@ -60,7 +59,7 @@ public class MemberPointDocumentationTest implements CommonTestGiven {
   @BeforeEach
   void givenPoint() {
     publishPointPort.publish(PublishPointRequest.builder()
-        .point(1000)
+        .point(1000L)
         .memberNumber(givenMemberNumber())
         .historyType(HistoryType.TYPE_12.getValue())
         .actionMemberNumber(givenMemberNumber())

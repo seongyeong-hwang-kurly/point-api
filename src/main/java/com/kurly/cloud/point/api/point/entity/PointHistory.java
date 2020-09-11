@@ -51,7 +51,7 @@ public class PointHistory {
 
   @NotNull
   @Column(name = "point")
-  Integer amount;
+  Long amount;
 
   @NotNull
   @Column(name = "history_type")

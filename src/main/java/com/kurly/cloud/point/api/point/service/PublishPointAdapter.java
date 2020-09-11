@@ -144,7 +144,7 @@ class PublishPointAdapter implements PublishPointPort {
    *
    * @param request request
    */
-  private void loanPoint(CancelPublishOrderPointRequest request, int amount) {
+  private void loanPoint(CancelPublishOrderPointRequest request, long amount) {
     Point point = pointService.publishPoint(PublishPointRequest.builder()
         .point(-amount)
         .memberNumber(request.getMemberNumber())
@@ -181,7 +181,7 @@ class PublishPointAdapter implements PublishPointPort {
   /**
    * 대출한 적립금을 상환처리 합니다.
    */
-  private void repayPoint(Long memberNumber, int amount) {
+  private void repayPoint(Long memberNumber, long amount) {
     // 기 지급 된 적립금에서 상환해야 할 적립금을 가져옴
     PointConsumeResult pointConsumeResult = pointService.consumeMemberPoint(memberNumber, amount);
 
@@ -226,14 +226,14 @@ class PublishPointAdapter implements PublishPointPort {
     });
   }
 
-  private MemberPoint plusMemberPoint(Long memberNumber, boolean settle, Integer point) {
+  private MemberPoint plusMemberPoint(Long memberNumber, boolean settle, Long point) {
     if (settle) {
       return memberPointService.plusCashPoint(memberNumber, point);
     }
     return memberPointService.plusFreePoint(memberNumber, point);
   }
 
-  private MemberPoint minusMemberPoint(Long memberNumber, boolean settle, Integer point) {
+  private MemberPoint minusMemberPoint(Long memberNumber, boolean settle, Long point) {
     if (settle) {
       return memberPointService.minusCashPoint(memberNumber, point);
     }

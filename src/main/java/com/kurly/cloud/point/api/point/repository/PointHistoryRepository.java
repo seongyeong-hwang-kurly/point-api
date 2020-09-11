@@ -16,13 +16,13 @@ public interface PointHistoryRepository extends JpaRepository<PointHistory, Long
   List<PointHistory> findAllByOrderNumberAndHistoryType(long orderNumber, int historyType,
                                                         Sort sort);
 
-  Page<PointHistory> findAllByAmountGreaterThanAndRegTimeBetween(int amount,
+  Page<PointHistory> findAllByAmountGreaterThanAndRegTimeBetween(long amount,
                                                                  LocalDateTime regTimeFrom,
                                                                  LocalDateTime regTimeTo,
                                                                  Pageable pageable);
 
   Page<PointHistory> findAllByAmountGreaterThanAndRegTimeBetweenAndActionMemberNumberIn(
-      int amount,
+      long amount,
       LocalDateTime regTimeFrom,
       LocalDateTime regTimeTo,
       List<Long> actionMemberNumber,
@@ -30,7 +30,7 @@ public interface PointHistoryRepository extends JpaRepository<PointHistory, Long
   );
 
   Page<PointHistory> findAllByAmountGreaterThanAndRegTimeBetweenAndHistoryTypeIn(
-      int amount,
+      long amount,
       LocalDateTime regTimeFrom,
       LocalDateTime regTimeTo,
       List<Integer> historyType,
@@ -38,7 +38,7 @@ public interface PointHistoryRepository extends JpaRepository<PointHistory, Long
   );
 
   Page<PointHistory> findAllByAmountGreaterThanAndRegTimeBetweenAndActionMemberNumberInAndHistoryTypeIn(
-      int amount,
+      long amount,
       LocalDateTime regTimeFrom,
       LocalDateTime regTimeTo,
       List<Long> actionMemberNumber,

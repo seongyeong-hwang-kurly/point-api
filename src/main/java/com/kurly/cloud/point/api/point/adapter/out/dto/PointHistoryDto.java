@@ -13,7 +13,7 @@ public class PointHistoryDto {
   long seq;
   long pointSeq;
   long orderNumber;
-  int amount;
+  long amount;
   int historyType;
   String historyTypeDesc;
   String detail;

@@ -9,8 +9,8 @@ import lombok.Getter;
 @Builder
 public class MemberPointHistoryInsertRequest {
 
-  private int cashPoint;
-  private int freePoint;
+  private long cashPoint;
+  private long freePoint;
   private Integer type;
   private Long memberNumber;
   private long orderNumber;
@@ -42,7 +42,7 @@ public class MemberPointHistoryInsertRequest {
         .build();
   }
 
-  public int getTotalPoint() {
+  public long getTotalPoint() {
     return cashPoint + freePoint;
   }
 

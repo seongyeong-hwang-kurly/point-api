@@ -8,14 +8,14 @@ import lombok.Getter;
 @Getter
 @Builder
 public class MemberPointSummary {
-  int amount;
+  long amount;
   LocalDateTime nextExpireDate;
-  int nextExpireAmount;
+  long nextExpireAmount;
 
   /**
    * 만료포인트가 없는 인스턴스를 생성한다.
    */
-  public static MemberPointSummary byEmptyExpireAmount(int pointAmount) {
+  public static MemberPointSummary byEmptyExpireAmount(long pointAmount) {
     return MemberPointSummary.builder()
         .amount(pointAmount)
         .nextExpireAmount(0)

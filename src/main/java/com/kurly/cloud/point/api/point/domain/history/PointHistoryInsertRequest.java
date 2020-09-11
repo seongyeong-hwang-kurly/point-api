@@ -13,7 +13,7 @@ public class PointHistoryInsertRequest {
 
   Long pointSeq;
   long orderNumber;
-  Integer amount;
+  Long amount;
   Integer historyType;
   @Builder.Default
   String detail = "";
