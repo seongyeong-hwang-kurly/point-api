@@ -3,8 +3,6 @@ package com.kurly.cloud.point.api.order.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,10 +23,6 @@ public class OrderDynamicColumn {
   @Id
   @Column(name = "ordno")
   long orderNumber;
-
-  @ManyToOne
-  @JoinColumn(name = "ordno", insertable = false, updatable = false)
-  Order order;
 
   @Column(name = "`column`")
   String column;
