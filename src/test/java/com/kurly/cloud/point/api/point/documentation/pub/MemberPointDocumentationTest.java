@@ -184,4 +184,32 @@ public class MemberPointDocumentationTest implements CommonTestGiven {
             )
         );
   }
+
+  @WithUserDetails
+  @Test
+  @DisplayName("RestDoc - 사용가능 적립금 조회")
+  void available() throws Exception {
+    ResultActions resultActions = mockMvc.perform(
+        RestDocumentationRequestBuilders
+            .get("/public/v1/available/{memberNumber}", givenMemberNumber())
+    );
+
+    resultActions
+        .andExpect(status().isOk())
+        .andDo(
+            document("point/pub/{method-name}"
+                , ApiDocumentUtils.getDocumentRequest()
+                , ApiDocumentUtils.getDocumentResponse()
+                , pathParameters(
+                    parameterWithName("memberNumber").description("회원번호")
+                )
+                , responseFields(
+                    beneathPath("data").withSubsectionId("data")
+                    , fieldWithPath("total").type(JsonFieldType.NUMBER).description("총 보유 적립금")
+                    , fieldWithPath("free").type(JsonFieldType.NUMBER).description("총 보유 무상 적립금")
+                    , fieldWithPath("cash").type(JsonFieldType.NUMBER).description("총 보유 유상 적립금")
+                )
+            )
+        );
+  }
 }

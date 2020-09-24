@@ -1,0 +1,29 @@
+=== 회원 사용가능 적립금 조회
+
+회원의 총적립금과 무상/유상 적립금을 조회합니다
+
+==== HTTP method
+
+GET
+
+==== HTTP request
+
+===== Private
+
+include::{snippets}/point/pri/available/http-request.adoc[]
+
+===== Public
+
+include::{snippets}/point/pub/available/http-request.adoc[]
+
+==== Path Parameters
+
+include::{snippets}/point/pub/available/path-parameters.adoc[]
+
+==== Response fields
+
+include::{snippets}/point/pub/available/response-fields-data.adoc[]
+
+==== Response body
+
+include::{snippets}/point/pub/available/response-body.adoc[]

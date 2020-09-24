@@ -2,7 +2,6 @@ package com.kurly.cloud.point.api.point.controller.pub;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.ControllerTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -60,4 +59,14 @@ public class MemberPointControllerTest implements CommonTestGiven {
         .andExpect(status().isOk());
   }
 
+  @WithUserDetails
+  @Test
+  @DisplayName("회원 사용 가능 적립금을 조회 한다")
+  void test2() throws Exception {
+    mockMvc
+        .perform(
+            MockMvcRequestBuilders.get("/public/v1/available/{memberNumber}", givenMemberNumber()))
+        .andDo(MockMvcResultHandlers.print())
+        .andExpect(status().isOk());
+  }
 }

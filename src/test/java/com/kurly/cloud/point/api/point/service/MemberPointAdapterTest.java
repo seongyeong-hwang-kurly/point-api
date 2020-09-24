@@ -10,6 +10,7 @@ import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.domain.history.MemberPointHistoryInsertRequest;
 import com.kurly.cloud.point.api.point.domain.history.MemberPointHistoryListRequest;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
+import com.kurly.cloud.point.api.point.entity.MemberPoint;
 import com.kurly.cloud.point.api.point.port.in.PublishPointPort;
 import com.kurly.cloud.point.api.point.util.PointExpireDateCalculator;
 import java.time.LocalDateTime;
@@ -383,6 +384,130 @@ class MemberPointAdapterTest implements CommonTestGiven {
         int givenCount() {
           return 5;
         }
+      }
+    }
+  }
+
+  @Nested
+  @DisplayName("회원 사용가능 적립금을 조회 할 때")
+  class DescribeGetMemberPoint {
+    
+    MemberPoint subject() {
+      return memberPointAdapter.getMemberPoint(givenMemberNumber());
+    }
+
+    long givenPointAmount() {
+      return 1000;
+    }
+
+    @TransactionalTest
+    @Nested
+    @DisplayName("적립금이 없으면")
+    class Context0 {
+      @Test
+      @DisplayName("사용 가능 적립금은 0으로 리턴한다")
+      void test() {
+        MemberPoint memberPoint = subject();
+        assertThat(memberPoint.getTotalPoint()).isEqualTo(0);
+        assertThat(memberPoint.getCashPoint()).isEqualTo(0);
+        assertThat(memberPoint.getFreePoint()).isEqualTo(0);
+      }
+    }
+
+    @TransactionalTest
+    @Nested
+    @DisplayName("유상적립금이 있으면")
+    class Context1 {
+
+      @Test
+      @DisplayName("총 적립금과 유상적립금을 리턴한다")
+      void test() {
+        givenPoint();
+        MemberPoint memberPoint = subject();
+        assertThat(memberPoint.getTotalPoint()).isEqualTo(givenPointAmount());
+        assertThat(memberPoint.getCashPoint()).isEqualTo(givenPointAmount());
+        assertThat(memberPoint.getFreePoint()).isEqualTo(0);
+
+      }
+
+      void givenPoint() {
+        publishPointPort.publish(PublishPointRequest.builder()
+            .point(givenPointAmount())
+            .memberNumber(givenMemberNumber())
+            .settle(true)
+            .historyType(HistoryType.TYPE_12.getValue())
+            .actionMemberNumber(givenMemberNumber())
+            .detail("")
+            .memo("")
+            .build());
+      }
+    }
+
+    @TransactionalTest
+    @Nested
+    @DisplayName("무상적립금이 있으면")
+    class Context2 {
+
+      @Test
+      @DisplayName("총 적립금과 무상적립금을 리턴한다")
+      void test() {
+        givenPoint();
+        MemberPoint memberPoint = subject();
+        assertThat(memberPoint.getTotalPoint()).isEqualTo(givenPointAmount());
+        assertThat(memberPoint.getCashPoint()).isEqualTo(0);
+        assertThat(memberPoint.getFreePoint()).isEqualTo(givenPointAmount());
+
+      }
+
+      void givenPoint() {
+        publishPointPort.publish(PublishPointRequest.builder()
+            .point(givenPointAmount())
+            .memberNumber(givenMemberNumber())
+            .settle(false)
+            .historyType(HistoryType.TYPE_12.getValue())
+            .actionMemberNumber(givenMemberNumber())
+            .detail("")
+            .memo("")
+            .build());
+      }
+    }
+
+    @TransactionalTest
+    @Nested
+    @DisplayName("유상 무상적립금이 모두 있으면")
+    class Context3 {
+
+      @Test
+      @DisplayName("총 적립금은 유상 적립금과 무상적립금의 합산을 리턴한다")
+      void test() {
+        givenPoint();
+        MemberPoint memberPoint = subject();
+        assertThat(memberPoint.getTotalPoint()).isEqualTo(givenPointAmount() + givenPointAmount());
+        assertThat(memberPoint.getCashPoint()).isEqualTo(givenPointAmount());
+        assertThat(memberPoint.getFreePoint()).isEqualTo(givenPointAmount());
+
+      }
+
+      void givenPoint() {
+        publishPointPort.publish(PublishPointRequest.builder()
+            .point(givenPointAmount())
+            .memberNumber(givenMemberNumber())
+            .settle(false)
+            .historyType(HistoryType.TYPE_12.getValue())
+            .actionMemberNumber(givenMemberNumber())
+            .detail("")
+            .memo("")
+            .build());
+
+        publishPointPort.publish(PublishPointRequest.builder()
+            .point(givenPointAmount())
+            .memberNumber(givenMemberNumber())
+            .settle(true)
+            .historyType(HistoryType.TYPE_12.getValue())
+            .actionMemberNumber(givenMemberNumber())
+            .detail("")
+            .memo("")
+            .build());
       }
     }
   }

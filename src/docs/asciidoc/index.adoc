@@ -77,6 +77,8 @@ application/json;charset=utf-8 +
 
 == 조회
 
+include::available.adoc[]
+
 include::history.adoc[]
 
 include::publish-history.adoc[]

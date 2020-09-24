@@ -62,5 +62,16 @@ class MemberPointAdapter implements MemberPointPort {
         .build();
   }
 
+  @Transactional(readOnly = true)
+  @Override public MemberPoint getMemberPoint(long memberNumber) {
+    return memberPointService.getMemberPoint(memberNumber)
+        .orElse(MemberPoint.builder()
+            .memberNumber(memberNumber)
+            .totalPoint(0)
+            .freePoint(0)
+            .cashPoint(0)
+            .build());
+  }
+
 
 }

@@ -19,7 +19,7 @@ public class MemberPointSummaryDto {
   /**
    * Entity 를 Dto로 변환한다.
    */
-  public static MemberPointSummaryDto fromSummary(MemberPointSummary memberPointSummary) {
+  public static MemberPointSummaryDto fromEntity(MemberPointSummary memberPointSummary) {
     return MemberPointSummaryDto.builder()
         .amount(memberPointSummary.getAmount())
         .nextExpireDate(DateTimeUtil.toZonedDateTime(memberPointSummary.getNextExpireDate()))

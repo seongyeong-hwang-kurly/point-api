@@ -2,7 +2,6 @@ package com.kurly.cloud.point.api.point.controller.pri;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.ControllerTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,7 +9,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -35,7 +33,6 @@ public class MemberPointControllerTest implements CommonTestGiven {
         .build();
   }
 
-  @WithUserDetails
   @Test
   @DisplayName("회원 적립금 이력을 조회 한다")
   void test() throws Exception {
@@ -49,13 +46,22 @@ public class MemberPointControllerTest implements CommonTestGiven {
         .andExpect(status().isOk());
   }
 
-  @WithUserDetails
   @Test
   @DisplayName("회원 적립금 요약을 조회 한다")
   void test1() throws Exception {
     mockMvc
         .perform(
             MockMvcRequestBuilders.get("/v1/summary/{memberNumber}", givenMemberNumber()))
+        .andDo(MockMvcResultHandlers.print())
+        .andExpect(status().isOk());
+  }
+
+  @Test
+  @DisplayName("회원 사용 가능 적립금을 조회 한다")
+  void test2() throws Exception {
+    mockMvc
+        .perform(
+            MockMvcRequestBuilders.get("/v1/available/{memberNumber}", givenMemberNumber()))
         .andDo(MockMvcResultHandlers.print())
         .andExpect(status().isOk());
   }

@@ -1,5 +1,6 @@
 package com.kurly.cloud.point.api.point.adapter.out.controller.pub;
 
+import com.kurly.cloud.point.api.point.adapter.out.dto.AvailableMemberPointDto;
 import com.kurly.cloud.point.api.point.adapter.out.dto.MemberPointHistoryDto;
 import com.kurly.cloud.point.api.point.adapter.out.dto.MemberPointSummaryDto;
 import com.kurly.cloud.point.api.point.adapter.out.dto.SimplePageImpl;
@@ -31,6 +32,12 @@ public class MemberPointController {
   @PreAuthorize("@userSecurity.checkMemberNo(principal,#memberNumber)")
   @GetMapping("/public/v1/summary/{memberNumber}")
   MemberPointSummaryDto getMemberPointSummary(@PathVariable long memberNumber) {
-    return MemberPointSummaryDto.fromSummary(memberPointPort.getMemberPointSummary(memberNumber));
+    return MemberPointSummaryDto.fromEntity(memberPointPort.getMemberPointSummary(memberNumber));
+  }
+
+  @PreAuthorize("@userSecurity.checkMemberNo(principal,#memberNumber)")
+  @GetMapping("/public/v1/available/{memberNumber}")
+  AvailableMemberPointDto getMemberPoint(@PathVariable long memberNumber) {
+    return AvailableMemberPointDto.fromEntity(memberPointPort.getMemberPoint(memberNumber));
   }
 }

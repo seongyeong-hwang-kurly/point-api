@@ -110,4 +110,23 @@ public class MemberPointDocumentationTest implements CommonTestGiven {
             )
         );
   }
+
+  @Test
+  @DisplayName("RestDoc - 사용가능 적립금 조회")
+  void available() throws Exception {
+    ResultActions resultActions = mockMvc.perform(
+        RestDocumentationRequestBuilders
+            .get("/v1/available/{memberNumber}", givenMemberNumber())
+    );
+
+    resultActions
+        .andExpect(status().isOk())
+        .andDo(
+            document("point/pri/{method-name}"
+                , ApiDocumentUtils.getDocumentRequest()
+                , ApiDocumentUtils.getDocumentResponse()
+                // PUBLIC 과 같음
+            )
+        );
+  }
 }
