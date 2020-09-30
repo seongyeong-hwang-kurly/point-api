@@ -29,7 +29,7 @@ public class RecommendPublishScheduler {
   /**
    * 스케쥴 실행.
    */
-  @Scheduled(cron = "0 0 8 * * *")
+  @Scheduled(cron = "0 0 4 * * *")
   public void execute() {
     String deliveredDate =
         LocalDateTime.now().minusDays(1).format(PointBatchConfig.DATE_TIME_FORMATTER);
