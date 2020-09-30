@@ -15,12 +15,6 @@ class MemberPointService {
 
   private final MemberPointRepository memberPointRepository;
 
-  MemberPoint plusFreePoint(long memberNumber, long amount) {
-    MemberPoint memberPoint = getOrCreateMemberPoint(memberNumber);
-    memberPoint.plusPoint(amount, 0);
-    return memberPointRepository.save(memberPoint);
-  }
-
   MemberPoint getOrCreateMemberPoint(long memberNumber) {
     Optional<MemberPoint> memberPoint = getMemberPoint(memberNumber);
     return memberPoint.orElseGet(() -> {
@@ -43,6 +37,12 @@ class MemberPointService {
         .build());
   }
 
+  MemberPoint plusFreePoint(long memberNumber, long amount) {
+    MemberPoint memberPoint = getOrCreateMemberPoint(memberNumber);
+    memberPoint.plusPoint(amount, 0);
+    return memberPointRepository.saveAndFlush(memberPoint);
+  }
+
   MemberPoint plusCashPoint(long memberNumber, long amount) {
     MemberPoint memberPoint = getOrCreateMemberPoint(memberNumber);
 
@@ -53,18 +53,18 @@ class MemberPointService {
       memberPoint.plusPoint(repay, 0);
     }
     memberPoint.plusPoint(0, amount);
-    return memberPointRepository.save(memberPoint);
+    return memberPointRepository.saveAndFlush(memberPoint);
   }
 
   MemberPoint minusFreePoint(long memberNumber, long amount) {
     MemberPoint memberPoint = getOrCreateMemberPoint(memberNumber);
     memberPoint.minusPoint(amount, 0);
-    return memberPointRepository.save(memberPoint);
+    return memberPointRepository.saveAndFlush(memberPoint);
   }
 
   MemberPoint minusCashPoint(long memberNumber, long amount) {
     MemberPoint memberPoint = getOrCreateMemberPoint(memberNumber);
     memberPoint.minusPoint(0, amount);
-    return memberPointRepository.save(memberPoint);
+    return memberPointRepository.saveAndFlush(memberPoint);
   }
 }

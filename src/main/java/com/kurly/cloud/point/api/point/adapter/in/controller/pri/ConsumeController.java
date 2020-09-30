@@ -11,6 +11,8 @@ import com.kurly.cloud.point.api.point.exception.CancelAmountExceedException;
 import com.kurly.cloud.point.api.point.exception.NotEnoughPointException;
 import com.kurly.cloud.point.api.point.port.in.ConsumePointPort;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -49,16 +51,22 @@ public class ConsumeController {
   }
 
   @PostMapping(value = "/v1/consume/bulk", consumes = MediaType.APPLICATION_JSON_VALUE)
-  synchronized BulkJobResult bulkConsume(
+  BulkJobResult bulkConsume(
       @RequestBody List<@Valid BulkConsumePointRequest> requests) {
     BulkJobResult result = new BulkJobResult();
     requests.forEach(request -> {
       try {
-        consumePointPort.consume(request);
-        result.addSuccess(request.getJobSeq());
-      } catch (Exception e) {
-        result.addFailed(request.getJobSeq());
-        FileBeatLogger.error(e);
+        Executors.newSingleThreadExecutor().submit(() -> {
+          try {
+            consumePointPort.consume(request);
+            result.addSuccess(request.getJobSeq());
+          } catch (Exception e) {
+            result.addFailed(request.getJobSeq());
+            FileBeatLogger.error(e);
+          }
+        }).get();
+      } catch (InterruptedException | ExecutionException e) {
+        e.printStackTrace();
       }
     });
     return result;

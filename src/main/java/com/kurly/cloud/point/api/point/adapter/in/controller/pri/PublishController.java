@@ -9,6 +9,8 @@ import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
 import com.kurly.cloud.point.api.point.entity.Point;
 import com.kurly.cloud.point.api.point.port.in.PublishPointPort;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -31,16 +33,22 @@ public class PublishController {
   }
 
   @PostMapping(value = "/v1/publish/bulk", consumes = MediaType.APPLICATION_JSON_VALUE)
-  synchronized BulkJobResult bulkPublish(
+  BulkJobResult bulkPublish(
       @RequestBody List<@Valid BulkPublishPointRequest> requests) {
     BulkJobResult result = new BulkJobResult();
     requests.forEach(request -> {
       try {
-        Point publish = publishPointPort.publish(request);
-        result.addSuccess(request.getJobSeq(), publish.getSeq());
-      } catch (Exception e) {
-        result.addFailed(request.getJobSeq());
-        FileBeatLogger.error(e);
+        Executors.newSingleThreadExecutor().submit(() -> {
+          try {
+            Point publish = publishPointPort.publish(request);
+            result.addSuccess(request.getJobSeq(), publish.getSeq());
+          } catch (Exception e) {
+            result.addFailed(request.getJobSeq());
+            FileBeatLogger.error(e);
+          }
+        }).get();
+      } catch (InterruptedException | ExecutionException e) {
+        e.printStackTrace();
       }
     });
     return result;
