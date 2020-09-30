@@ -49,7 +49,8 @@ public class ConsumeController {
   }
 
   @PostMapping(value = "/v1/consume/bulk", consumes = MediaType.APPLICATION_JSON_VALUE)
-  BulkJobResult bulkConsume(@RequestBody List<@Valid BulkConsumePointRequest> requests) {
+  synchronized BulkJobResult bulkConsume(
+      @RequestBody List<@Valid BulkConsumePointRequest> requests) {
     BulkJobResult result = new BulkJobResult();
     requests.forEach(request -> {
       try {

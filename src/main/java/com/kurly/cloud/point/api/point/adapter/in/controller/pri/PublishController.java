@@ -31,7 +31,8 @@ public class PublishController {
   }
 
   @PostMapping(value = "/v1/publish/bulk", consumes = MediaType.APPLICATION_JSON_VALUE)
-  BulkJobResult bulkPublish(@RequestBody List<@Valid BulkPublishPointRequest> requests) {
+  synchronized BulkJobResult bulkPublish(
+      @RequestBody List<@Valid BulkPublishPointRequest> requests) {
     BulkJobResult result = new BulkJobResult();
     requests.forEach(request -> {
       try {
