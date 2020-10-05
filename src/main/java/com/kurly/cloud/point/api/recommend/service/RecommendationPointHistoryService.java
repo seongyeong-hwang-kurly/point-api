@@ -71,7 +71,7 @@ public class RecommendationPointHistoryService {
   public boolean isValidOrder(Order order) {
     LocalDateTime deliveredDate =
         order.getDeliveredDateTime().withHour(0).withMinute(0).withSecond(0).withNano(0);
-    if (orderRepository.countMemberDeliveredOrder(order.getMemberNumber(), deliveredDate) > 1) {
+    if (orderRepository.countMemberDeliveredOrder(order.getMemberNumber(), deliveredDate) > 0) {
       return false;
     }
 
