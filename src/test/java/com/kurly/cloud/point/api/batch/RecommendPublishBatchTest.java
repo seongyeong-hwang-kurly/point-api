@@ -1,11 +1,16 @@
 package com.kurly.cloud.point.api.batch;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.kurly.cloud.point.api.batch.config.PointBatchConfig;
 import com.kurly.cloud.point.api.member.entity.Member;
 import com.kurly.cloud.point.api.member.repository.MemberRepository;
 import com.kurly.cloud.point.api.order.entity.Order;
 import com.kurly.cloud.point.api.order.repository.OrderRepository;
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
+import com.kurly.cloud.point.api.point.entity.MemberPoint;
+import com.kurly.cloud.point.api.point.repository.MemberPointRepository;
+import com.kurly.cloud.point.api.recommend.service.RecommendationPointHistoryService;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,12 +22,15 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.item.ExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -37,6 +45,8 @@ public class RecommendPublishBatchTest implements CommonTestGiven {
   @Autowired
   EntityManagerFactory entityManagerFactory;
 
+  EntityManager entityManager;
+
   @Autowired
   JobLauncher jobLauncher;
 
@@ -50,13 +60,21 @@ public class RecommendPublishBatchTest implements CommonTestGiven {
   @Autowired
   OrderRepository orderRepository;
 
+  @Autowired
+  MemberPointRepository memberPointRepository;
+
   List<Long> memberNumbers = new ArrayList<>();
   List<Long> orderNumbers = new ArrayList<>();
 
-  void subject() throws Exception {
+  @BeforeEach
+  void initializeEntityManager() {
+    this.entityManager = entityManagerFactory.createEntityManager();
+  }
+
+  JobExecution subject() throws Exception {
     JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
     jobParametersBuilder.addString("deliveredDate", givenDeliveredDate());
-    jobLauncher.run(recommendPublishJob, jobParametersBuilder.toJobParameters());
+    return jobLauncher.run(recommendPublishJob, jobParametersBuilder.toJobParameters());
   }
 
   String givenDeliveredDate() {
@@ -106,29 +124,75 @@ public class RecommendPublishBatchTest implements CommonTestGiven {
     return order;
   }
 
-  void createData(int size) {
+  void createData(int size, boolean createMember) {
     IntStream.range(0, size).forEach(index -> {
-      EntityManager entityManager = entityManagerFactory.createEntityManager();
       EntityTransaction tx = entityManager.getTransaction();
       tx.begin();
-      Member recommender = givenRecommenderMember(index);
-      Member recommendee = givenRecommendeeMember(recommender.getMemberId(), index);
+      Member recommendee;
+      if (createMember) {
+        Member recommender = givenRecommenderMember(index);
+        recommendee = givenRecommendeeMember(recommender.getMemberId(), index);
+      } else {
+        recommendee = memberRepository.findByMemberId("recommendee" + index).get();
+      }
       givenDeliveredOrder(recommendee, LocalDateTime.now());
       tx.commit();
-      entityManager.close();
     });
+  }
+
+  int givenSize() {
+    return 10;
   }
 
   @DisplayName("친구 초대 적립금 지급 배치 테스트")
   @Test
   void test() throws Exception {
-    createData(10);
-    subject();
+    createData(givenSize(), true);
+    JobExecution subject = subject();
+    ExecutionContext executionContext = subject.getExecutionContext();
+    long totalOrderCount = executionContext.getLong("totalOrderCount");
+    long totalValidCount = executionContext.getLong("totalValidCount");
+    long totalPublishPointAmount = executionContext.getLong("totalPublishPointAmount");
+    long totalPublishPointCount = executionContext.getLong("totalPublishPointCount");
+    assertThat(totalOrderCount).isEqualTo(givenSize());
+    assertThat(totalValidCount).isEqualTo(givenSize());
+    assertThat(totalPublishPointCount).isEqualTo(givenSize() * 2);
+    assertThat(totalPublishPointAmount)
+        .isEqualTo(givenSize() * 2 * RecommendationPointHistoryService.PAID_POINT);
+    List<MemberPoint> memberPoints = memberPointRepository.findAllById(memberNumbers);
+    assertThat(memberPoints.size()).isEqualTo(givenSize() * 2);
+    memberPoints.forEach(memberPoint -> {
+      assertThat(memberPoint.getTotalPoint())
+          .isEqualTo(RecommendationPointHistoryService.PAID_POINT);
+    });
+  }
+
+  @DisplayName("중복 주문 지급 배치 테스트")
+  @Test
+  void test1() throws Exception {
+    createData(givenSize(), true);
+    createData(givenSize(), false);
+    JobExecution subject = subject();
+    ExecutionContext executionContext = subject.getExecutionContext();
+    long totalOrderCount = executionContext.getLong("totalOrderCount");
+    long totalValidCount = executionContext.getLong("totalValidCount");
+    long totalPublishPointAmount = executionContext.getLong("totalPublishPointAmount");
+    long totalPublishPointCount = executionContext.getLong("totalPublishPointCount");
+    assertThat(totalOrderCount).isEqualTo(givenSize());
+    assertThat(totalValidCount).isEqualTo(givenSize());
+    assertThat(totalPublishPointCount).isEqualTo(givenSize() * 2);
+    assertThat(totalPublishPointAmount).isEqualTo(givenSize() * 2 *
+        RecommendationPointHistoryService.PAID_POINT);
+    List<MemberPoint> memberPoints = memberPointRepository.findAllById(memberNumbers);
+    assertThat(memberPoints.size()).isEqualTo(givenSize() * 2);
+    memberPoints.forEach(memberPoint -> {
+      assertThat(memberPoint.getTotalPoint())
+          .isEqualTo(RecommendationPointHistoryService.PAID_POINT);
+    });
   }
 
   @AfterEach
   void clear() {
-    EntityManager entityManager = entityManagerFactory.createEntityManager();
     EntityTransaction tx = entityManager.getTransaction();
     tx.begin();
 
@@ -202,5 +266,7 @@ public class RecommendPublishBatchTest implements CommonTestGiven {
         .executeUpdate();
 
     tx.commit();
+    entityManager.clear();
+    entityManager.close();
   }
 }

@@ -31,7 +31,7 @@ public class RecommendationPointHistoryService {
 
   private static final int MAX_ADDRESS_DISTANCE = 2;
   private static final int MAX_ADDRESS_PAID_COUNT = 3;
-  private static final int PAID_POINT = 5000;
+  public static final int PAID_POINT = 5000;
 
   public void save(RecommendationPointHistory history) {
     recommendRepository.save(history);
@@ -69,7 +69,9 @@ public class RecommendationPointHistoryService {
    * - 주문 회원 번호로 이력이 있는지
    */
   public boolean isValidOrder(Order order) {
-    if (orderRepository.countMemberDeliveredOrder(order.getMemberNumber()) > 1) {
+    LocalDateTime deliveredDate =
+        order.getDeliveredDateTime().withHour(0).withMinute(0).withSecond(0).withNano(0);
+    if (orderRepository.countMemberDeliveredOrder(order.getMemberNumber(), deliveredDate) > 1) {
       return false;
     }
 

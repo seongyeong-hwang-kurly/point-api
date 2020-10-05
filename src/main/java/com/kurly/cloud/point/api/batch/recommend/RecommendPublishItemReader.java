@@ -35,7 +35,8 @@ public class RecommendPublishItemReader extends JpaPagingItemReader<Order> {
         " WHERE o.member.recommendMemberId <> '' " +
         " AND o.orderStatus = 4 " +
         " AND o.orderProcessCode IN (0, 21, 22) " +
-        " AND o.deliveredDateTime BETWEEN :from AND :to ";
+        " AND o.deliveredDateTime BETWEEN :from AND :to " +
+        " GROUP BY o.memberNumber";
     return query;
   }
 }
