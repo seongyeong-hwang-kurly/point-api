@@ -69,6 +69,8 @@ class PublishPointAdapter implements PublishPointPort {
         put("amount", request.getPoint());
         put("type", request.getHistoryType());
         put("orderNumber", request.getOrderNumber());
+        put("actionMemberNumber", request.getActionMemberNumber());
+        put("detail", request.getDetail());
       }
     });
 
@@ -134,6 +136,8 @@ class PublishPointAdapter implements PublishPointPort {
         put("amount", request.getPoint());
         put("type", request.getHistoryType());
         put("orderNumber", request.getOrderNumber());
+        put("actionMemberNumber", request.getActionMemberNumber());
+        put("detail", request.getDetail());
       }
     });
 
@@ -174,6 +178,8 @@ class PublishPointAdapter implements PublishPointPort {
         put("amount", amount);
         put("type", request.getHistoryType());
         put("orderNumber", request.getOrderNumber());
+        put("actionMemberNumber", request.getActionMemberNumber());
+        put("detail", request.getDetail());
       }
     });
   }

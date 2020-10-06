@@ -77,6 +77,8 @@ class ConsumePointAdapter implements ConsumePointPort {
         put("amount", request.getPoint());
         put("type", request.getHistoryType());
         put("orderNumber", request.getOrderNumber());
+        put("actionMemberNumber", request.getActionMemberNumber());
+        put("detail", request.getDetail());
       }
     });
 
@@ -153,6 +155,8 @@ class ConsumePointAdapter implements ConsumePointPort {
         put("amount", request.getPoint());
         put("type", request.getHistoryType());
         put("orderNumber", request.getOrderNumber());
+        put("actionMemberNumber", request.getActionMemberNumber());
+        put("detail", request.getDetail());
       }
     });
   }
