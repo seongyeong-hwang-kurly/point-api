@@ -37,7 +37,7 @@ public class PointOrderPublishItemReader extends JpaPagingItemReader<Order> {
   }
 
   private String getQueryString() {
-    String query = "SELECT o FROM Order o" +
+    String query = "SELECT DISTINCT o FROM Order o" +
         " LEFT JOIN FETCH o.orderDynamicColumn " +
         " WHERE o.memberNumber <> 0 " +
         " AND o.publishPoint > 0 " +
