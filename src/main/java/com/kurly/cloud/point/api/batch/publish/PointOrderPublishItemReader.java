@@ -38,7 +38,7 @@ public class PointOrderPublishItemReader extends JpaPagingItemReader<Order> {
 
   private String getQueryString() {
     String query = "SELECT o FROM Order o" +
-        " JOIN FETCH o.orderDynamicColumn " +
+        " LEFT JOIN FETCH o.orderDynamicColumn " +
         " WHERE o.memberNumber <> 0 " +
         " AND o.publishPoint > 0 " +
         " AND o.orderStatus <> 0 " +
