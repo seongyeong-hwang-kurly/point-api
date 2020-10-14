@@ -1,0 +1,29 @@
+=== 회원 적립금 사용가능 여부 조회
+
+회원이 적립금을 사용 가능한지 판단합니다
+
+==== HTTP method
+
+GET
+
+==== HTTP request
+
+===== Private
+
+include::{snippets}/point/pri/is-available/http-request.adoc[]
+
+==== Path Parameters
+
+include::{snippets}/point/pri/is-available/path-parameters.adoc[]
+
+==== Request Parameters
+
+include::{snippets}/point/pri/is-available/request-parameters.adoc[]
+
+==== Response fields
+
+include::{snippets}/point/pri/is-available/response-fields.adoc[]
+
+==== Response body
+
+include::{snippets}/point/pri/is-available/response-body.adoc[]
