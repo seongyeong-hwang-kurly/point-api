@@ -79,6 +79,8 @@ application/json;charset=utf-8 +
 
 include::available.adoc[]
 
+include::is-available.adoc[]
+
 include::history.adoc[]
 
 include::publish-history.adoc[]
