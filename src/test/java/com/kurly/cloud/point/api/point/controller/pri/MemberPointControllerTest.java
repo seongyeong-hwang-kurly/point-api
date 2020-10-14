@@ -66,4 +66,25 @@ public class MemberPointControllerTest implements CommonTestGiven {
         .andExpect(status().isOk());
   }
 
+  @Test
+  @DisplayName("회원이 적립금을 사용 가능한지 조회 한다")
+  void test3() throws Exception {
+    mockMvc
+        .perform(
+            MockMvcRequestBuilders.get("/v1/is-available/{memberNumber}", givenMemberNumber())
+                .param("point", "1000")
+        )
+        .andDo(MockMvcResultHandlers.print())
+        .andExpect(status().isOk());
+
+    mockMvc
+        .perform(
+            MockMvcRequestBuilders.get("/v1/is-available/{memberNumber}", givenMemberNumber())
+                .param("point", "1000")
+                .param("settle", "true")
+        )
+        .andDo(MockMvcResultHandlers.print())
+        .andExpect(status().isOk());
+  }
+
 }
