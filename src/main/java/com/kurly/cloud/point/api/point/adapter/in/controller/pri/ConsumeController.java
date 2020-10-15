@@ -73,10 +73,13 @@ public class ConsumeController {
   }
 
   @PostMapping(value = "/v1/consume/cancel", consumes = MediaType.APPLICATION_JSON_VALUE)
-  ResponseEntity<?> cancelConsume(@RequestBody @Valid CancelOrderConsumePointRequest request)
-      throws CancelAmountExceedException {
+  ResponseEntity<?> cancelConsume(@RequestBody @Valid CancelOrderConsumePointRequest request) {
     request.setActionMemberNumber(request.getMemberNumber());
-    consumePointPort.cancelConsumeByOrder(request);
+    try {
+      consumePointPort.cancelConsumeByOrder(request);
+    } catch (CancelAmountExceedException e) {
+      throw new ApiErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
     return ResponseEntity.noContent().build();
   }
 
