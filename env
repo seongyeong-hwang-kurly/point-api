@@ -1,0 +1,4 @@
+REGISTRY_URL=030787254034.dkr.ecr.ap-northeast-2.amazonaws.com
+REPOSITORY_NAME=kac/point-cloud-api
+AWS_REGION=ap-northeast-2
+
