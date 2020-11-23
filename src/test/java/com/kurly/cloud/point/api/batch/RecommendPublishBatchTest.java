@@ -2,6 +2,7 @@ package com.kurly.cloud.point.api.batch;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+
 import com.kurly.cloud.point.api.batch.config.PointBatchConfig;
 import com.kurly.cloud.point.api.member.entity.Member;
 import com.kurly.cloud.point.api.member.repository.MemberRepository;
@@ -62,6 +63,9 @@ public class RecommendPublishBatchTest implements CommonTestGiven {
 
   @Autowired
   MemberPointRepository memberPointRepository;
+
+  @Autowired
+  RecommendationPointHistoryService recommendationPointHistoryService;
 
   List<Long> memberNumbers = new ArrayList<>();
   List<Long> orderNumbers = new ArrayList<>();
@@ -158,12 +162,12 @@ public class RecommendPublishBatchTest implements CommonTestGiven {
     assertThat(totalValidCount).isEqualTo(givenSize());
     assertThat(totalPublishPointCount).isEqualTo(givenSize() * 2);
     assertThat(totalPublishPointAmount)
-        .isEqualTo(givenSize() * 2 * RecommendationPointHistoryService.PAID_POINT);
+        .isEqualTo(givenSize() * 2 * recommendationPointHistoryService.getPaidPoint());
     List<MemberPoint> memberPoints = memberPointRepository.findAllById(memberNumbers);
     assertThat(memberPoints.size()).isEqualTo(givenSize() * 2);
     memberPoints.forEach(memberPoint -> {
       assertThat(memberPoint.getTotalPoint())
-          .isEqualTo(RecommendationPointHistoryService.PAID_POINT);
+          .isEqualTo(recommendationPointHistoryService.getPaidPoint());
     });
   }
 
@@ -182,12 +186,12 @@ public class RecommendPublishBatchTest implements CommonTestGiven {
     assertThat(totalValidCount).isEqualTo(givenSize());
     assertThat(totalPublishPointCount).isEqualTo(givenSize() * 2);
     assertThat(totalPublishPointAmount).isEqualTo(givenSize() * 2 *
-        RecommendationPointHistoryService.PAID_POINT);
+        recommendationPointHistoryService.getPaidPoint());
     List<MemberPoint> memberPoints = memberPointRepository.findAllById(memberNumbers);
     assertThat(memberPoints.size()).isEqualTo(givenSize() * 2);
     memberPoints.forEach(memberPoint -> {
       assertThat(memberPoint.getTotalPoint())
-          .isEqualTo(RecommendationPointHistoryService.PAID_POINT);
+          .isEqualTo(recommendationPointHistoryService.getPaidPoint());
     });
   }
 

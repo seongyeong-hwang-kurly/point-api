@@ -12,14 +12,18 @@ import com.kurly.cloud.point.api.recommend.domain.RecommendationPointReason;
 import com.kurly.cloud.point.api.recommend.domain.RecommendationPointStatus;
 import com.kurly.cloud.point.api.recommend.entity.RecommendationPointHistory;
 import com.kurly.cloud.point.api.recommend.repository.RecommendationPointHistoryRepository;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.text.similarity.LevenshteinDistance;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 @RequiredArgsConstructor
 @Service
@@ -31,10 +35,57 @@ public class RecommendationPointHistoryService {
 
   private static final int MAX_ADDRESS_DISTANCE = 2;
   private static final int MAX_ADDRESS_PAID_COUNT = 3;
-  public static final int PAID_POINT = 5000;
+  private static final int PAID_POINT = 5000;
+
+  private LocalDate promotionStartDate;
+  private LocalDate promotionEndDate;
+  private int promotionPaidPoint;
 
   public void save(RecommendationPointHistory history) {
     recommendRepository.save(history);
+  }
+
+  /**
+   * 프로모션 지급 시작날짜를 설정한다.
+   * 실제 지급일보다 하루 전날 이어야 함
+   *
+   * @param promotionStartDate 프로모션 시작 일 문자열
+   */
+  @Value("${promotion.startDate:}")
+  public void setPromotionStartDate(String promotionStartDate) {
+    if (!StringUtils.isEmpty(promotionStartDate)) {
+      this.promotionStartDate = LocalDate.parse(promotionStartDate);
+    }
+  }
+
+  /**
+   * 프로모션 지급 종료날짜를 설정한다.
+   *
+   * @param promotionEndDate 프로모션 종료일 문자열
+   */
+  @Value("${promotion.endDate:}")
+  public void setPromotionEndDate(String promotionEndDate) {
+    if (!StringUtils.isEmpty(promotionEndDate)) {
+      this.promotionEndDate = LocalDate.parse(promotionEndDate);
+    }
+  }
+
+  @Value("${promotion.paidPoint:5000}")
+  public void setPromotionPaidPoint(int promotionPaidPoint) {
+    this.promotionPaidPoint = promotionPaidPoint;
+  }
+
+  public int getPaidPoint() {
+    return isPromotionActive() ? promotionPaidPoint : PAID_POINT;
+  }
+
+  private boolean isPromotionActive() {
+    if (Objects.isNull(promotionStartDate) || Objects.isNull(promotionEndDate)) {
+      return false;
+    }
+
+    return promotionStartDate.isBefore(LocalDate.now())
+        && promotionEndDate.isAfter(LocalDate.now());
   }
 
   /**
@@ -169,7 +220,7 @@ public class RecommendationPointHistoryService {
     }
 
     history.setReason(RecommendationPointReason.DEFAULT);
-    history.setPoint(PAID_POINT);
+    history.setPoint(getPaidPoint());
     history.setStatus(RecommendationPointStatus.PAID);
     history.setOrderMemberName(orderMember.getName());
 
