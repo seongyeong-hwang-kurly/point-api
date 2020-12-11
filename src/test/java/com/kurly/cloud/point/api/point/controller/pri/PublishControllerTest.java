@@ -147,9 +147,9 @@ public class PublishControllerTest implements CommonTestGiven {
     void test1() throws Exception {
       List<BulkPublishPointRequest> bulkPublishPointRequests = givenRequest();
       given(publishPointPort.publish(any())).willReturn(
-          Point.builder().seq(1).build()
-          , Point.builder().seq(2).build()
-          , Point.builder().seq(3).build()
+          Point.builder().seq(1).charge(1L).historyType(1).build()
+          , Point.builder().seq(2).charge(2L).historyType(1).build()
+          , Point.builder().seq(3).charge(3L).historyType(1).build()
       );
       mockMvc
           .perform(
