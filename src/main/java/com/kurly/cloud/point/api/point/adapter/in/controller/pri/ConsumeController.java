@@ -64,7 +64,9 @@ public class ConsumeController {
   BulkJobResult bulkConsume(
       @RequestBody List<@Valid BulkConsumePointRequest> requests) {
     BulkJobResult result = new BulkJobResult();
-    Map<Integer, Long> jobSummary = new HashMap<>();
+    Map<String, Map<Integer, Long>> jobSummary = new HashMap<>();
+    jobSummary.put("hit", new HashMap<>());
+    jobSummary.put("amount", new HashMap<>());
     requests.forEach(request -> {
       try {
         Executors.newSingleThreadExecutor().submit(() -> {
@@ -85,30 +87,37 @@ public class ConsumeController {
     return result;
   }
 
-  private void putSummary(Map<Integer, Long> jobSummary, BulkConsumePointRequest request) {
-    jobSummary.compute(request.getHistoryType(), (type, amount) -> {
+  private void putSummary(Map<String, Map<Integer, Long>> jobSummary,
+                          BulkConsumePointRequest request) {
+    jobSummary.get("amount").compute(request.getHistoryType(), (type, amount) -> {
       amount = Objects.requireNonNullElse(amount, 0L);
       amount += request.getPoint();
       return amount;
     });
+    jobSummary.get("hit").compute(request.getHistoryType(), (type, amount) -> {
+      amount = Objects.requireNonNullElse(amount, 0L);
+      amount += 1;
+      return amount;
+    });
   }
 
-  private void reportSummary(Map<Integer, Long> jobSummary) {
-    if (jobSummary.size() == 0) {
+  private void reportSummary(Map<String, Map<Integer, Long>> jobSummary) {
+    if (jobSummary.get("amount").size() == 0) {
       return;
     }
     List<String> messages = new ArrayList<>();
     messages.add("*대량차감이 완료 되었습니다*");
 
-    jobSummary.forEach((type, amount) -> {
+    jobSummary.get("amount").forEach((type, amount) -> {
       try {
         HistoryType historyType = HistoryType.getByValue(type);
-        messages.add(MessageFormat.format(">사유 : {0} ({1})",
+        messages.add(MessageFormat.format(">차감 사유 : {0} ({1})",
             historyType.getDesc(), historyType.getValue()));
       } catch (HistoryTypeNotFoundException e) {
-        messages.add(MessageFormat.format(">사유 : {0}", type));
+        messages.add(MessageFormat.format(">차감 사유 : {0}", type));
       }
-      messages.add(MessageFormat.format(">차감 : {0}", amount));
+      messages.add(MessageFormat.format(">차감 건수 : {0}", jobSummary.get("hit").get(type)));
+      messages.add(MessageFormat.format(">차감 수량 : {0}", amount));
       messages.add("");
     });
 
