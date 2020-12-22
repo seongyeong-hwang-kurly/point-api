@@ -28,9 +28,9 @@ public interface PointRepository extends JpaRepository<Point, Long> {
       @Param("memberNumber") long memberNumber,
       @Param("expireTime") LocalDateTime expireTime);
 
-  @Query("SELECT p FROM Point p WHERE " +
-      " p.memberNumber = :memberNumber AND p.orderNumber = :orderNumber AND " +
-      " p.historyType = 1 AND p.remain > 0")
+  @Query("SELECT p FROM Point p WHERE "
+      + " p.memberNumber = :memberNumber AND p.orderNumber = :orderNumber AND "
+      + " p.historyType = 1 AND p.remain > 0")
   Optional<Point> findAvailableOrderPublishedPoint(@Param("memberNumber") long memberNumber,
                                                    @Param("orderNumber") long orderNumber);
 
@@ -60,5 +60,5 @@ public interface PointRepository extends JpaRepository<Point, Long> {
   Page<LocalDateTime> getMemberNextExpireTime(@Param("memberNumber") long memberNumber,
                                               Pageable pageable);
 
-  Optional<Point> findByOrderNumberAndHistoryType(long orderNumber, int historyType);
+  Optional<Point> findFirstByOrderNumberAndHistoryType(long orderNumber, int historyType);
 }

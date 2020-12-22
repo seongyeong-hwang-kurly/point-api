@@ -118,6 +118,6 @@ class PointService {
 
   public Optional<Point> getPublishedByOrderNumber(long orderNumber) {
     return pointRepository
-        .findByOrderNumberAndHistoryType(orderNumber, HistoryType.TYPE_1.getValue());
+        .findFirstByOrderNumberAndHistoryType(orderNumber, HistoryType.TYPE_1.getValue());
   }
 }

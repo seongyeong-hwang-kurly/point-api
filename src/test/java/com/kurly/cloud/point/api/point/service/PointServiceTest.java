@@ -38,6 +38,15 @@ class PointServiceTest implements CommonTestGiven {
       return pointService.getPublishedByOrderNumber(givenOrderNumber());
     }
 
+    void givenOrderPoint() {
+      pointService.publishPoint(PublishPointRequest.builder()
+          .orderNumber(givenOrderNumber())
+          .memberNumber(givenMemberNumber())
+          .point(1000L)
+          .historyType(HistoryType.TYPE_1.getValue())
+          .build());
+    }
+
     @Nested
     @DisplayName("주문 적립금이 없으면")
     class Context0 {
@@ -63,14 +72,22 @@ class PointServiceTest implements CommonTestGiven {
         assertThat(subject.get().getOrderNumber()).isEqualTo(givenOrderNumber());
         assertThat(subject.get().getMemberNumber()).isEqualTo(givenMemberNumber());
       }
+    }
 
-      void givenOrderPoint() {
-        pointService.publishPoint(PublishPointRequest.builder()
-            .orderNumber(givenOrderNumber())
-            .memberNumber(givenMemberNumber())
-            .point(1000L)
-            .historyType(HistoryType.TYPE_1.getValue())
-            .build());
+    @TransactionalTest
+    @Nested
+    @DisplayName("두개 이상의 동일 주문 적립금이 있으면")
+    class Context2 {
+
+      @Test
+      @DisplayName("두개중 한개의 주문 적립금을 리턴한다")
+      void test() {
+        givenOrderPoint();
+        givenOrderPoint();
+        Optional<Point> subject = subject();
+        assertThat(subject).isNotEmpty();
+        assertThat(subject.get().getOrderNumber()).isEqualTo(givenOrderNumber());
+        assertThat(subject.get().getMemberNumber()).isEqualTo(givenMemberNumber());
       }
     }
   }
