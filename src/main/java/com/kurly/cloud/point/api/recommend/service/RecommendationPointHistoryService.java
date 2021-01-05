@@ -99,7 +99,7 @@ public class RecommendationPointHistoryService {
 
     RecommendationPointHistory history = RecommendationPointHistory.builder()
         .orderNumber(order.getOrderNumber())
-        .orderPhoneNumber(order.getMobile())
+        .orderPhoneNumber(Objects.requireNonNullElse(order.getMobile(), ""))
         .orderAddress(order.getFullAddress())
         .status(RecommendationPointStatus.NON_PAID)
         .orderMemberNumber(order.getMemberNumber())
@@ -165,7 +165,8 @@ public class RecommendationPointHistoryService {
     // 전화번호 검증
     Member recommendMember = recommendMemberOptional.get();
     history.setRecommendationMemberNumber(recommendMember.getMemberNumber());
-    history.setRecommendationPhoneNumber(recommendMember.getMobile());
+    history
+        .setRecommendationPhoneNumber(Objects.requireNonNullElse(recommendMember.getMobile(), ""));
     history.setRecommendationAddressPaidCount(
         getRecommendationPaidCount(recommendMember.getMemberNumber()));
 
@@ -235,8 +236,8 @@ public class RecommendationPointHistoryService {
   }
 
   private RecommendationPointReason validateMobile(String orderMobile, String recommendMobile) {
-    orderMobile = orderMobile.replace("-", "");
-    recommendMobile = recommendMobile.replace("-", "");
+    orderMobile = Objects.requireNonNullElse(orderMobile, "").replace("-", "");
+    recommendMobile = Objects.requireNonNullElse(recommendMobile, "").replace("-", "");
 
     if (orderMobile.equals(recommendMobile)) {
       return RecommendationPointReason.SAME_PHONE_NUMBER;
