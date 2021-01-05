@@ -6,6 +6,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.ControllerTest;
@@ -95,6 +96,25 @@ public class PublishControllerTest implements CommonTestGiven {
             )
             .andDo(MockMvcResultHandlers.print())
             .andExpect(status().is(422));
+      }
+    }
+
+    @Nested
+    @DisplayName("적립금수량에 쉼표가 있다면")
+    @ControllerTest
+    class Context2 {
+
+      @Test
+      @DisplayName("응답코드는 400를 반환한다")
+      void test() throws Exception {
+        mockMvc
+            .perform(MockMvcRequestBuilders.post("/v1/publish")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    "{\"memberNumber\":999999999,\"point\":\"99,999\",\"historyType\":1}")
+            )
+            .andDo(MockMvcResultHandlers.print())
+            .andExpect(status().isBadRequest());
       }
     }
   }

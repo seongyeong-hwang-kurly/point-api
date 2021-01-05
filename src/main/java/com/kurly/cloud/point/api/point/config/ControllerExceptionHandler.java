@@ -7,6 +7,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Path;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -40,5 +41,13 @@ public class ControllerExceptionHandler {
     return ApiResponseModel
         .builder()
         .message(MessageFormat.format("입력값이 올바르지 않습니다. [{0}]", errorFields)).build();
+  }
+
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @ExceptionHandler(HttpMessageNotReadableException.class)
+  ApiResponseModel serverErrorHandler(HttpMessageNotReadableException e) {
+    return ApiResponseModel
+        .builder()
+        .message(e.getMessage()).build();
   }
 }
