@@ -49,7 +49,8 @@ public class PublishController {
    */
   private void reportPublish(PublishPointRequest request) {
     if (request.getActionMemberNumber() == 0
-        || request.getOrderNumber() != 0) {
+        || request.getOrderNumber() != 0
+        || request.getActionMemberNumber() == request.getMemberNumber()) {
       return;
     }
 
