@@ -39,7 +39,32 @@ public class PublishController {
 
   @PostMapping(value = "/v1/publish", consumes = MediaType.APPLICATION_JSON_VALUE)
   PublishResultDto publish(@RequestBody @Valid PublishPointRequest request) {
-    return PublishResultDto.fromEntity(publishPointPort.publish(request));
+    Point publish = publishPointPort.publish(request);
+    reportPublish(request);
+    return PublishResultDto.fromEntity(publish);
+  }
+
+  /**
+   * 수기 발급건에 대해서만 슬랙 알림을 보낸다.
+   */
+  private void reportPublish(PublishPointRequest request) {
+    if (request.getActionMemberNumber() == 0
+        || request.getOrderNumber() != 0) {
+      return;
+    }
+
+    List<String> messages = new ArrayList<>();
+    messages.add("*수기발급이 완료 되었습니다*");
+    messages
+        .add(MessageFormat.format(">관리자 회원 번호 : {0}", request.getActionMemberNumber()));
+    messages
+        .add(MessageFormat.format(">수령자 회원 번호 : {0}", request.getMemberNumber()));
+    messages
+        .add(MessageFormat.format(">발급 사유 : {0}", getHistoryTypeString(request.getHistoryType())));
+    messages
+        .add(MessageFormat.format(">사유 상세 : {0}", request.getDetail()));
+    messages.add(MessageFormat.format(">발급 수량 : {0}", request.getPoint()));
+    slackBot.postMessage(String.join("\n", messages));
   }
 
   @PostMapping(value = "/v1/publish/bulk", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -90,19 +115,23 @@ public class PublishController {
     messages.add("*대량발급이 완료 되었습니다*");
 
     jobSummary.get("amount").forEach((type, amount) -> {
-      try {
-        HistoryType historyType = HistoryType.getByValue(type);
-        messages.add(MessageFormat.format(">발급 사유 : {0} ({1})",
-            historyType.getDesc(), historyType.getValue()));
-      } catch (HistoryTypeNotFoundException e) {
-        messages.add(MessageFormat.format(">발급 사유 : {0}", type));
-      }
+      messages.add(MessageFormat.format(">발급 사유 : {0}", getHistoryTypeString(type)));
       messages.add(MessageFormat.format(">발급 건수 : {0}", jobSummary.get("hit").get(type)));
-      messages.add(MessageFormat.format(">발금 수량 : {0}", amount));
+      messages.add(MessageFormat.format(">발급 수량 : {0}", amount));
       messages.add("");
     });
 
     slackBot.postMessage(String.join("\n", messages));
+  }
+
+  private String getHistoryTypeString(Integer type) {
+    try {
+      HistoryType historyType = HistoryType.getByValue(type);
+      return MessageFormat
+          .format("{0} ({1})", historyType.getDesc(), historyType.getValue());
+    } catch (HistoryTypeNotFoundException e) {
+      return MessageFormat.format("{0}", type);
+    }
   }
 
   @PostMapping(value = "/v1/publish/order-cancel")
