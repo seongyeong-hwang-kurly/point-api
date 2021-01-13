@@ -21,8 +21,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,17 +39,20 @@ public class PublishController {
 
   private final SlackBot slackBot;
 
+  @Value("${notification.slack.bot.publish.channel:}")
+  private String publishNotificationChannel;
+
   @PostMapping(value = "/v1/publish", consumes = MediaType.APPLICATION_JSON_VALUE)
   PublishResultDto publish(@RequestBody @Valid PublishPointRequest request) {
     Point publish = publishPointPort.publish(request);
-    reportPublish(request);
+    reportPublish(publishNotificationChannel, request);
     return PublishResultDto.fromEntity(publish);
   }
 
   /**
    * 수기 발급건에 대해서만 슬랙 알림을 보낸다.
    */
-  private void reportPublish(PublishPointRequest request) {
+  private void reportPublish(String channel, PublishPointRequest request) {
     if (request.getActionMemberNumber() == 0
         || request.getOrderNumber() != 0
         || request.getActionMemberNumber() == request.getMemberNumber()) {
@@ -65,6 +70,10 @@ public class PublishController {
     messages
         .add(MessageFormat.format(">사유 상세 : {0}", request.getDetail()));
     messages.add(MessageFormat.format(">발급 수량 : {0}", request.getPoint()));
+    if (!StringUtils.isEmpty(channel)) {
+      slackBot.postMessage(channel, String.join("\n", messages));
+      return;
+    }
     slackBot.postMessage(String.join("\n", messages));
   }
 
