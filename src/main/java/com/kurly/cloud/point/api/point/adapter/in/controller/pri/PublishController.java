@@ -42,6 +42,9 @@ public class PublishController {
   @Value("${notification.slack.bot.publish.channel:}")
   private String publishNotificationChannel;
 
+  @Value("${notification.slack.bot.cc.channel:}")
+  private String ccNotificationChannel;
+
   @PostMapping(value = "/v1/publish", consumes = MediaType.APPLICATION_JSON_VALUE)
   PublishResultDto publish(@RequestBody @Valid PublishPointRequest request) {
     Point publish = publishPointPort.publish(request);
@@ -132,6 +135,10 @@ public class PublishController {
     });
 
     slackBot.postMessage(String.join("\n", messages));
+    if (!StringUtils.isEmpty(ccNotificationChannel)) {
+      slackBot.postMessage(ccNotificationChannel, String.join("\n", messages));
+    }
+
   }
 
   private String getHistoryTypeString(Integer type) {
