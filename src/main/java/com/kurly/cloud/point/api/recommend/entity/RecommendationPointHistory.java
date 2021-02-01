@@ -101,12 +101,6 @@ public class RecommendationPointHistory {
   String orderMemberName;
 
   @Transient
-  public boolean isCheckedHistory() {
-    return RecommendationPointStatus.NON_PAID.equals(this.status)
-        || RecommendationPointStatus.PAID.equals(this.status);
-  }
-
-  @Transient
   public void plusAddressPaidCount(int count) {
     this.recommendationAddressPaidCount = this.recommendationAddressPaidCount + count;
   }

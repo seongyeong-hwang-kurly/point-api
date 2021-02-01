@@ -126,28 +126,44 @@ public class RecommendationPointHistoryService {
       return false;
     }
 
-    if (getByOrder(order.getOrderNumber()).isPresent()) {
+    if (isCheckedOrder(order.getOrderNumber())) {
       return false;
     }
 
-    Optional<RecommendationPointHistory> history = getByOrderMember(order.getMemberNumber());
-    if (history.isPresent() && history.get().isCheckedHistory()) {
+    if (isPaidMember(order.getMemberNumber())) {
       return false;
     }
 
     return true;
   }
 
-  private Optional<RecommendationPointHistory> getByOrder(long orderNumber) {
+  private boolean isCheckedOrder(long orderNumber) {
     return recommendRepository.findFirstByOrderNumberAndDelayTypeAndType(
         orderNumber, RecommendationDelayType.CHECKED, RecommendationDataType.PRODUCTION_DATA
-    );
+    ).isPresent();
   }
 
-  private Optional<RecommendationPointHistory> getByOrderMember(long memberNumber) {
-    return recommendRepository.findFirstByOrderMemberNumberAndDelayTypeAndType(
-        memberNumber, RecommendationDelayType.CHECKED, RecommendationDataType.PRODUCTION_DATA
-    );
+  private boolean isPaidMember(long memberNumber) {
+    List<RecommendationPointHistory> paidHistory = recommendRepository
+        .findAllByOrderMemberNumberAndStatus(memberNumber, RecommendationPointStatus.PAID);
+
+    if (paidHistory.size() == 0) {
+      return false;
+    }
+
+    for (RecommendationPointHistory history : paidHistory) {
+      Optional<RecommendationPointHistory> deducted =
+          recommendRepository.findFirstByOrderNumberAndOrderMemberNumberAndStatus(
+              history.getOrderNumber(),
+              memberNumber,
+              RecommendationPointStatus.DEDUCTED
+          );
+      if (deducted.isEmpty()) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   private RecommendationPointHistory validateAbusing(Order order,

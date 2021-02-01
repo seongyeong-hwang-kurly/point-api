@@ -2,7 +2,9 @@ package com.kurly.cloud.point.api.recommend.repository;
 
 import com.kurly.cloud.point.api.recommend.domain.RecommendationDataType;
 import com.kurly.cloud.point.api.recommend.domain.RecommendationDelayType;
+import com.kurly.cloud.point.api.recommend.domain.RecommendationPointStatus;
 import com.kurly.cloud.point.api.recommend.entity.RecommendationPointHistory;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -14,10 +16,16 @@ public interface RecommendationPointHistoryRepository
       RecommendationDelayType delayType,
       RecommendationDataType type);
 
-  Optional<RecommendationPointHistory> findFirstByOrderMemberNumberAndDelayTypeAndType(
+  List<RecommendationPointHistory> findAllByOrderMemberNumberAndStatus(
       long memberNumber,
-      RecommendationDelayType delayType,
-      RecommendationDataType type);
+      RecommendationPointStatus status
+  );
+
+  Optional<RecommendationPointHistory> findFirstByOrderNumberAndOrderMemberNumberAndStatus(
+      long orderNumber,
+      long memberNumber,
+      RecommendationPointStatus status
+  );
 
   Optional<RecommendationPointHistory> findFirstByRecommendationMemberNumber(
       long memberNumber

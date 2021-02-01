@@ -2,15 +2,23 @@ package com.kurly.cloud.point.api.batch;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
 import com.kurly.cloud.point.api.batch.config.PointBatchConfig;
 import com.kurly.cloud.point.api.member.entity.Member;
 import com.kurly.cloud.point.api.member.repository.MemberRepository;
 import com.kurly.cloud.point.api.order.entity.Order;
 import com.kurly.cloud.point.api.order.repository.OrderRepository;
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
+import com.kurly.cloud.point.api.point.domain.consume.ConsumePointRequest;
+import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.entity.MemberPoint;
+import com.kurly.cloud.point.api.point.exception.NotEnoughPointException;
+import com.kurly.cloud.point.api.point.port.in.ConsumePointPort;
 import com.kurly.cloud.point.api.point.repository.MemberPointRepository;
+import com.kurly.cloud.point.api.recommend.domain.RecommendationDataType;
+import com.kurly.cloud.point.api.recommend.domain.RecommendationDelayType;
+import com.kurly.cloud.point.api.recommend.domain.RecommendationPointStatus;
+import com.kurly.cloud.point.api.recommend.entity.RecommendationPointHistory;
+import com.kurly.cloud.point.api.recommend.repository.RecommendationPointHistoryRepository;
 import com.kurly.cloud.point.api.recommend.service.RecommendationPointHistoryService;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -67,8 +75,15 @@ public class RecommendPublishBatchTest implements CommonTestGiven {
   @Autowired
   RecommendationPointHistoryService recommendationPointHistoryService;
 
+  @Autowired
+  RecommendationPointHistoryRepository recommendationPointHistoryRepository;
+
+  @Autowired
+  ConsumePointPort consumePointPort;
+
   List<Long> memberNumbers = new ArrayList<>();
   List<Long> orderNumbers = new ArrayList<>();
+  List<Long> orderMemberNumbers = new ArrayList<>();
 
   @BeforeEach
   void initializeEntityManager() {
@@ -107,6 +122,7 @@ public class RecommendPublishBatchTest implements CommonTestGiven {
         .recommendMemberId(recommenderId)
         .build();
     memberRepository.save(member);
+    orderMemberNumbers.add(member.getMemberNumber());
     memberNumbers.add(member.getMemberNumber());
     return member;
   }
@@ -148,7 +164,7 @@ public class RecommendPublishBatchTest implements CommonTestGiven {
     return 10;
   }
 
-  @DisplayName("친구 초대 적립금 지급 배치 테스트")
+  @DisplayName("친구 초대 적립금 지급")
   @Test
   void test() throws Exception {
     createData(givenSize(), true);
@@ -171,7 +187,7 @@ public class RecommendPublishBatchTest implements CommonTestGiven {
     });
   }
 
-  @DisplayName("중복 주문 지급 배치 테스트")
+  @DisplayName("주문을 동시에 여러개 한 경우 한번만 지급 되어야 한다")
   @Test
   void test1() throws Exception {
     createData(givenSize(), true);
@@ -195,8 +211,84 @@ public class RecommendPublishBatchTest implements CommonTestGiven {
     });
   }
 
-  @AfterEach
-  void clear() {
+  @DisplayName("한번 지급 받은 회원이 다시 주문을 하면 지급되지 않아야 한다")
+  @Test
+  void test2() throws Exception {
+    createData(givenSize(), true);
+    subject();
+
+    clearOrder();
+    createData(givenSize(), false);
+    subject();
+
+    List<MemberPoint> memberPoints = memberPointRepository.findAllById(memberNumbers);
+    assertThat(memberPoints.size()).isEqualTo(givenSize() * 2);
+    memberPoints.forEach(memberPoint -> {
+      assertThat(memberPoint.getTotalPoint())
+          .isEqualTo(recommendationPointHistoryService.getPaidPoint());
+    });
+  }
+
+  @DisplayName("지급 후 회수가 되었을 경우 다시 주문을 하면 지급이 되어야 한다")
+  @Test
+  void test3() throws Exception {
+    createData(givenSize(), true);
+    JobExecution subject = subject();
+    List<MemberPoint> memberPoints = memberPointRepository.findAllById(memberNumbers);
+    assertThat(memberPoints.size()).isEqualTo(givenSize() * 2);
+    memberPoints.forEach(memberPoint -> {
+      assertThat(memberPoint.getTotalPoint())
+          .isEqualTo(recommendationPointHistoryService.getPaidPoint());
+    });
+    entityManager.clear();
+
+    deductRecommendPaidPoint(orderNumbers, orderMemberNumbers);
+    memberPoints = memberPointRepository.findAllById(orderMemberNumbers);
+    memberPoints.forEach(memberPoint -> {
+      assertThat(memberPoint.getTotalPoint()).isEqualTo(0);
+    });
+
+    clearOrder();
+    entityManager.clear();
+    createData(givenSize(), false);
+    subject();
+    memberPoints = memberPointRepository.findAllById(orderMemberNumbers);
+    memberPoints.forEach(memberPoint -> {
+      assertThat(memberPoint.getTotalPoint())
+          .isEqualTo(recommendationPointHistoryService.getPaidPoint());
+    });
+  }
+
+  private void deductRecommendPaidPoint(List<Long> orderNumbers, List<Long> memberNumbers)
+      throws NotEnoughPointException {
+    int size = memberNumbers.size();
+    EntityTransaction tx = entityManager.getTransaction();
+    tx.begin();
+    for (int i = 0; i < size; i++) {
+      RecommendationPointHistory deducted = RecommendationPointHistory.builder()
+          .orderNumber(orderNumbers.get(i))
+          .orderMemberNumber(memberNumbers.get(i))
+          .status(RecommendationPointStatus.DEDUCTED)
+          .type(RecommendationDataType.PRODUCTION_DATA)
+          .delayType(RecommendationDelayType.CHECKED)
+          .point(-recommendationPointHistoryService.getPaidPoint())
+          .orderAddress("ADDRESS")
+          .orderPhoneNumber("010-4321-4321")
+          .createDateTime(LocalDateTime.now())
+          .updateDateTime(LocalDateTime.now())
+          .build();
+      recommendationPointHistoryRepository.save(deducted);
+      consumePointPort.consume(ConsumePointRequest.builder()
+          .memberNumber(memberNumbers.get(i))
+          .point((long) recommendationPointHistoryService.getPaidPoint())
+          .historyType(HistoryType.TYPE_102.getValue())
+          .detail("")
+          .build());
+    }
+    tx.commit();
+  }
+
+  void clearOrder() {
     EntityTransaction tx = entityManager.getTransaction();
     tx.begin();
 
@@ -210,6 +302,18 @@ public class RecommendPublishBatchTest implements CommonTestGiven {
         .setParameter("toOrderNumber", toOrderNumber)
         .executeUpdate();
 
+    tx.commit();
+  }
+
+  void clearPoint() {
+    EntityTransaction tx = entityManager.getTransaction();
+    tx.begin();
+
+    long fromOrderNumber = Collections.min(orderNumbers);
+    long toOrderNumber = Collections.max(orderNumbers);
+    long fromMemberNumber = Collections.min(memberNumbers);
+    long toMemberNumber = Collections.max(memberNumbers);
+
     entityManager
         .createQuery(
             "DELETE FROM PointHistory ph WHERE ph.orderNumber BETWEEN :fromOrderNumber AND :toOrderNumber")
@@ -222,30 +326,6 @@ public class RecommendPublishBatchTest implements CommonTestGiven {
             "DELETE FROM RecommendationPointHistory rh WHERE rh.orderNumber BETWEEN :fromOrderNumber AND :toOrderNumber")
         .setParameter("fromOrderNumber", fromOrderNumber)
         .setParameter("toOrderNumber", toOrderNumber)
-        .executeUpdate();
-
-    long fromMemberNumber = Collections.min(memberNumbers);
-    long toMemberNumber = Collections.max(memberNumbers);
-
-    entityManager
-        .createQuery(
-            "DELETE FROM Member m WHERE m.memberNumber BETWEEN :fromMemberNumber AND :toMemberNumber")
-        .setParameter("fromMemberNumber", fromMemberNumber)
-        .setParameter("toMemberNumber", toMemberNumber)
-        .executeUpdate();
-
-    entityManager
-        .createQuery(
-            "DELETE FROM RecommendationPointHistory rh WHERE rh.orderMemberNumber BETWEEN :fromMemberNumber AND :toMemberNumber")
-        .setParameter("fromMemberNumber", fromMemberNumber)
-        .setParameter("toMemberNumber", toMemberNumber)
-        .executeUpdate();
-
-    entityManager
-        .createQuery(
-            "DELETE FROM RecommendationPointHistory rh WHERE rh.recommendationMemberNumber BETWEEN :fromMemberNumber AND :toMemberNumber")
-        .setParameter("fromMemberNumber", fromMemberNumber)
-        .setParameter("toMemberNumber", toMemberNumber)
         .executeUpdate();
 
     entityManager
@@ -269,7 +349,45 @@ public class RecommendPublishBatchTest implements CommonTestGiven {
         .setParameter("toMemberNumber", toMemberNumber)
         .executeUpdate();
 
+    entityManager
+        .createQuery(
+            "DELETE FROM RecommendationPointHistory rh WHERE rh.orderMemberNumber BETWEEN :fromMemberNumber AND :toMemberNumber")
+        .setParameter("fromMemberNumber", fromMemberNumber)
+        .setParameter("toMemberNumber", toMemberNumber)
+        .executeUpdate();
+
+    entityManager
+        .createQuery(
+            "DELETE FROM RecommendationPointHistory rh WHERE rh.recommendationMemberNumber BETWEEN :fromMemberNumber AND :toMemberNumber")
+        .setParameter("fromMemberNumber", fromMemberNumber)
+        .setParameter("toMemberNumber", toMemberNumber)
+        .executeUpdate();
+
     tx.commit();
+  }
+
+  void clearMember() {
+    EntityTransaction tx = entityManager.getTransaction();
+    tx.begin();
+
+    long fromMemberNumber = Collections.min(memberNumbers);
+    long toMemberNumber = Collections.max(memberNumbers);
+
+    entityManager
+        .createQuery(
+            "DELETE FROM Member m WHERE m.memberNumber BETWEEN :fromMemberNumber AND :toMemberNumber")
+        .setParameter("fromMemberNumber", fromMemberNumber)
+        .setParameter("toMemberNumber", toMemberNumber)
+        .executeUpdate();
+
+    tx.commit();
+  }
+
+  @AfterEach
+  void clear() {
+    clearOrder();
+    clearPoint();
+    clearMember();
     entityManager.clear();
     entityManager.close();
   }
