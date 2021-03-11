@@ -20,11 +20,14 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+@RefreshScope
 @RequiredArgsConstructor
 @Service
 public class RecommendationPointHistoryService {
@@ -39,7 +42,7 @@ public class RecommendationPointHistoryService {
 
   private LocalDate promotionStartDate;
   private LocalDate promotionEndDate;
-  private int promotionPaidPoint;
+  private int promotionPaidPoint = PAID_POINT;
 
   public void save(RecommendationPointHistory history) {
     recommendRepository.save(history);
@@ -76,16 +79,23 @@ public class RecommendationPointHistoryService {
   }
 
   public int getPaidPoint() {
-    return isPromotionActive() ? promotionPaidPoint : PAID_POINT;
+    return getPaidPoint(null);
   }
 
-  private boolean isPromotionActive() {
-    if (Objects.isNull(promotionStartDate) || Objects.isNull(promotionEndDate)) {
+  public int getPaidPoint(@Nullable LocalDateTime payDateTime) {
+    return isPromotionActive(payDateTime) ? promotionPaidPoint : PAID_POINT;
+  }
+
+  private boolean isPromotionActive(LocalDateTime payDateTime) {
+    if (Objects.isNull(promotionStartDate) || Objects.isNull(promotionEndDate)
+        || Objects.isNull(payDateTime)) {
       return false;
     }
 
-    return promotionStartDate.isBefore(LocalDate.now())
-        && promotionEndDate.isAfter(LocalDate.now());
+    return (promotionStartDate.isBefore(payDateTime.toLocalDate())
+        || promotionStartDate.isEqual(payDateTime.toLocalDate()))
+        && (promotionEndDate.isAfter(payDateTime.toLocalDate())
+        || promotionEndDate.isEqual(payDateTime.toLocalDate()));
   }
 
   /**
@@ -237,7 +247,7 @@ public class RecommendationPointHistoryService {
     }
 
     history.setReason(RecommendationPointReason.DEFAULT);
-    history.setPoint(getPaidPoint());
+    history.setPoint(getPaidPoint(order.getPayDateTime()));
     history.setStatus(RecommendationPointStatus.PAID);
     history.setOrderMemberName(orderMember.getName());
 
