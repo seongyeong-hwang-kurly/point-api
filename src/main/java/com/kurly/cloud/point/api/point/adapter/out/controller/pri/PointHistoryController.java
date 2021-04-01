@@ -7,8 +7,9 @@ import com.kurly.cloud.point.api.point.port.out.PointHistoryPort;
 import java.util.Collections;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
@@ -17,7 +18,8 @@ public class PointHistoryController {
 
   private final PointHistoryPort pointHistoryPort;
 
-  @GetMapping("/v1/point-history/publish")
+  @RequestMapping(value = "/v1/point-history/publish",
+      method = {RequestMethod.GET, RequestMethod.POST})
   SimplePageImpl<PointHistoryDto> getPublishHistoryList(
       @RequestBody PublishPointHistoryRequest request) {
     if (Objects.isNull(request.getActionMemberNumber())) {

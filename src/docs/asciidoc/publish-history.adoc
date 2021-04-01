@@ -4,7 +4,7 @@
 
 ==== HTTP method
 
-GET
+GET, POST
 
 ==== HTTP request
 
