@@ -27,7 +27,8 @@ public interface RecommendationPointHistoryRepository
       RecommendationPointStatus status
   );
 
-  Optional<RecommendationPointHistory> findFirstByRecommendationMemberNumber(
+  Optional<RecommendationPointHistory>
+  findFirstByRecommendationMemberNumberOrderByCreateDateTimeDesc(
       long memberNumber
   );
 }

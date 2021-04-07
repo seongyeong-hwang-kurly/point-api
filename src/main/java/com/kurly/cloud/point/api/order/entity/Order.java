@@ -76,6 +76,10 @@ public class Order {
   @Column(name = "addr_divide2")
   String addressSub = "";
 
+  @Builder.Default
+  @Column(name = "roadaddr_divide1")
+  String roadAddress = "";
+
   public String getFullAddress() {
     return roadFullAddress.isEmpty() ? jibunFullAddress : roadFullAddress;
   }

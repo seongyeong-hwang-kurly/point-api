@@ -255,8 +255,11 @@ public class RecommendationPointHistoryService {
   }
 
   private boolean isBlacklistAddress(Order order) {
-    if (order.getAddress().equals("경기 남양주시 오남읍 진건오남로 735-10 (한국아파트)")) {
+    if ("경기 남양주시 오남읍 진건오남로 735-10 (한국아파트)".equals(order.getAddress())) {
       return order.getAddressSub().replaceAll("[^\\d]", "").equals("1041802");
+    }
+    if ("서울 도봉구 덕릉로 349 (주공4단지아파트)".equals(order.getRoadAddress())) {
+      return order.getAddressSub().replaceAll("[^\\d]", "").equals("410810");
     }
     return false;
   }
@@ -287,7 +290,7 @@ public class RecommendationPointHistoryService {
 
   private int getRecommendationPaidCount(long memberNumber) {
     return recommendRepository
-        .findFirstByRecommendationMemberNumber(memberNumber)
+        .findFirstByRecommendationMemberNumberOrderByCreateDateTimeDesc(memberNumber)
         .orElseGet(RecommendationPointHistory::new)
         .getRecommendationAddressPaidCount();
   }
