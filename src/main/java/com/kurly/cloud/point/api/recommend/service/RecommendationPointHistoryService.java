@@ -226,7 +226,7 @@ public class RecommendationPointHistoryService {
       }
       if (!order.getRoadFullAddress().isEmpty()
           && !recommenderOrder.getRoadFullAddress().isEmpty()) {
-        left = recommenderOrder.getRoadFullAddress();
+        left = order.getRoadFullAddress();
         right = recommenderOrder.getRoadFullAddress();
       }
     }
