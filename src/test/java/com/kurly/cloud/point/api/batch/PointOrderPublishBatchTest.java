@@ -3,10 +3,10 @@ package com.kurly.cloud.point.api.batch;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.kurly.cloud.point.api.batch.config.PointBatchConfig;
+import com.kurly.cloud.point.api.batch.member.entity.Member;
+import com.kurly.cloud.point.api.batch.order.entity.Order;
+import com.kurly.cloud.point.api.batch.order.entity.OrderDynamicColumn;
 import com.kurly.cloud.point.api.batch.publish.config.PointOrderPublishJobConfig;
-import com.kurly.cloud.point.api.member.entity.Member;
-import com.kurly.cloud.point.api.order.entity.Order;
-import com.kurly.cloud.point.api.order.entity.OrderDynamicColumn;
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.entity.MemberPoint;
 import com.kurly.cloud.point.api.point.repository.MemberPointRepository;
@@ -118,7 +118,7 @@ public class PointOrderPublishBatchTest implements CommonTestGiven {
     private Integer givenPointRatio() {
       return 7;
     }
-    
+
     private void givenOrder(long orderNumber, long memberNumber) {
       EntityManager entityManager = entityManagerFactory.createEntityManager();
       EntityTransaction tx = entityManager.getTransaction();

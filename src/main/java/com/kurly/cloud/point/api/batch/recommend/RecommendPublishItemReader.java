@@ -1,7 +1,7 @@
 package com.kurly.cloud.point.api.batch.recommend;
 
 import com.kurly.cloud.point.api.batch.config.PointBatchConfig;
-import com.kurly.cloud.point.api.order.entity.Order;
+import com.kurly.cloud.point.api.batch.order.entity.Order;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,6 +9,10 @@ import javax.persistence.EntityManagerFactory;
 import org.springframework.batch.item.database.JpaPagingItemReader;
 
 public class RecommendPublishItemReader extends JpaPagingItemReader<Order> {
+
+  /**
+   * 기본 생성자.
+   */
   public RecommendPublishItemReader(EntityManagerFactory entityManagerFactory, int pageSize,
                                     String deliveredDate) {
     setName("recommendPublishItemReader");
@@ -30,13 +34,13 @@ public class RecommendPublishItemReader extends JpaPagingItemReader<Order> {
   }
 
   private String getQueryString() {
-    String query = "SELECT o FROM Order o" +
-        " JOIN FETCH o.member " +
-        " WHERE o.member.recommendMemberId <> '' " +
-        " AND o.orderStatus = 4 " +
-        " AND o.orderProcessCode IN (0, 21, 22) " +
-        " AND o.deliveredDateTime BETWEEN :from AND :to " +
-        " GROUP BY o.memberNumber";
+    String query = "SELECT o FROM Order o"
+        + " JOIN FETCH o.member "
+        + " WHERE o.member.recommendMemberId <> '' "
+        + " AND o.orderStatus = 4 "
+        + " AND o.orderProcessCode IN (0, 21, 22) "
+        + " AND o.deliveredDateTime BETWEEN :from AND :to "
+        + " GROUP BY o.memberNumber";
     return query;
   }
 }

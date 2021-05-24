@@ -1,11 +1,11 @@
 package com.kurly.cloud.point.api.batch.recommend;
 
+import com.kurly.cloud.point.api.batch.recommend.domain.RecommendationPointStatus;
+import com.kurly.cloud.point.api.batch.recommend.entity.RecommendationPointHistory;
+import com.kurly.cloud.point.api.batch.recommend.service.RecommendationPointHistoryUseCase;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
-import com.kurly.cloud.point.api.point.port.in.PublishPointPort;
-import com.kurly.cloud.point.api.recommend.domain.RecommendationPointStatus;
-import com.kurly.cloud.point.api.recommend.entity.RecommendationPointHistory;
-import com.kurly.cloud.point.api.recommend.service.RecommendationPointHistoryService;
+import com.kurly.cloud.point.api.point.service.PublishPointUseCase;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.StepExecution;
@@ -20,15 +20,15 @@ import org.springframework.stereotype.Component;
 @StepScope
 public class RecommendPublishItemWriter implements ItemWriter<RecommendationPointHistory> {
 
-  private final PublishPointPort publishPointPort;
-  private final RecommendationPointHistoryService recommendationPointHistoryService;
+  private final PublishPointUseCase publishPointUseCase;
+  private final RecommendationPointHistoryUseCase recommendationPointHistoryUseCase;
   private StepExecution stepExecution;
 
   @Override public void write(List<? extends RecommendationPointHistory> items) throws Exception {
     items.forEach(item -> {
       if (RecommendationPointStatus.PAID.equals(item.getStatus())) {
         //주문자 지급
-        publishPointPort.publish(PublishPointRequest
+        publishPointUseCase.publish(PublishPointRequest
             .builder()
             .orderNumber(item.getOrderNumber())
             .historyType(HistoryType.TYPE_12.getValue())
@@ -39,7 +39,7 @@ public class RecommendPublishItemWriter implements ItemWriter<RecommendationPoin
         );
 
         //추천인 지급
-        publishPointPort.publish(PublishPointRequest
+        publishPointUseCase.publish(PublishPointRequest
             .builder()
             .orderNumber(item.getOrderNumber())
             .historyType(HistoryType.TYPE_13.getValue())
@@ -50,7 +50,7 @@ public class RecommendPublishItemWriter implements ItemWriter<RecommendationPoin
         );
       }
       putSummary(item);
-      recommendationPointHistoryService.save(item);
+      recommendationPointHistoryUseCase.save(item);
     });
   }
 

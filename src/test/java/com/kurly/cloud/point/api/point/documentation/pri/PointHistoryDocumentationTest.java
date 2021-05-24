@@ -15,7 +15,7 @@ import com.kurly.cloud.point.api.point.config.SpringSecurityTestConfig;
 import com.kurly.cloud.point.api.point.documentation.ApiDocumentUtils;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
-import com.kurly.cloud.point.api.point.port.in.PublishPointPort;
+import com.kurly.cloud.point.api.point.service.PublishPointUseCase;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -57,7 +57,7 @@ public class PointHistoryDocumentationTest implements CommonTestGiven {
   ObjectMapper objectMapper;
 
   @Autowired
-  PublishPointPort publishPointPort;
+  PublishPointUseCase publishPointUseCase;
 
   @Autowired
   EntityManager em;
@@ -74,7 +74,7 @@ public class PointHistoryDocumentationTest implements CommonTestGiven {
   }
 
   void givenPoint() {
-    publishPointPort.publish(PublishPointRequest.builder()
+    publishPointUseCase.publish(PublishPointRequest.builder()
         .historyType(HistoryType.TYPE_1.getValue())
         .point(1000L)
         .memberNumber(givenMemberNumber())

@@ -1,10 +1,10 @@
 package com.kurly.cloud.point.api.batch.publish.config;
 
+import com.kurly.cloud.point.api.batch.order.entity.Order;
 import com.kurly.cloud.point.api.batch.publish.PointOrderPublishItemProcessor;
 import com.kurly.cloud.point.api.batch.publish.PointOrderPublishItemReader;
 import com.kurly.cloud.point.api.batch.publish.PointOrderPublishItemWriter;
 import com.kurly.cloud.point.api.batch.publish.PointOrderPublishJobListener;
-import com.kurly.cloud.point.api.order.entity.Order;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
 import com.kurly.cloud.point.api.point.util.SlackBot;
 import javax.persistence.EntityManagerFactory;

@@ -56,6 +56,9 @@ public enum HistoryType {
     return desc;
   }
 
+  /**
+   * GetByValue.
+   */
   public static HistoryType getByValue(int value) throws HistoryTypeNotFoundException {
     return Arrays.stream(HistoryType.values())
         .filter(deliveryPolicyType -> deliveryPolicyType.getValue() == value)
