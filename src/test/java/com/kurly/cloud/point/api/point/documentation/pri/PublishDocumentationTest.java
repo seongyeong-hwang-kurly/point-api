@@ -12,7 +12,6 @@ import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.config.SpringSecurityTestConfig;
@@ -22,7 +21,7 @@ import com.kurly.cloud.point.api.point.domain.publish.BulkPublishPointRequest;
 import com.kurly.cloud.point.api.point.domain.publish.CancelPublishOrderPointRequest;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
 import com.kurly.cloud.point.api.point.entity.Point;
-import com.kurly.cloud.point.api.point.port.in.PublishPointPort;
+import com.kurly.cloud.point.api.point.service.PublishPointUseCase;
 import com.kurly.cloud.point.api.point.util.DateTimeUtil;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -58,7 +57,7 @@ public class PublishDocumentationTest implements CommonTestGiven {
   MockMvc mockMvc;
 
   @MockBean
-  PublishPointPort publishPointPort;
+  PublishPointUseCase publishPointUseCase;
 
   @Autowired
   ObjectMapper objectMapper;
@@ -77,7 +76,7 @@ public class PublishDocumentationTest implements CommonTestGiven {
   @DisplayName("RestDoc - 적립금 발급")
   void publish() throws Exception {
     PublishPointRequest publishPointRequest = givenPublishRequest();
-    given(publishPointPort.publish(any())).willReturn(givenPoint(publishPointRequest, 1000));
+    given(publishPointUseCase.publish(any())).willReturn(givenPoint(publishPointRequest, 1000));
 
     ResultActions resultActions = mockMvc.perform(
         RestDocumentationRequestBuilders.post("/v1/publish")
@@ -169,7 +168,7 @@ public class PublishDocumentationTest implements CommonTestGiven {
   @Test
   @DisplayName("RestDoc - 적립금 대량 발급")
   void bulkPublish() throws Exception {
-    given(publishPointPort.publish(any()))
+    given(publishPointUseCase.publish(any()))
         .willReturn(givenPoint(givenPublishRequest(), 100), givenPoint(givenPublishRequest(), 101),
             givenPoint(givenPublishRequest(), 103));
 

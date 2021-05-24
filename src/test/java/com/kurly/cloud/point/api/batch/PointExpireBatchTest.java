@@ -7,8 +7,8 @@ import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
 import com.kurly.cloud.point.api.point.entity.MemberPoint;
-import com.kurly.cloud.point.api.point.port.in.PublishPointPort;
 import com.kurly.cloud.point.api.point.repository.MemberPointRepository;
+import com.kurly.cloud.point.api.point.service.PublishPointUseCase;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
@@ -42,7 +42,7 @@ public class PointExpireBatchTest implements CommonTestGiven {
   Job pointExpireJob;
 
   @Autowired
-  PublishPointPort publishPointPort;
+  PublishPointUseCase publishPointUseCase;
 
   @Autowired
   MemberPointRepository memberPointRepository;
@@ -110,7 +110,7 @@ public class PointExpireBatchTest implements CommonTestGiven {
         new ForkJoinPool(100).submit(() -> {
           IntStream.range(0, givenSize()).parallel().forEach(i -> {
             long memberNumber = givenMemberNumber() - i;
-            publishPointPort.publish(PublishPointRequest.builder()
+            publishPointUseCase.publish(PublishPointRequest.builder()
                 .point(1000L)
                 .memberNumber(memberNumber)
                 .historyType(HistoryType.TYPE_12.getValue())

@@ -3,8 +3,8 @@ package com.kurly.cloud.point.api.batch.expire.config;
 import com.kurly.cloud.point.api.batch.expire.PointExpireItemReader;
 import com.kurly.cloud.point.api.batch.expire.PointExpireItemWriter;
 import com.kurly.cloud.point.api.batch.expire.PointExpireJobListener;
-import com.kurly.cloud.point.api.point.port.in.ExpirePointPort;
 import com.kurly.cloud.point.api.point.repository.PointRepository;
+import com.kurly.cloud.point.api.point.service.ExpirePointUseCase;
 import com.kurly.cloud.point.api.point.util.SlackBot;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
@@ -25,7 +25,7 @@ public class PointExpireJobConfig {
   private int chunkSize = 10_000;
   private int poolSize = 10;
   private final StepBuilderFactory stepBuilderFactory;
-  private final ExpirePointPort expirePointPort;
+  private final ExpirePointUseCase expirePointUseCase;
   private final PointRepository pointRepository;
   private final SlackBot slackBot;
 
@@ -56,7 +56,7 @@ public class PointExpireJobConfig {
   }
 
   public ItemWriter<Long> pointExpireItemWriter() {
-    return new PointExpireItemWriter(expirePointPort, poolSize);
+    return new PointExpireItemWriter(expirePointUseCase, poolSize);
   }
 
   @JobScope

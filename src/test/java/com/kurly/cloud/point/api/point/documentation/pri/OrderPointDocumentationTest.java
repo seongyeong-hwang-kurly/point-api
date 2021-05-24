@@ -15,7 +15,7 @@ import com.kurly.cloud.point.api.point.config.SpringSecurityTestConfig;
 import com.kurly.cloud.point.api.point.documentation.ApiDocumentUtils;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
 import com.kurly.cloud.point.api.point.exception.AlreadyPublishedException;
-import com.kurly.cloud.point.api.point.port.in.PublishPointPort;
+import com.kurly.cloud.point.api.point.service.PublishPointUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,7 +47,7 @@ public class OrderPointDocumentationTest implements CommonTestGiven {
   MockMvc mockMvc;
 
   @Autowired
-  PublishPointPort publishPointPort;
+  PublishPointUseCase publishPointUseCase;
 
   @BeforeEach
   void setUp(WebApplicationContext webApplicationContext,
@@ -108,7 +108,7 @@ public class OrderPointDocumentationTest implements CommonTestGiven {
   }
 
   void givenOrderPoint() throws AlreadyPublishedException {
-    publishPointPort.publishByOrder(PublishPointRequest.builder()
+    publishPointUseCase.publishByOrder(PublishPointRequest.builder()
         .memberNumber(givenMemberNumber())
         .orderNumber(givenOrderNumber())
         .point(1000L)

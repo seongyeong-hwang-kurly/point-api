@@ -1,21 +1,22 @@
 package com.kurly.cloud.point.api.batch.recommend;
 
-import com.kurly.cloud.point.api.order.entity.Order;
-import com.kurly.cloud.point.api.recommend.entity.RecommendationPointHistory;
-import com.kurly.cloud.point.api.recommend.service.RecommendationPointHistoryService;
+import com.kurly.cloud.point.api.batch.order.entity.Order;
+import com.kurly.cloud.point.api.batch.recommend.entity.RecommendationPointHistory;
+import com.kurly.cloud.point.api.batch.recommend.service.RecommendationPointHistoryUseCase;
 import org.springframework.batch.item.ItemProcessor;
 
 public class RecommendPublishItemProcessor
     implements ItemProcessor<Order, RecommendationPointHistory> {
 
-  RecommendationPointHistoryService recommendationPointHistoryService;
+  RecommendationPointHistoryUseCase recommendationPointHistoryUseCase;
 
   public RecommendPublishItemProcessor(
-      RecommendationPointHistoryService recommendationPointHistoryService) {
-    this.recommendationPointHistoryService = recommendationPointHistoryService;
+      RecommendationPointHistoryUseCase recommendationPointHistoryUseCase) {
+    this.recommendationPointHistoryUseCase = recommendationPointHistoryUseCase;
   }
 
-  @Override public RecommendationPointHistory process(Order item) throws Exception {
-    return recommendationPointHistoryService.generateByOrder(item).orElse(null);
+  @Override
+  public RecommendationPointHistory process(Order item) throws Exception {
+    return recommendationPointHistoryUseCase.generateByOrder(item).orElse(null);
   }
 }

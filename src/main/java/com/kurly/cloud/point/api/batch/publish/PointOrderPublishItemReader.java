@@ -1,7 +1,7 @@
 package com.kurly.cloud.point.api.batch.publish;
 
 import com.kurly.cloud.point.api.batch.config.PointBatchConfig;
-import com.kurly.cloud.point.api.order.entity.Order;
+import com.kurly.cloud.point.api.batch.order.entity.Order;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -37,13 +37,13 @@ public class PointOrderPublishItemReader extends JpaPagingItemReader<Order> {
   }
 
   private String getQueryString() {
-    String query = "SELECT DISTINCT o FROM Order o" +
-        " LEFT JOIN o.orderDynamicColumn ON o.orderDynamicColumn.column = 'point_ratio'" +
-        " WHERE o.memberNumber <> 0 " +
-        " AND o.publishPoint > 0 " +
-        " AND o.orderStatus <> 0 " +
-        " AND o.orderProcessCode IN (0, 21, 22, 71) " +
-        " AND o.payDateTime BETWEEN :from AND :to ";
+    String query = "SELECT DISTINCT o FROM Order o"
+        + " LEFT JOIN o.orderDynamicColumn ON o.orderDynamicColumn.column = 'point_ratio'"
+        + " WHERE o.memberNumber <> 0 "
+        + " AND o.publishPoint > 0 "
+        + " AND o.orderStatus <> 0 "
+        + " AND o.orderProcessCode IN (0, 21, 22, 71) "
+        + " AND o.payDateTime BETWEEN :from AND :to ";
     return query;
   }
 

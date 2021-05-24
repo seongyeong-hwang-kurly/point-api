@@ -3,23 +3,23 @@ package com.kurly.cloud.point.api.batch;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.kurly.cloud.point.api.batch.config.PointBatchConfig;
-import com.kurly.cloud.point.api.member.entity.Member;
-import com.kurly.cloud.point.api.member.repository.MemberRepository;
-import com.kurly.cloud.point.api.order.entity.Order;
-import com.kurly.cloud.point.api.order.repository.OrderRepository;
+import com.kurly.cloud.point.api.batch.member.entity.Member;
+import com.kurly.cloud.point.api.batch.member.repository.MemberRepository;
+import com.kurly.cloud.point.api.batch.order.entity.Order;
+import com.kurly.cloud.point.api.batch.order.repository.OrderRepository;
+import com.kurly.cloud.point.api.batch.recommend.domain.RecommendationDataType;
+import com.kurly.cloud.point.api.batch.recommend.domain.RecommendationDelayType;
+import com.kurly.cloud.point.api.batch.recommend.domain.RecommendationPointStatus;
+import com.kurly.cloud.point.api.batch.recommend.entity.RecommendationPointHistory;
+import com.kurly.cloud.point.api.batch.recommend.repository.RecommendationPointHistoryRepository;
+import com.kurly.cloud.point.api.batch.recommend.service.RecommendationPointHistoryUseCase;
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.domain.consume.ConsumePointRequest;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.entity.MemberPoint;
 import com.kurly.cloud.point.api.point.exception.NotEnoughPointException;
-import com.kurly.cloud.point.api.point.port.in.ConsumePointPort;
 import com.kurly.cloud.point.api.point.repository.MemberPointRepository;
-import com.kurly.cloud.point.api.recommend.domain.RecommendationDataType;
-import com.kurly.cloud.point.api.recommend.domain.RecommendationDelayType;
-import com.kurly.cloud.point.api.recommend.domain.RecommendationPointStatus;
-import com.kurly.cloud.point.api.recommend.entity.RecommendationPointHistory;
-import com.kurly.cloud.point.api.recommend.repository.RecommendationPointHistoryRepository;
-import com.kurly.cloud.point.api.recommend.service.RecommendationPointHistoryService;
+import com.kurly.cloud.point.api.point.service.ConsumePointUseCase;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -73,13 +73,13 @@ public class RecommendPublishBatchTest implements CommonTestGiven {
   MemberPointRepository memberPointRepository;
 
   @Autowired
-  RecommendationPointHistoryService recommendationPointHistoryService;
+  RecommendationPointHistoryUseCase recommendationPointHistoryUseCase;
 
   @Autowired
   RecommendationPointHistoryRepository recommendationPointHistoryRepository;
 
   @Autowired
-  ConsumePointPort consumePointPort;
+  ConsumePointUseCase consumePointUseCase;
 
   List<Long> memberNumbers = new ArrayList<>();
   List<Long> orderNumbers = new ArrayList<>();
@@ -178,12 +178,12 @@ public class RecommendPublishBatchTest implements CommonTestGiven {
     assertThat(totalValidCount).isEqualTo(givenSize());
     assertThat(totalPublishPointCount).isEqualTo(givenSize() * 2);
     assertThat(totalPublishPointAmount)
-        .isEqualTo(givenSize() * 2 * recommendationPointHistoryService.getPaidPoint());
+        .isEqualTo(givenSize() * 2 * recommendationPointHistoryUseCase.getPaidPoint());
     List<MemberPoint> memberPoints = memberPointRepository.findAllById(memberNumbers);
     assertThat(memberPoints.size()).isEqualTo(givenSize() * 2);
     memberPoints.forEach(memberPoint -> {
       assertThat(memberPoint.getTotalPoint())
-          .isEqualTo(recommendationPointHistoryService.getPaidPoint());
+          .isEqualTo(recommendationPointHistoryUseCase.getPaidPoint());
     });
   }
 
@@ -202,12 +202,12 @@ public class RecommendPublishBatchTest implements CommonTestGiven {
     assertThat(totalValidCount).isEqualTo(givenSize());
     assertThat(totalPublishPointCount).isEqualTo(givenSize() * 2);
     assertThat(totalPublishPointAmount).isEqualTo(givenSize() * 2 *
-        recommendationPointHistoryService.getPaidPoint());
+        recommendationPointHistoryUseCase.getPaidPoint());
     List<MemberPoint> memberPoints = memberPointRepository.findAllById(memberNumbers);
     assertThat(memberPoints.size()).isEqualTo(givenSize() * 2);
     memberPoints.forEach(memberPoint -> {
       assertThat(memberPoint.getTotalPoint())
-          .isEqualTo(recommendationPointHistoryService.getPaidPoint());
+          .isEqualTo(recommendationPointHistoryUseCase.getPaidPoint());
     });
   }
 
@@ -225,7 +225,7 @@ public class RecommendPublishBatchTest implements CommonTestGiven {
     assertThat(memberPoints.size()).isEqualTo(givenSize() * 2);
     memberPoints.forEach(memberPoint -> {
       assertThat(memberPoint.getTotalPoint())
-          .isEqualTo(recommendationPointHistoryService.getPaidPoint());
+          .isEqualTo(recommendationPointHistoryUseCase.getPaidPoint());
     });
   }
 
@@ -238,7 +238,7 @@ public class RecommendPublishBatchTest implements CommonTestGiven {
     assertThat(memberPoints.size()).isEqualTo(givenSize() * 2);
     memberPoints.forEach(memberPoint -> {
       assertThat(memberPoint.getTotalPoint())
-          .isEqualTo(recommendationPointHistoryService.getPaidPoint());
+          .isEqualTo(recommendationPointHistoryUseCase.getPaidPoint());
     });
     entityManager.clear();
 
@@ -255,7 +255,7 @@ public class RecommendPublishBatchTest implements CommonTestGiven {
     memberPoints = memberPointRepository.findAllById(orderMemberNumbers);
     memberPoints.forEach(memberPoint -> {
       assertThat(memberPoint.getTotalPoint())
-          .isEqualTo(recommendationPointHistoryService.getPaidPoint());
+          .isEqualTo(recommendationPointHistoryUseCase.getPaidPoint());
     });
   }
 
@@ -271,16 +271,16 @@ public class RecommendPublishBatchTest implements CommonTestGiven {
           .status(RecommendationPointStatus.DEDUCTED)
           .type(RecommendationDataType.PRODUCTION_DATA)
           .delayType(RecommendationDelayType.CHECKED)
-          .point(-recommendationPointHistoryService.getPaidPoint())
+          .point(-recommendationPointHistoryUseCase.getPaidPoint())
           .orderAddress("ADDRESS")
           .orderPhoneNumber("010-4321-4321")
           .createDateTime(LocalDateTime.now())
           .updateDateTime(LocalDateTime.now())
           .build();
       recommendationPointHistoryRepository.save(deducted);
-      consumePointPort.consume(ConsumePointRequest.builder()
+      consumePointUseCase.consume(ConsumePointRequest.builder()
           .memberNumber(memberNumbers.get(i))
-          .point((long) recommendationPointHistoryService.getPaidPoint())
+          .point((long) recommendationPointHistoryUseCase.getPaidPoint())
           .historyType(HistoryType.TYPE_102.getValue())
           .detail("")
           .build());

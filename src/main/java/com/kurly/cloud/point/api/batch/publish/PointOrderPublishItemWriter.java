@@ -4,7 +4,7 @@ import com.kurly.cloud.api.common.util.SlackNotifier;
 import com.kurly.cloud.api.common.util.logging.FileBeatLogger;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
 import com.kurly.cloud.point.api.point.exception.AlreadyPublishedException;
-import com.kurly.cloud.point.api.point.port.in.PublishPointPort;
+import com.kurly.cloud.point.api.point.service.PublishPointUseCase;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.StepExecution;
@@ -19,13 +19,13 @@ import org.springframework.stereotype.Component;
 @StepScope
 public class PointOrderPublishItemWriter implements ItemWriter<PublishPointRequest> {
 
-  private final PublishPointPort publishPointPort;
+  private final PublishPointUseCase publishPointUseCase;
   private StepExecution stepExecution;
 
   @Override public void write(List<? extends PublishPointRequest> items) throws Exception {
     items.forEach(publishPointRequest -> {
       try {
-        publishPointPort.publishByOrder(publishPointRequest);
+        publishPointUseCase.publishByOrder(publishPointRequest);
         putSummary(publishPointRequest);
       } catch (Exception e) {
         if (!(e instanceof AlreadyPublishedException)) {

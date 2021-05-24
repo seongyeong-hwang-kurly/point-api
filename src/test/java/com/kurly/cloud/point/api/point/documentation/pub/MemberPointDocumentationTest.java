@@ -17,7 +17,7 @@ import com.kurly.cloud.point.api.point.config.SpringSecurityTestConfig;
 import com.kurly.cloud.point.api.point.documentation.ApiDocumentUtils;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
-import com.kurly.cloud.point.api.point.port.in.PublishPointPort;
+import com.kurly.cloud.point.api.point.service.PublishPointUseCase;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -52,7 +52,7 @@ public class MemberPointDocumentationTest implements CommonTestGiven {
   MockMvc mockMvc;
 
   @Autowired
-  PublishPointPort publishPointPort;
+  PublishPointUseCase publishPointUseCase;
 
   @BeforeEach
   void setUp(WebApplicationContext webApplicationContext,
@@ -67,7 +67,7 @@ public class MemberPointDocumentationTest implements CommonTestGiven {
 
   @BeforeEach
   void givenPoint() {
-    publishPointPort.publish(PublishPointRequest.builder()
+    publishPointUseCase.publish(PublishPointRequest.builder()
         .point(1000L)
         .memberNumber(givenMemberNumber())
         .historyType(HistoryType.TYPE_12.getValue())

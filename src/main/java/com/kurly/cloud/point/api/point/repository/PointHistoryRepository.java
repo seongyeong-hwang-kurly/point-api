@@ -37,6 +37,7 @@ public interface PointHistoryRepository extends JpaRepository<PointHistory, Long
       Pageable pageable
   );
 
+  @SuppressWarnings("checkstyle:LineLength")
   Page<PointHistory> findAllByAmountGreaterThanAndRegTimeBetweenAndActionMemberNumberInAndHistoryTypeIn(
       long amount,
       LocalDateTime regTimeFrom,

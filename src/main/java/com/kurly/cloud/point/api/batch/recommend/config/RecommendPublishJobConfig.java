@@ -1,13 +1,13 @@
 package com.kurly.cloud.point.api.batch.recommend.config;
 
+import com.kurly.cloud.point.api.batch.order.entity.Order;
 import com.kurly.cloud.point.api.batch.recommend.RecommendPublishItemProcessor;
 import com.kurly.cloud.point.api.batch.recommend.RecommendPublishItemReader;
 import com.kurly.cloud.point.api.batch.recommend.RecommendPublishItemWriter;
 import com.kurly.cloud.point.api.batch.recommend.RecommendPublishJobListener;
-import com.kurly.cloud.point.api.order.entity.Order;
+import com.kurly.cloud.point.api.batch.recommend.entity.RecommendationPointHistory;
+import com.kurly.cloud.point.api.batch.recommend.service.RecommendationPointHistoryUseCase;
 import com.kurly.cloud.point.api.point.util.SlackBot;
-import com.kurly.cloud.point.api.recommend.entity.RecommendationPointHistory;
-import com.kurly.cloud.point.api.recommend.service.RecommendationPointHistoryService;
 import javax.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
@@ -31,7 +31,7 @@ public class RecommendPublishJobConfig {
   private final StepBuilderFactory stepBuilderFactory;
   private final SlackBot slackBot;
   private final EntityManagerFactory entityManagerFactory;
-  private final RecommendationPointHistoryService recommendationPointHistoryService;
+  private final RecommendationPointHistoryUseCase recommendationPointHistoryUseCase;
   private final RecommendPublishItemWriter recommendPublishItemWriter;
 
   @Value("${batch.recommend.chunkSize:100}")
@@ -67,7 +67,7 @@ public class RecommendPublishJobConfig {
     return stepBuilderFactory.get("recommendPublishJobStep")
         .<Order, RecommendationPointHistory>chunk(chunkSize)
         .reader(recommendPublishItemReader(null))
-        .processor(new RecommendPublishItemProcessor(recommendationPointHistoryService))
+        .processor(new RecommendPublishItemProcessor(recommendationPointHistoryUseCase))
         .writer(recommendPublishItemWriter)
         .taskExecutor(executor())
         .throttleLimit(poolSize)

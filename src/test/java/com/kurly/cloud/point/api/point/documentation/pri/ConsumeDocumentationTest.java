@@ -18,7 +18,7 @@ import com.kurly.cloud.point.api.point.domain.consume.CancelOrderConsumePointReq
 import com.kurly.cloud.point.api.point.domain.consume.ConsumePointRequest;
 import com.kurly.cloud.point.api.point.domain.consume.OrderConsumePointRequest;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
-import com.kurly.cloud.point.api.point.port.in.ConsumePointPort;
+import com.kurly.cloud.point.api.point.service.ConsumePointUseCase;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -51,7 +51,7 @@ public class ConsumeDocumentationTest implements CommonTestGiven {
   MockMvc mockMvc;
 
   @MockBean
-  ConsumePointPort consumePointPort;
+  ConsumePointUseCase consumePointUseCase;
 
   @Autowired
   ObjectMapper objectMapper;

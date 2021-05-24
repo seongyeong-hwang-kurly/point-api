@@ -12,7 +12,7 @@ import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.config.SpringSecurityTestConfig;
 import com.kurly.cloud.point.api.point.documentation.ApiDocumentUtils;
 import com.kurly.cloud.point.api.point.domain.consume.OrderConsumePointRequest;
-import com.kurly.cloud.point.api.point.port.in.ConsumePointPort;
+import com.kurly.cloud.point.api.point.service.ConsumePointUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -43,7 +43,7 @@ public class ConsumeDocumentationTest implements CommonTestGiven {
   MockMvc mockMvc;
 
   @MockBean
-  ConsumePointPort consumePointPort;
+  ConsumePointUseCase consumePointUseCase;
 
   @Autowired
   ObjectMapper objectMapper;

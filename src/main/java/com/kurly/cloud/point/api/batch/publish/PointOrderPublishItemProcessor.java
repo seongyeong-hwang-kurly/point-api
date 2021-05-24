@@ -1,6 +1,6 @@
 package com.kurly.cloud.point.api.batch.publish;
 
-import com.kurly.cloud.point.api.order.entity.Order;
+import com.kurly.cloud.point.api.batch.order.entity.Order;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
 import java.util.Objects;
 import org.springframework.batch.item.ItemProcessor;
