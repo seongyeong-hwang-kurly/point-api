@@ -15,12 +15,14 @@ import com.kurly.cloud.point.api.point.util.DateTimeUtil;
 import java.util.HashMap;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Primary;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Primary
 @Service
 @RequiredArgsConstructor
 class PublishPointService implements PublishPointUseCase {

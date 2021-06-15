@@ -10,6 +10,7 @@ import com.kurly.cloud.point.api.point.entity.Point;
 import com.kurly.cloud.point.api.point.exception.HistoryTypeNotFoundException;
 import com.kurly.cloud.point.api.point.service.PublishPointUseCase;
 import com.kurly.cloud.point.api.point.util.SlackBot;
+import com.kurly.cloud.point.api.point.util.VersionUtil;
 import com.kurly.cloud.point.api.point.web.dto.PublishResultDto;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -20,23 +21,24 @@ import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import javax.validation.Valid;
-import lombok.RequiredArgsConstructor;
+import javax.validation.constraints.Pattern;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @Validated
-@RequiredArgsConstructor
 @RestController("PrivatePublishController")
 public class PublishController {
 
   private final PublishPointUseCase publishPointUseCase;
-
+  private final PublishPointUseCase publishPointUseCaseV2;
   private final SlackBot slackBot;
 
   @Value("${notification.slack.bot.publish.channel:}")
@@ -45,9 +47,26 @@ public class PublishController {
   @Value("${notification.slack.bot.cc.channel:}")
   private String ccNotificationChannel;
 
-  @PostMapping(value = "/v1/publish", consumes = MediaType.APPLICATION_JSON_VALUE)
-  PublishResultDto publish(@RequestBody @Valid PublishPointRequest request) {
-    Point publish = publishPointUseCase.publish(request);
+
+  /**
+   * 기본생성자.
+   */
+  public PublishController(
+      @Qualifier("publishPointService") PublishPointUseCase publishPointUseCase,
+      @Qualifier("publishPointServiceV2") PublishPointUseCase publishPointUseCaseV2,
+      SlackBot slackBot) {
+    this.publishPointUseCase = publishPointUseCase;
+    this.publishPointUseCaseV2 = publishPointUseCaseV2;
+    this.slackBot = slackBot;
+  }
+
+  @PostMapping(value = "/{version}/publish", consumes = MediaType.APPLICATION_JSON_VALUE)
+  PublishResultDto publish(
+      @PathVariable @Pattern(regexp = VersionUtil.VERSION_PATTERN) String version,
+      @RequestBody @Valid PublishPointRequest request
+  ) {
+    PublishPointUseCase delegate = getDelegate(version);
+    Point publish = delegate.publish(request);
     reportPublish(publishNotificationChannel, request);
     return PublishResultDto.fromEntity(publish);
   }
@@ -80,9 +99,11 @@ public class PublishController {
     slackBot.postMessage(String.join("\n", messages));
   }
 
-  @PostMapping(value = "/v1/publish/bulk", consumes = MediaType.APPLICATION_JSON_VALUE)
+  @PostMapping(value = "/{version}/publish/bulk", consumes = MediaType.APPLICATION_JSON_VALUE)
   BulkJobResult bulkPublish(
+      @PathVariable @Pattern(regexp = VersionUtil.VERSION_PATTERN) String version,
       @RequestBody List<@Valid BulkPublishPointRequest> requests) {
+    PublishPointUseCase delegate = getDelegate(version);
     BulkJobResult result = new BulkJobResult();
     Map<String, Map<Integer, Long>> jobSummary = new HashMap<>();
     jobSummary.put("hit", new HashMap<>());
@@ -91,7 +112,7 @@ public class PublishController {
       try {
         Executors.newSingleThreadExecutor().submit(() -> {
           try {
-            Point publish = publishPointUseCase.publish(request);
+            Point publish = delegate.publish(request);
             putSummary(jobSummary, publish);
             result.addSuccess(request.getJobSeq(), publish.getSeq());
           } catch (Exception e) {
@@ -151,9 +172,19 @@ public class PublishController {
     }
   }
 
-  @PostMapping(value = "/v1/publish/order-cancel")
-  ResponseEntity<?> cancelPublish(@RequestBody @Valid CancelPublishOrderPointRequest request) {
-    publishPointUseCase.cancelPublishByOrder(request);
+  @PostMapping(value = "/{version}/publish/order-cancel")
+  ResponseEntity<?> cancelPublish(
+      @PathVariable @Pattern(regexp = VersionUtil.VERSION_PATTERN) String version,
+      @RequestBody @Valid CancelPublishOrderPointRequest request) {
+    PublishPointUseCase delegate = getDelegate(version);
+    delegate.cancelPublishByOrder(request);
     return ResponseEntity.noContent().build();
+  }
+
+  private PublishPointUseCase getDelegate(String version) {
+    if (VersionUtil.V2.equals(version)) {
+      return publishPointUseCaseV2;
+    }
+    return publishPointUseCase;
   }
 }
