@@ -2,9 +2,7 @@ package com.kurly.cloud.point.api.batch.publish;
 
 import com.kurly.cloud.point.api.batch.config.PointBatchConfig;
 import com.kurly.cloud.point.api.batch.order.entity.Order;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 import javax.persistence.EntityManagerFactory;
@@ -23,9 +21,11 @@ public class PointOrderPublishItemReader extends JpaPagingItemReader<Order> {
     setPageSize(pageSize);
     setQueryString(getQueryString());
     setSaveState(false);
-    LocalDate publishDate = LocalDate.parse(publishDateStr, PointBatchConfig.DATE_TIME_FORMATTER);
-    LocalDateTime from = LocalDateTime.of(publishDate.minusDays(2), LocalTime.of(23, 0, 0));
-    LocalDateTime to = from.plusDays(1);
+    LocalDateTime publishDate =
+        LocalDateTime.parse(publishDateStr, PointBatchConfig.DATE_TIME_FORMATTER);
+    LocalDateTime deliveredDate = publishDate.minusDays(1);
+    LocalDateTime from = deliveredDate.withHour(0).withMinute(0).withSecond(0).withNano(0);
+    LocalDateTime to = deliveredDate.withHour(23).withMinute(59).withSecond(59).withNano(0);
     setParameterValues(getParameterValues(from, to));
   }
 
@@ -41,9 +41,9 @@ public class PointOrderPublishItemReader extends JpaPagingItemReader<Order> {
         + " LEFT JOIN o.orderDynamicColumn ON o.orderDynamicColumn.column = 'point_ratio'"
         + " WHERE o.memberNumber <> 0 "
         + " AND o.publishPoint > 0 "
-        + " AND o.orderStatus <> 0 "
-        + " AND o.orderProcessCode IN (0, 21, 22, 71) "
-        + " AND o.payDateTime BETWEEN :from AND :to ";
+        + " AND o.orderStatus = 4 "
+        + " AND o.orderProcessCode IN (0, 21, 22) "
+        + " AND o.deliveredDateTime BETWEEN :from AND :to ";
     return query;
   }
 

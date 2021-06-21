@@ -6,6 +6,7 @@ import com.kurly.cloud.point.api.batch.config.PointBatchConfig;
 import com.kurly.cloud.point.api.batch.member.entity.Member;
 import com.kurly.cloud.point.api.batch.order.entity.Order;
 import com.kurly.cloud.point.api.batch.order.entity.OrderDynamicColumn;
+import com.kurly.cloud.point.api.batch.publish.PointOrderPublishScheduler;
 import com.kurly.cloud.point.api.batch.publish.config.PointOrderPublishJobConfig;
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.entity.MemberPoint;
@@ -104,6 +105,83 @@ public class PointOrderPublishBatchTest implements CommonTestGiven {
     tx.commit();
   }
 
+  int givenPayPrice() {
+    return 3333;
+  }
+
+  private Integer givenPointRatio() {
+    return 7;
+  }
+
+  int givenPoint() {
+    return 1000;
+  }
+
+  void givenOrder(long orderNumber, long memberNumber, LocalDateTime deliveredDateTime) {
+    EntityManager entityManager = entityManagerFactory.createEntityManager();
+    EntityTransaction tx = entityManager.getTransaction();
+    tx.begin();
+    Order order = Order.builder()
+        .orderNumber(orderNumber)
+        .orderStatus(4)
+        .orderProcessCode(0)
+        .member(Member.builder().memberNumber(memberNumber).build())
+        .deliveredDateTime(deliveredDateTime)
+        .payPrice(givenPayPrice())
+        .publishPoint(givenPoint())
+        .build();
+    entityManager.persist(order);
+    OrderDynamicColumn orderDynamicColumn = OrderDynamicColumn.builder()
+        .orderNumber(order.getOrderNumber())
+        .column("point_ratio")
+        .value(String.valueOf(givenPointRatio()))
+        .build();
+    entityManager.persist(orderDynamicColumn);
+    entityManager.close();
+    tx.commit();
+  }
+
+  @Nested
+  @DisplayName("적립금 지급 스케줄러를 실행 할 때")
+  class DescribeOrderPublishSchedule {
+
+    PointOrderPublishScheduler pointOrderPublishScheduler =
+        new PointOrderPublishScheduler(pointOrderPublishJob, jobLauncher);
+    
+    LocalDateTime givenDeliveredDate() {
+      return LocalDateTime.now().minusDays(1);
+    }
+
+    void subject() {
+      pointOrderPublishScheduler.execute();
+    }
+
+    @Nested
+    @DisplayName("적립 가능한 주문이 있다면")
+    class Context0 {
+      void givenOrderBySize(int size) {
+        IntStream.range(0, size).parallel().forEach(i -> {
+          givenOrder(givenOrderNumber() - i, givenMemberNumber() - i, givenDeliveredDate());
+        });
+        fromOrderNumber = givenOrderNumber() - size;
+        fromMemberNumber = givenMemberNumber() - size;
+      }
+
+      @DisplayName("모두 적립 된다")
+      @Test
+      void test() {
+        givenOrderBySize(10);
+        subject();
+        MemberPoint memberPoint = memberPointRepository.findById(givenMemberNumber()).get();
+
+        int expectedPoint = givenPoint();
+        assertThat(memberPoint.getTotalPoint()).isEqualTo(expectedPoint);
+        assertThat(memberPoint.getFreePoint()).isEqualTo(expectedPoint);
+        assertThat(memberPoint.getCashPoint()).isEqualTo(0);
+      }
+    }
+  }
+
   @Nested
   @DisplayName("적립금 지급 배치를 실행 할 때")
   class DescribeOrderPublish {
@@ -111,39 +189,7 @@ public class PointOrderPublishBatchTest implements CommonTestGiven {
       return 1000;
     }
 
-    int givenPayPrice() {
-      return 3333;
-    }
-
-    private Integer givenPointRatio() {
-      return 7;
-    }
-
-    private void givenOrder(long orderNumber, long memberNumber) {
-      EntityManager entityManager = entityManagerFactory.createEntityManager();
-      EntityTransaction tx = entityManager.getTransaction();
-      tx.begin();
-      Order order = Order.builder()
-          .orderNumber(orderNumber)
-          .orderStatus(1)
-          .orderProcessCode(0)
-          .member(Member.builder().memberNumber(memberNumber).build())
-          .payDateTime(givenPayDate())
-          .payPrice(givenPayPrice())
-          .publishPoint(givenPoint())
-          .build();
-      entityManager.persist(order);
-      OrderDynamicColumn orderDynamicColumn = OrderDynamicColumn.builder()
-          .orderNumber(order.getOrderNumber())
-          .column("point_ratio")
-          .value(String.valueOf(givenPointRatio()))
-          .build();
-      entityManager.persist(orderDynamicColumn);
-      entityManager.close();
-      tx.commit();
-    }
-
-    LocalDateTime givenPayDate() {
+    LocalDateTime givenDeliveredDate() {
       return LocalDateTime.of(2000, 1, 2, 12, 0);
     }
 
@@ -151,7 +197,7 @@ public class PointOrderPublishBatchTest implements CommonTestGiven {
       JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
       jobParametersBuilder.addDate("now", new Date());
       jobParametersBuilder.addString("publishDate",
-          givenPayDate().plusDays(1).format(PointBatchConfig.DATE_TIME_FORMATTER));
+          givenDeliveredDate().plusDays(1).format(PointBatchConfig.DATE_TIME_FORMATTER));
       jobLauncher.run(pointOrderPublishJob, jobParametersBuilder.toJobParameters());
     }
 
@@ -160,7 +206,7 @@ public class PointOrderPublishBatchTest implements CommonTestGiven {
     class Context0 {
       void givenOrderBySize(int size) {
         IntStream.range(0, size).parallel().forEach(i -> {
-          givenOrder(givenOrderNumber() - i, givenMemberNumber() - i);
+          givenOrder(givenOrderNumber() - i, givenMemberNumber() - i, givenDeliveredDate());
         });
         fromOrderNumber = givenOrderNumber() - size;
         fromMemberNumber = givenMemberNumber() - size;
@@ -186,7 +232,7 @@ public class PointOrderPublishBatchTest implements CommonTestGiven {
       @DisplayName("한번만 적립 된다")
       @Test
       void test() throws Exception {
-        givenOrder(givenOrderNumber(), givenMemberNumber());
+        givenOrder(givenOrderNumber(), givenMemberNumber(), givenDeliveredDate());
         subject();
         subject();
         MemberPoint memberPoint = memberPointRepository.findById(givenMemberNumber()).get();

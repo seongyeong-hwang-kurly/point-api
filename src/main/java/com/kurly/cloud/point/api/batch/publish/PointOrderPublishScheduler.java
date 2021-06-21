@@ -29,7 +29,7 @@ public class PointOrderPublishScheduler {
   /**
    * 스케쥴 실행.
    */
-  @Scheduled(cron = "0 0 7 * * *")
+  @Scheduled(cron = "0 0 2 * * *")
   public void execute() {
     String publishDate = LocalDateTime.now().format(PointBatchConfig.DATE_TIME_FORMATTER);
     try {
