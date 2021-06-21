@@ -18,6 +18,9 @@ import com.kurly.cloud.point.api.point.util.DateTimeUtil;
 import java.util.HashMap;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +33,11 @@ class ConsumePointService implements ConsumePointUseCase {
   private final MemberPointDomainService memberPointDomainService;
   private final MemberPointHistoryDomainService memberPointHistoryDomainService;
 
+  @Retryable(
+      value = OptimisticLockingFailureException.class,
+      maxAttempts = 5,
+      backoff = @Backoff(delay = 100, random = true)
+  )
   @Transactional
   @Override
   public PointConsumeResult consume(ConsumePointRequest request)
@@ -105,6 +113,11 @@ class ConsumePointService implements ConsumePointUseCase {
    * 현재는 적립금을 사용취소하면 사용취소한 만큼의 금액이 새로 적립됩니다.(유효기간 갱신) <br/>
    * 이 정책은 추후 적립금 개편 시 기존 적립금에 다시 추가 하는 형태로 변경될 예정입니다.
    */
+  @Retryable(
+      value = OptimisticLockingFailureException.class,
+      maxAttempts = 5,
+      backoff = @Backoff(delay = 100, random = true)
+  )
   @Transactional
   @Override
   public void cancelConsumeByOrder(CancelOrderConsumePointRequest request)

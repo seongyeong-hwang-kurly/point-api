@@ -15,6 +15,9 @@ import com.kurly.cloud.point.api.point.util.DateTimeUtil;
 import java.util.HashMap;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +30,11 @@ class PublishPointService implements PublishPointUseCase {
   private final MemberPointDomainService memberPointDomainService;
   private final MemberPointHistoryDomainService memberPointHistoryDomainService;
 
+  @Retryable(
+      value = OptimisticLockingFailureException.class,
+      maxAttempts = 5,
+      backoff = @Backoff(delay = 100, random = true)
+  )
   @Transactional
   @Override
   public Point publish(PublishPointRequest request) {
@@ -97,6 +105,11 @@ class PublishPointService implements PublishPointUseCase {
     return publish(request);
   }
 
+  @Retryable(
+      value = OptimisticLockingFailureException.class,
+      maxAttempts = 5,
+      backoff = @Backoff(delay = 100, random = true)
+  )
   @Transactional
   @Override
   public void cancelPublishByOrder(CancelPublishOrderPointRequest request) {
