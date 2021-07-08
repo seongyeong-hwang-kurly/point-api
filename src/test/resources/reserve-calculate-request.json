@@ -1,0 +1,14 @@
+{
+  "memberReserveRatio": 3,
+  "products": [
+    {
+      "price": 1000,
+      "quantity": 1,
+      "totalPrice": 1000,
+      "contentProductNo": 1,
+      "dealProductNo": 2,
+      "productReserveType": 0,
+      "productReserveValue": 0
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+=== 적립 예상 적립금 계산
+
+회원의 혜택과 상품의 적립 정책을 통해 상품별 적립 예정 적립금을 계산합니다.
+
+==== HTTP method
+
+POST
+
+==== HTTP request
+
+===== Private
+
+include::{snippets}/point/pri/calculate/http-request.adoc[]
+
+==== Request Fields
+
+include::{snippets}/point/pri/calculate/request-fields.adoc[]
+
+==== Response body
+
+include::{snippets}/point/pri/calculate/response-body.adoc[]
+
+==== Response Fields
+
+include::{snippets}/point/pri/calculate/response-fields-data.adoc[]

@@ -3,6 +3,7 @@ package com.kurly.cloud.point.api.point.util;
 import com.kurly.cloud.point.api.point.domain.reserve.ProductReserveType;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Objects;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
@@ -36,7 +37,7 @@ public class PointReserveCalculator {
                                  int productReserveValue,
                                  int payPrice,
                                  float memberPointReserveRatio) {
-
+    reserveType = Objects.requireNonNullElse(reserveType, ProductReserveType.MEMBER);
     int calculated;
     ProductReserveType appliedReserveType = reserveType;
     float reserveValue = productReserveValue;
