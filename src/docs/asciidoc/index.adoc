@@ -75,6 +75,10 @@ application/json;charset=utf-8 +
 | 결과 데이터
 |===
 
+== 공통 필드값
+
+include::enums.adoc[]
+
 == 조회
 
 include::available.adoc[]
@@ -96,6 +100,8 @@ include::publish.adoc[]
 include::bulk-publish.adoc[]
 
 include::cancel-order-publish.adoc[]
+
+include::calculate-reserve.adoc[]
 
 == 사용
 

@@ -1,0 +1,30 @@
+[[ProductReserveType]]
+====== ProductReserveType
+
+|===
+|필드 값 | 필드 명 | 설명
+
+|0
+|MEMBER
+|없음 (회원 혜택 적립률)
+
+|1
+|FIXED
+|고정 값
+
+|2
+|EXCLUDE
+|적립 제외
+
+|3
+|PERCENT
+|고정 비율
+
+|4
+|MAX_PERCENT
+|최대 비율
+
+|5
+|MAX_FIXED
+|최대 고정 값
+|===
