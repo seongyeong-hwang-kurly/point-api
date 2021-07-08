@@ -3,6 +3,7 @@ package com.kurly.cloud.point.api.point.util;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.kurly.cloud.point.api.point.domain.reserve.ProductReserveType;
+import com.kurly.cloud.point.api.point.util.PointReserveCalculator.Result;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -16,10 +17,10 @@ class PointReserveCalculatorTest {
   @DisplayName("calculate method")
   class DescribeCalculate {
 
-    int subject(ProductReserveType reserveType,
-                int productReserveValue,
-                int payPrice,
-                float memberPointReserveRatio) {
+    Result subject(ProductReserveType reserveType,
+                   int productReserveValue,
+                   int payPrice,
+                   float memberPointReserveRatio) {
       return PointReserveCalculator.calculate(reserveType,
           productReserveValue,
           payPrice,
@@ -59,7 +60,8 @@ class PointReserveCalculatorTest {
               PointReserveCalculator.calculate(givenPayPrice(), givenMemberPointReserveRatio());
 
           assertThat(subject)
-              .isEqualTo(memberReserve);
+              .isEqualTo(new Result(ProductReserveType.MEMBER, givenMemberPointReserveRatio(),
+                  memberReserve));
         }
       }
     }
@@ -85,7 +87,7 @@ class PointReserveCalculatorTest {
               givenMemberPointReserveRatio());
 
           assertThat(subject)
-              .isEqualTo(value);
+              .isEqualTo(new Result(ProductReserveType.FIXED, value, value));
         }
       }
 
@@ -103,7 +105,7 @@ class PointReserveCalculatorTest {
               givenMemberPointReserveRatio());
 
           assertThat(subject)
-              .isEqualTo(0);
+              .isEqualTo(new Result(ProductReserveType.FIXED, value, 0));
         }
       }
     }
@@ -130,7 +132,7 @@ class PointReserveCalculatorTest {
               givenMemberPointReserveRatio());
 
           assertThat(subject)
-              .isEqualTo(0);
+              .isEqualTo(new Result(ProductReserveType.EXCLUDE, 0, 0));
         }
       }
     }
@@ -158,7 +160,7 @@ class PointReserveCalculatorTest {
               givenMemberPointReserveRatio());
 
           assertThat(subject)
-              .isEqualTo(0);
+              .isEqualTo(new Result(ProductReserveType.PERCENT, givenProductValue(), 0));
         }
       }
 
@@ -182,7 +184,8 @@ class PointReserveCalculatorTest {
               PointReserveCalculator.calculate(givenPayPrice(), givenProductValue());
 
           assertThat(subject)
-              .isEqualTo(productReserve);
+              .isEqualTo(
+                  new Result(ProductReserveType.PERCENT, givenProductValue(), productReserve));
         }
       }
     }
@@ -213,7 +216,8 @@ class PointReserveCalculatorTest {
               PointReserveCalculator.calculate(givenPayPrice(), givenProductValue());
 
           assertThat(subject)
-              .isEqualTo(productReserve);
+              .isEqualTo(
+                  new Result(ProductReserveType.MAX_PERCENT, givenProductValue(), productReserve));
         }
       }
 
@@ -237,7 +241,8 @@ class PointReserveCalculatorTest {
               PointReserveCalculator.calculate(givenPayPrice(), givenMemberPointReserveRatio());
 
           assertThat(subject)
-              .isEqualTo(memberReserve);
+              .isEqualTo(new Result(ProductReserveType.MEMBER, givenMemberPointReserveRatio(),
+                  memberReserve));
         }
       }
     }
@@ -266,7 +271,8 @@ class PointReserveCalculatorTest {
               givenMemberPointReserveRatio());
 
           assertThat(subject)
-              .isEqualTo(givenProductValue());
+              .isEqualTo(new Result(ProductReserveType.MAX_FIXED, givenProductValue(),
+                  givenProductValue()));
         }
       }
 
@@ -291,7 +297,8 @@ class PointReserveCalculatorTest {
               PointReserveCalculator.calculate(givenPayPrice(), givenMemberPointReserveRatio());
 
           assertThat(subject)
-              .isEqualTo(memberReserve);
+              .isEqualTo(new Result(ProductReserveType.MEMBER, givenMemberPointReserveRatio(),
+                  memberReserve));
         }
       }
     }
