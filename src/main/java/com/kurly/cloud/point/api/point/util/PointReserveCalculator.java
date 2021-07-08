@@ -4,9 +4,11 @@ import com.kurly.cloud.point.api.point.domain.reserve.ProductReserveType;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
 public class PointReserveCalculator {
 
+  @Getter
   @EqualsAndHashCode
   public static class Result {
     ProductReserveType reserveType;
