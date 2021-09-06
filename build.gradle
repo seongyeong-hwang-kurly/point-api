@@ -2,7 +2,7 @@ plugins {
     id 'java-library'
     id 'maven'
     id "io.freefair.lombok" version "4.1.6"
-    id "org.springframework.boot" version "2.2.3.RELEASE"
+    id "org.springframework.boot" version "2.2.13.RELEASE"
     id "io.spring.dependency-management" version "1.0.8.RELEASE"
     id "org.asciidoctor.jvm.convert" version "3.1.0"
 }
@@ -18,25 +18,12 @@ repositories {
     mavenCentral()
 }
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: 'https://repo.infra.kurlycorp.kr/repository/maven-hosted/') {
-                authentication(userName: 'imsi', password: 'imsi00')
-            }
-            snapshotRepository(url: 'https://repo.infra.kurlycorp.kr/repository/maven-hosted/') {
-                authentication(userName: 'imsi', password: 'imsi00')
-            }
-        }
-    }
-}
-
 springBoot {
     buildInfo()
 }
 
 dependencies {
-    implementation "com.kurly.cloud:api-base:3.2.0"
+    implementation "com.kurly.cloud:api-base:3.7.0"
     implementation "com.kurly.cloud:api-jwt-auth:1.2.0"
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
     implementation "org.springframework.boot:spring-boot-starter-batch"
