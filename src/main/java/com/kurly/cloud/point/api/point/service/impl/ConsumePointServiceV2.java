@@ -21,14 +21,16 @@ public class ConsumePointServiceV2 implements ConsumePointUseCase {
 
   private final ConsumePointUseCase consumePointUseCase;
 
-  @Transactional(timeout = VersionUtil.V2_TIMEOUT_SECONDS)
+  @Transactional(timeout = VersionUtil.V2_TIMEOUT_SECONDS,
+      rollbackFor = {RuntimeException.class, NotEnoughPointException.class})
   @Override
   public PointConsumeResult consume(ConsumePointRequest request)
       throws NotEnoughPointException {
     return consumePointUseCase.consume(request);
   }
 
-  @Transactional(timeout = VersionUtil.V2_TIMEOUT_SECONDS)
+  @Transactional(timeout = VersionUtil.V2_TIMEOUT_SECONDS,
+      rollbackFor = {RuntimeException.class, NotEnoughPointException.class})
   @Override
   public PointConsumeResult consumeByOrder(OrderConsumePointRequest request)
       throws NotEnoughPointException {

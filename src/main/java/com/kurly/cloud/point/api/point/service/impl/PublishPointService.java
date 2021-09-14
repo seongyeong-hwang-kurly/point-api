@@ -133,7 +133,7 @@ class PublishPointService implements PublishPointUseCase {
     });
 
     //회원이 가진 적립금이 모자른 경우 적립금을 빌려온다 (컬리에게 빚을 짐)
-    if (pointConsumeResult.getRemain() > 0) {
+    if (pointConsumeResult.isNotComplete()) {
       loanPoint(request, pointConsumeResult.getRemain());
     }
 
