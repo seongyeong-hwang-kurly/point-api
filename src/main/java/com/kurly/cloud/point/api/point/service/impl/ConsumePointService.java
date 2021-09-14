@@ -40,7 +40,7 @@ class ConsumePointService implements ConsumePointUseCase {
       maxAttempts = 5,
       backoff = @Backoff(delay = 100, random = true)
   )
-  @Transactional
+  @Transactional(rollbackFor = {RuntimeException.class, NotEnoughPointException.class})
   @Override
   public PointConsumeResult consume(ConsumePointRequest request)
       throws NotEnoughPointException {
@@ -53,6 +53,11 @@ class ConsumePointService implements ConsumePointUseCase {
 
     PointConsumeResult pointConsumeResult = pointDomainService.consumeMemberPoint(
         request.getMemberNumber(), request.getPoint(), request.isSettle());
+
+    //총액은 부족하지 않지만 실제 가진 적립금이 만료일이 지난경우, 만료배치가 수행중인경우 발생한다
+    if (pointConsumeResult.isNotComplete()) {
+      throw new NotEnoughPointException(request.getPoint(), pointConsumeResult.getTotalConsumed());
+    }
 
     pointConsumeResult.getConsumed().forEach(consumedPoint -> {
       pointHistoryDomainService.insertHistory(PointHistoryInsertRequest.builder()
@@ -96,7 +101,7 @@ class ConsumePointService implements ConsumePointUseCase {
     return pointConsumeResult;
   }
 
-  @Transactional
+  @Transactional(rollbackFor = {RuntimeException.class, NotEnoughPointException.class})
   @Override
   public PointConsumeResult consumeByOrder(OrderConsumePointRequest request)
       throws NotEnoughPointException {

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PointConsumeResult {
-  long requested;
-  List<ConsumedPoint> consumed = new ArrayList<>();
+  private final long requested;
+  private final List<ConsumedPoint> consumed = new ArrayList<>();
 
   public PointConsumeResult(long requested) {
     this.requested = requested;
@@ -44,4 +44,9 @@ public class PointConsumeResult {
   public long getTotalConsumed() {
     return consumed.stream().mapToLong(ConsumedPoint::getConsumed).sum();
   }
+
+  public boolean isNotComplete() {
+    return requested != getTotalConsumed();
+  }
+
 }

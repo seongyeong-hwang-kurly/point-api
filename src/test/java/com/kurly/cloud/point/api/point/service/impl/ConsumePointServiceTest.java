@@ -16,6 +16,7 @@ import com.kurly.cloud.point.api.point.exception.CancelAmountExceedException;
 import com.kurly.cloud.point.api.point.exception.NotEnoughPointException;
 import com.kurly.cloud.point.api.point.service.ConsumePointUseCase;
 import com.kurly.cloud.point.api.point.service.PublishPointUseCase;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -52,6 +53,15 @@ class ConsumePointServiceTest implements CommonTestGiven {
         .memberNumber(givenMemberNumber())
         .point(amount)
         .historyType(HistoryType.TYPE_1.getValue())
+        .build());
+  }
+
+  void publishExpiredFreePoint(long amount) {
+    publishPointUseCase.publish(PublishPointRequest.builder()
+        .memberNumber(givenMemberNumber())
+        .point(amount)
+        .historyType(HistoryType.TYPE_1.getValue())
+        .expireDate(LocalDateTime.now().minusDays(1))
         .build());
   }
 
@@ -314,6 +324,72 @@ class ConsumePointServiceTest implements CommonTestGiven {
       }
     }
 
+  }
+
+  @Nested
+  @DisplayName("만료일이 지난 적립금이 있을 때")
+  class DescribeExpiredPointConsumed {
+
+    @BeforeEach
+    void publishPoint() {
+      publishFreePoint(getFreeAmount());
+      publishExpiredFreePoint(getFreeAmount());
+    }
+
+    private long getFreeAmount() {
+      return 1000;
+    }
+
+    PointConsumeResult subject(OrderConsumePointRequest request) throws NotEnoughPointException {
+      return consumePointUseCase.consumeByOrder(request);
+    }
+
+    @TransactionalTest
+    @Nested
+    @DisplayName("만료일이 지나지 않은 적립금 만큼 사용 하면")
+    class Context0 {
+
+      OrderConsumePointRequest givenRequest() {
+        return OrderConsumePointRequest.builder()
+            .orderNumber(givenOrderNumber())
+            .memberNumber(givenMemberNumber())
+            .point(getFreeAmount())
+            .build();
+      }
+
+      @Test
+      @DisplayName("정상적으로 사용된다")
+      void test() throws NotEnoughPointException {
+        PointConsumeResult pointConsumeResult = subject(givenRequest());
+
+        assertThat(pointConsumeResult.getTotalConsumed()).isEqualTo(getFreeAmount());
+      }
+    }
+
+    @TransactionalTest
+    @Nested
+    @DisplayName("만료일이 지난 적립금을 사용하려고 하면")
+    class Context1 {
+
+      OrderConsumePointRequest givenRequest() {
+        return OrderConsumePointRequest.builder()
+            .orderNumber(givenOrderNumber())
+            .memberNumber(givenMemberNumber())
+            .point(getFreeAmount() + getFreeAmount())
+            .build();
+      }
+
+      @DisplayName("NotEnoughPointException 예외가 발생 한다")
+      @Test
+      void test() {
+        try {
+          subject(givenRequest());
+          fail("실행되면 안되는 코드");
+        } catch (NotEnoughPointException expected) {
+
+        }
+      }
+    }
   }
 
   @Nested

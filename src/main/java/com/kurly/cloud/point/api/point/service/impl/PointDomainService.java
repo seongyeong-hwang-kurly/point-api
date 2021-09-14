@@ -36,7 +36,7 @@ class PointDomainService {
       pointConsumeResult.add(point.getSeq(), consume, point.isSettle());
     }
 
-    if (pointConsumeResult.getRemain() > 0) {
+    if (pointConsumeResult.isNotComplete()) {
       pointConsumeResult.add(consumeMemberPoint(memberNumber, pointConsumeResult.getRemain()));
     }
 
