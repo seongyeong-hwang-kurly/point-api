@@ -1,0 +1,7 @@
+###
+GET /v1/history/999999999?regDateTimeFrom=2020-01-01T00%3A00%3A00%2B09%3A00&regDateTimeTo=2030-01-01T00%3A00%3A00%2B09%3A00&size=10&page=0 HTTP/1.1
+Host: gateway.cloud.dev.kurly.services
+
+
+###
+GET http://localhost:28080/v1/point-history/publish
