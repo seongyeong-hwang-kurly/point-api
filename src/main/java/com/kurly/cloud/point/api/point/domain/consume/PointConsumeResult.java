@@ -1,5 +1,7 @@
 package com.kurly.cloud.point.api.point.domain.consume;
 
+import com.kurly.cloud.point.api.point.exception.WrongPointRequestException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +22,15 @@ public class PointConsumeResult {
   }
 
   public void add(List<ConsumedPoint> anotherConsumed) {
+    validate(anotherConsumed);
     consumed.addAll(anotherConsumed);
+  }
+
+  private void validate(List<ConsumedPoint> anotherConsumed) {
+    long total = anotherConsumed.stream().mapToLong(ConsumedPoint::getConsumed).sum();
+    if(total > requested){
+      throw new WrongPointRequestException(requested, getTotalConsumed());
+    }
   }
 
   public List<ConsumedPoint> getConsumed() {
