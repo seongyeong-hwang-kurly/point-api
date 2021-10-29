@@ -50,7 +50,6 @@ public class MemberPoint {
     setUpdateTime(LocalDateTime.now());
   }
 
-  @Transient
   public long getRepayAmount(long publishedAmount) {
     if (getTotalPoint() >= publishedAmount) {
       return 0;
@@ -66,7 +65,6 @@ public class MemberPoint {
     return repayAmount;
   }
 
-  @Transient
   public boolean isEnough(Long point, boolean settle) {
     return settle ? getCashPoint() >= point : getTotalPoint() >= point;
   }
