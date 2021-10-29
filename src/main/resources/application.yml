@@ -27,8 +27,6 @@ spring:
       data-source-properties:
         rewriteBatchedStatements: true
   jpa:
-    hibernate:
-      ddl-auto: create
     properties:
       hibernate:
         format_sql: true
