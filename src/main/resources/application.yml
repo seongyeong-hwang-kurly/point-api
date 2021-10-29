@@ -41,3 +41,12 @@ server:
     max-connections: 20
     mbeanregistry:
       enabled: true
+
+---
+spring.profiles.active: dev
+
+---
+spring.profiles.active: stg
+
+---
+spring.profiles.active: prod
