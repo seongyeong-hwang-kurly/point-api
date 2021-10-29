@@ -3,3 +3,6 @@ GET {{host}}/v1/history/999999999?regDateTimeFrom=2020-01-01T00%3A00%3A00%2B09%3
 
 ###
 GET {{host}}/v1/point-history/publish
+Content-Type: application/json
+
+{}
