@@ -15,7 +15,7 @@ logging.level:
   com.kurly: DEBUG
 
 ---
-spring.profiles.active: local
+spring.profiles: local
 
 spring:
   datasource:
@@ -41,12 +41,12 @@ server:
     max-connections: 20
     mbeanregistry:
       enabled: true
+  port: 8080
+---
+spring.profiles: dev
 
 ---
-spring.profiles.active: dev
+spring.profiles: stg
 
 ---
-spring.profiles.active: stg
-
----
-spring.profiles.active: prod
+spring.profiles: prod
