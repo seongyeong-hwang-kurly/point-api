@@ -1,6 +1,5 @@
 package com.kurly.cloud.point.api.point.domain.consume
 
-import com.kurly.cloud.point.api.point.exception.WrongPointRequestException
 import spock.lang.Specification
 
 class PointConsumeResultTest extends Specification {
@@ -19,17 +18,6 @@ class PointConsumeResultTest extends Specification {
         CONSUMED_POINTS          | CONSUMED_POINT || IS_NOT_COMPLETE
         getUnderConsumedPoints() | 3_000L         || true
         getOverConsumedPoints()  | 5_000L         || false
-    }
-
-    def "should throw WrongPointRequestException"() {
-        given:
-        def consumeResult = new PointConsumeResult(3_000)
-
-        when:
-        consumeResult.add(getOverConsumedPoints())
-
-        then:
-        thrown(WrongPointRequestException)
     }
 
     private static ArrayList<ConsumedPoint> getUnderConsumedPoints() {
