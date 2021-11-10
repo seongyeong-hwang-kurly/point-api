@@ -2,8 +2,11 @@ package com.kurly.cloud.point.api.point.service.impl
 
 import com.kurly.cloud.point.api.point.domain.consume.CancelOrderConsumePointRequest
 import com.kurly.cloud.point.api.point.domain.consume.OrderConsumePointRequest
+import com.kurly.cloud.point.api.point.domain.history.HistoryType
 import com.kurly.cloud.point.api.point.domain.history.MemberPointHistoryListRequest
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest
+import com.kurly.cloud.point.api.point.domain.publish.PublishPointReserveRequestVO
+import org.apache.commons.lang.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
@@ -13,6 +16,7 @@ import spock.lang.Stepwise
 import spock.lang.Subject
 
 import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 @Stepwise
 @SpringBootTest
@@ -45,6 +49,10 @@ class MemberPointServiceIntegTest extends Specification {
     @Autowired
     PointDomainService pointDomainService
 
+    @Subject
+    @Autowired
+    PointReserveDomainService pointReserveDomainService
+
     def setup() {
         historyRequest = MemberPointHistoryListRequest.builder().memberNumber(MEMBER_NO).build()
         expiredAt = LocalDateTime.parse("2021-12-31T23:59:59.99")
@@ -58,6 +66,7 @@ class MemberPointServiceIntegTest extends Specification {
         def pointHistories = memberPointService.getMemberHistoryList(historyRequest)
         then:
         pointHistories.size() == FIRST_TRY + SECOND_TRY
+        summaryFromAvailablePoints() == summaryFromMemberPoint()
     }
 
     private publishNTimes(int times, int point) {
@@ -101,6 +110,29 @@ class MemberPointServiceIntegTest extends Specification {
         consumePointService.cancelConsumeByOrder(cancelRequest)
         then:
         summaryFromAvailablePoints() == summaryFromMemberPoint()
+    }
+
+    def '5. should reserve points not include in available points'(){
+        when:
+        def reserveVO = PublishPointReserveRequestVO.create(
+                MEMBER_NO,
+                ORDER_NUMBER,
+                1000,
+                0.1f,
+                HistoryType.TYPE_1,
+                true,
+                false,
+                false,
+                ZonedDateTime.now().plusYears(1),
+                StringUtils.EMPTY,
+                "test point",
+                MEMBER_NO,
+                false,
+                LocalDateTime.now().plusDays(1)
+        )
+        pointReserveDomainService.reserve(reserveVO)
+        then:
+        noExceptionThrown()
     }
 
     private long summaryFromMemberPoint() {

@@ -4,27 +4,24 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kurly.cloud.point.api.point.entity.Point;
 import com.kurly.cloud.point.api.point.util.DateTimeUtil;
 import com.kurly.cloud.point.api.point.util.PointExpireDateCalculator;
+import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.lang.Nullable;
+
+import javax.validation.constraints.Future;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Objects;
-import javax.validation.constraints.Future;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.lang.Nullable;
 
 @Builder
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PublishPointRequest {
+public class  PublishPointRequest {
   @NotNull
   Long memberNumber;
   @JsonIgnore
