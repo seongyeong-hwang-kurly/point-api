@@ -24,7 +24,7 @@ class MemberPointServiceIntegTest extends Specification {
 
     @Subject
     @Autowired
-    PublishPointService publishPointService
+    PublishPointServiceV2 publishPointService
 
     @Subject
     @Autowired
@@ -35,35 +35,40 @@ class MemberPointServiceIntegTest extends Specification {
         expiredAt = LocalDateTime.parse("2021-12-31T23:59:59.99")
     }
 
-    def 'should give point to a member'() {
+    def '1. should give point to a member'() {
         given:
-        (1..3).forEach {
+        publishNTimes(3, 100)
+        publishNTimes(1, 300)
+        when:
+        def pointHistories = memberPointService.getMemberHistoryList(historyRequest)
+        then:
+        pointHistories.size() == 4
+    }
+
+    private publishNTimes(int times, int point) {
+        (1..times).forEach {
             def pointRequest = PublishPointRequest.builder()
-                    .point(100).orderNumber(1)
+                    .point(point).orderNumber(1)
                     .historyType(1)
                     .memberNumber(MEMBER_NO).expireDate(expiredAt).build()
             publishPointService.publish(pointRequest)
         }
-        when:
-        def pointHistories = memberPointService.getMemberHistoryList(historyRequest)
-        then:
-        pointHistories.size() == 3
     }
 
-    def 'should return accumulated points summary'() {
+    def '2. should return accumulated points summary'() {
         when:
         def summary = memberPointService.getMemberPointSummary(MEMBER_NO)
         then:
-        summary.getAmount() == 300
+        summary.getAmount() == 600
         summary.getNextExpireAmount() == 0
         println(summary.getNextExpireDate())
     }
 
-    def 'should return only accumulated member point'() {
+    def '3. should return available member point'() {
         when:
         def point = memberPointService.getMemberPoint(MEMBER_NO)
         then:
-        point.getTotalPoint() == 300
+        point.getTotalPoint() == 600
     }
 
 }
