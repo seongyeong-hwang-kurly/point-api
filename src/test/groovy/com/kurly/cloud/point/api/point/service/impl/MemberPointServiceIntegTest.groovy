@@ -41,6 +41,10 @@ class MemberPointServiceIntegTest extends Specification {
     @Autowired
     MemberPointService memberPointService
 
+    @Subject
+    @Autowired
+    PointDomainService pointDomainService
+
     def setup() {
         historyRequest = MemberPointHistoryListRequest.builder().memberNumber(MEMBER_NO).build()
         expiredAt = LocalDateTime.parse("2021-12-31T23:59:59.99")
@@ -96,7 +100,14 @@ class MemberPointServiceIntegTest extends Specification {
         when:
         consumePointService.cancelConsumeByOrder(cancelRequest)
         then:
-        650L == memberPointService.getMemberPoint(MEMBER_NO).getTotalPoint()
+        summaryFromAvailablePoints() == summaryFromMemberPoint()
     }
 
+    private long summaryFromMemberPoint() {
+        memberPointService.getMemberPoint(MEMBER_NO).getTotalPoint()
+    }
+
+    private long summaryFromAvailablePoints() {
+        pointDomainService.getAvailableMemberPoint(MEMBER_NO).stream().mapToLong({ it -> it.getRemain() }).sum()
+    }
 }
