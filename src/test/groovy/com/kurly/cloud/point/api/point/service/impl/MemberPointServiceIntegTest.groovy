@@ -77,7 +77,7 @@ class MemberPointServiceIntegTest extends Specification {
         memberPoint.getTotalPoint() == FIRST_TRY * FIRST_UNIT_PRICE + SECOND_TRY * SECOND_UNIT_PRICE
     }
 
-    def '3. should be able to use the points'() {
+    def '3. should be able to use the points(/v1/consume/order)'() {
         given:
         def orderRequest = OrderConsumePointRequest.builder()
             .orderNumber(ORDER_NUMBER)
@@ -90,7 +90,7 @@ class MemberPointServiceIntegTest extends Specification {
         350L == memberPointService.getMemberPoint(MEMBER_NO).getTotalPoint()
     }
 
-    def '4. should refund point already used'() {
+    def '4. should refund point already used(/v1/consume/cancel)'() {
         given:
         def cancelRequest = CancelOrderConsumePointRequest.builder()
                 .memberNumber(MEMBER_NO)
