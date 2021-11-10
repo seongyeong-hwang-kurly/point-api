@@ -15,14 +15,14 @@ Content-Type: application/json
   "hidden" : false
 }
 
-### 3. 가용 포인트 조회
+### 2. 가용 포인트 조회
 GET {{host}}/v1/available/888888888 HTTP/1.1
 Content-Type: application/json
 
-### 4. 히스토리 조회
+### 3. 히스토리 조회
 GET {{host}}/v1/history/888888888?regDateTimeFrom=2020-01-01T00%3A00%3A00%2B09%3A00&regDateTimeTo=2030-01-01T00%3A00%3A00%2B09%3A00&size=10&page=0 HTTP/1.1
 
-### 5. 히스토리 조회
+### 4. 히스토리 조회
 GET {{host}}/v1/point-history/publish
 Content-Type: application/json
 
@@ -33,7 +33,7 @@ Content-Type: application/json
   "regDateTimeTo" : "2022-09-06T05:45:34Z"
 }
 
-### 6. 주문 적립금 사용
+### 5. 주문 적립금 사용
 POST {{host}}/v1/consume/order HTTP/1.1
 Content-Type: application/json
 
@@ -44,11 +44,11 @@ Content-Type: application/json
   "settle" : false
 }
 
-### 7. 적립금 사용 후 히스토리 조회
+### 6. 적립금 사용 후 히스토리 조회
 GET {{host}}/v1/history/888888888?regDateTimeFrom=2020-01-01T00%3A00%3A00%2B09%3A00&regDateTimeTo=2030-01-01T00%3A00%3A00%2B09%3A00&size=10&page=0 HTTP/1.1
 Content-Type: application/json
 
-### 8. 주문 적립금 사용 취소
+### 7. 주문 적립금 사용 취소
 POST {{host}}/v1/consume/cancel
 Content-Type: application/json
 
@@ -59,11 +59,11 @@ Content-Type: application/json
   "actionMemberNumber" : 0
 }
 
-### 9. 적립금 사용 후 히스토리 조회
+### 8. 적립금 사용 후 히스토리 조회
 GET {{host}}/v1/history/888888888?regDateTimeFrom=2020-01-01T00%3A00%3A00%2B09%3A00&regDateTimeTo=2030-01-01T00%3A00%3A00%2B09%3A00&size=10&page=0 HTTP/1.1
 Content-Type: application/json
 
-### 10. 예상 적립금 계산
+### 9. 예상 적립금 계산
 POST {{host}}/v1/reserve/calculate HTTP/1.1
 Content-Type: application/json
 
@@ -80,7 +80,7 @@ Content-Type: application/json
   } ]
 }
 
-### 11. 회원 적립금 주문 지급 취소
+### 10. 회원 적립금 주문 지급 취소
 POST {{host}}/v1/publish/order-cancel HTTP/1.1
 Content-Type: application/json
 
@@ -91,6 +91,6 @@ Content-Type: application/json
   "actionMemberNumber" : 0
 }
 
-### 12. 적립금 취소 후 조회
+### 11. 적립금 취소 후 조회
 GET {{host}}/v1/history/888888888?regDateTimeFrom=2020-01-01T00%3A00%3A00%2B09%3A00&regDateTimeTo=2030-01-01T00%3A00%3A00%2B09%3A00&size=10&page=0 HTTP/1.1
 Content-Type: application/json
