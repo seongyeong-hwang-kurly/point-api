@@ -28,12 +28,11 @@ class MemberPointServiceIntegrationTest extends Specification {
     public static final int SECOND_TRY = 2
     public static final int FIRST_UNIT_PRICE = 100
     public static final int SECOND_UNIT_PRICE = 200
+    public static final int RESERVE_POINT = 9999
     @Shared
     MemberPointHistoryListRequest historyRequest
     @Shared
     LocalDateTime expiredAt
-    @Shared
-    long sumBeforeConversion
 
     @Subject
     @Autowired
@@ -53,7 +52,7 @@ class MemberPointServiceIntegrationTest extends Specification {
 
     @Subject
     @Autowired
-    PointReservationDomainService pointReserveDomainService
+    PointReservationDomainService pointReservationDomainService
 
     def setup() {
         historyRequest = MemberPointHistoryListRequest.builder().memberNumber(MEMBER_NO).build()
@@ -119,7 +118,7 @@ class MemberPointServiceIntegrationTest extends Specification {
         def reserveVO = PublishPointReservationRequestVO.create(
                 MEMBER_NO,
                 ORDER_NUMBER,
-                1000,
+                RESERVE_POINT,
                 0.1f,
                 HistoryType.TYPE_1,
                 true,
@@ -132,12 +131,20 @@ class MemberPointServiceIntegrationTest extends Specification {
                 false,
                 LocalDateTime.now().plusDays(1)
         )
-        sumBeforeConversion = summaryFromAvailablePoints()
-        pointReserveDomainService.reserve(reserveVO)
+        pointReservationDomainService.reserve(reserveVO)
         then:
-        pointReserveDomainService.sumReservedPoint(MEMBER_NO) == 1000
-        sumBeforeConversion == summaryFromAvailablePoints()
+        pointReservationDomainService.sumReservedPoint(MEMBER_NO) == RESERVE_POINT
     }
+
+    def '6. convert the reserved point to available point'() {
+        given:
+        sumBeforeConversion == summaryFromAvailablePoints()
+        when:
+        pointReservationDomainService.convert(MEMBER_NO)
+        then:
+        sumBeforeConversion + RESERVE_POINT == summaryFromAvailablePoints()
+    }
+
 
     private long summaryFromMemberPoint() {
         memberPointService.getMemberPoint(MEMBER_NO).getTotalPoint()
