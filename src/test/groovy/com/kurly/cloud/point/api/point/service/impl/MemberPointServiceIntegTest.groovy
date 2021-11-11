@@ -5,7 +5,7 @@ import com.kurly.cloud.point.api.point.domain.consume.OrderConsumePointRequest
 import com.kurly.cloud.point.api.point.domain.history.HistoryType
 import com.kurly.cloud.point.api.point.domain.history.MemberPointHistoryListRequest
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest
-import com.kurly.cloud.point.api.point.domain.publish.PublishPointReserveRequestVO
+import com.kurly.cloud.point.api.point.domain.publish.PublishPointReservationRequestVO
 import org.apache.commons.lang.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -32,6 +32,8 @@ class MemberPointServiceIntegTest extends Specification {
     MemberPointHistoryListRequest historyRequest
     @Shared
     LocalDateTime expiredAt
+    @Shared
+    long sumBeforeConversion
 
     @Subject
     @Autowired
@@ -51,7 +53,7 @@ class MemberPointServiceIntegTest extends Specification {
 
     @Subject
     @Autowired
-    PointReserveDomainService pointReserveDomainService
+    PointReservationDomainService pointReserveDomainService
 
     def setup() {
         historyRequest = MemberPointHistoryListRequest.builder().memberNumber(MEMBER_NO).build()
@@ -114,7 +116,7 @@ class MemberPointServiceIntegTest extends Specification {
 
     def '5. should reserve points not include in available points'(){
         when:
-        def reserveVO = PublishPointReserveRequestVO.create(
+        def reserveVO = PublishPointReservationRequestVO.create(
                 MEMBER_NO,
                 ORDER_NUMBER,
                 1000,
@@ -130,8 +132,10 @@ class MemberPointServiceIntegTest extends Specification {
                 false,
                 LocalDateTime.now().plusDays(1)
         )
+        sumBeforeConversion = summaryFromAvailablePoints()
         pointReserveDomainService.reserve(reserveVO)
         then:
+        pointReserveDomainService.sumReservedPoint(MEMBER_NO)
         noExceptionThrown()
     }
 
