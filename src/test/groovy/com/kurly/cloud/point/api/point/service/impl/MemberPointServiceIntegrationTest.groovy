@@ -21,7 +21,7 @@ import java.time.ZonedDateTime
 @Stepwise
 @SpringBootTest
 @ActiveProfiles("local")
-class MemberPointServiceIntegTest extends Specification {
+class MemberPointServiceIntegrationTest extends Specification {
     public static final int MEMBER_NO = 999999999
     public static final int ORDER_NUMBER = 1
     public static final int FIRST_TRY = 3
@@ -135,8 +135,8 @@ class MemberPointServiceIntegTest extends Specification {
         sumBeforeConversion = summaryFromAvailablePoints()
         pointReserveDomainService.reserve(reserveVO)
         then:
-        pointReserveDomainService.sumReservedPoint(MEMBER_NO)
-        noExceptionThrown()
+        pointReserveDomainService.sumReservedPoint(MEMBER_NO) == 1000
+        sumBeforeConversion == summaryFromAvailablePoints()
     }
 
     private long summaryFromMemberPoint() {

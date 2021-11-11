@@ -26,11 +26,10 @@ import java.time.LocalDateTime;
 public class PointReservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long seq;
+    private long id;
 
-    @NotNull
     @Column(name = "m_no")
-    private Long memberNumber;
+    private long memberNumber;
 
     @Column(name = "ordno")
     private long orderNumber;

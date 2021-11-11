@@ -22,7 +22,7 @@ class PointReservationRepositoryTest extends Specification {
     @Transactional
     def 'should get id not 0 after saving PointReservation'() {
         given: "initially, construct a point reservation "
-        def pointReservation = PointReservation.builder().seq(0)
+        def pointReservation = PointReservation.builder().id(0)
                 .memberNumber(1).remain(1000)
                 .charge(1000).historyType(1)
                 .startedAt(LocalDateTime.now())
@@ -31,7 +31,7 @@ class PointReservationRepositoryTest extends Specification {
 
         when: "save it, and find it again for check"
         def saved = pointReservationRepository.save(pointReservation)
-        def found = pointReservationRepository.findById(saved.getSeq())
+        def found = pointReservationRepository.findById(saved.getId())
 
         then:  "should find the saved one and not yet applied"
         found.isPresent()
@@ -47,7 +47,7 @@ class PointReservationRepositoryTest extends Specification {
         pointReservationRepository.save(pointReservation)
 
         then: "should return it with the point and be applied"
-        def foundAfterApply = pointReservationRepository.findById(saved.getSeq())
+        def foundAfterApply = pointReservationRepository.findById(saved.getId())
         foundAfterApply.get().getPoint() != null
         found.get().isApplied()
     }

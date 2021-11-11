@@ -1,6 +1,7 @@
 package com.kurly.cloud.point.api.point.domain.publish;
 
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
+import com.kurly.cloud.point.api.point.entity.PointReservation;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -71,5 +72,24 @@ public class PublishPointReservationRequestVO extends PublishPointRequest {
     if(LocalDateTime.now().isAfter(startedAt)){
       throw new IllegalArgumentException("startAt must be future");
     }
+  }
+
+  public PointReservation convertToEntity() {
+    return PointReservation.builder()
+            .id(0)
+            .memberNumber(memberNumber)
+            .orderNumber(orderNumber)
+            .charge(point)
+            .remain(point)
+            .pointRatio(pointRatio)
+            .historyType(historyType)
+            .refundType(1)
+            .payment(false)
+            .settle(false)
+            .startedAt(this.startedAt)
+            .expiredAt(expireDate.toLocalDateTime())
+            .createdAt(LocalDateTime.now())
+            .updatedAt(LocalDateTime.now())
+            .build();
   }
 }
