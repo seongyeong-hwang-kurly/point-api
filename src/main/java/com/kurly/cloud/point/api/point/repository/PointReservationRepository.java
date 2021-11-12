@@ -1,10 +1,10 @@
 package com.kurly.cloud.point.api.point.repository;
 
-import com.kurly.cloud.point.api.point.entity.PointReservation;
+import com.kurly.cloud.point.api.point.entity.PointReservationEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface PointReservationRepository extends JpaRepository<PointReservation, Long> {
-    List<PointReservation> findAllByMemberNumber(long memberNumber);
+public interface PointReservationRepository extends JpaRepository<PointReservationEntity, Long> {
+    List<PointReservationEntity> findAllByMemberNumber(long memberNumber);
 }
