@@ -38,7 +38,7 @@ public class PointReservationDomainService {
     @Transactional
     public void transformIfReservedPointBefore(long memberNumber, LocalDateTime criterionAt) {
         findPointReservations(memberNumber).stream()
-                .filter(it->it.getStartedAt().isBefore(criterionAt))
+                .filter(it->it.getStartedAt().isBefore(criterionAt) && !it.isApplied())
                 .forEach(this::transform);
     }
 

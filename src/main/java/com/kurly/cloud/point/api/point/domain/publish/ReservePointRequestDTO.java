@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.FutureOrPresent;
+import javax.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 
 @Getter
@@ -14,6 +15,7 @@ import java.time.ZonedDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReservePointRequestDTO extends PublishPointRequest {
+  @NotNull
   @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
   @FutureOrPresent
   ZonedDateTime startDate;

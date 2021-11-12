@@ -17,7 +17,7 @@ import javax.validation.Valid;
 @RestController
 @RequiredArgsConstructor
 public class ReservationController {
-  PointReservationDomainService pointReservationDomainService;
+  private final PointReservationDomainService pointReservationDomainService;
 
   @PostMapping(value = "/v2/reserve", consumes = MediaType.APPLICATION_JSON_VALUE)
   ReservationResultDTO reserve(
