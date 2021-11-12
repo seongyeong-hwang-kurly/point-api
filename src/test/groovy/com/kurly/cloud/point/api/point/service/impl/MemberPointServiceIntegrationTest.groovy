@@ -5,7 +5,7 @@ import com.kurly.cloud.point.api.point.domain.consume.OrderConsumePointRequest
 import com.kurly.cloud.point.api.point.domain.history.HistoryType
 import com.kurly.cloud.point.api.point.domain.history.MemberPointHistoryListRequest
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest
-import com.kurly.cloud.point.api.point.domain.publish.PublishPointReservationRequestVO
+import com.kurly.cloud.point.api.point.domain.publish.ReservationRequestVO
 import org.apache.commons.lang.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -67,7 +67,7 @@ class MemberPointServiceIntegrationTest extends Specification {
         def pointHistories = memberPointService.getMemberHistoryList(historyRequest)
         then:
         pointHistories.size() == FIRST_TRY + SECOND_TRY
-        summuriseFromAvailablePoints() == summaryFromMemberPoint()
+        summariseFromAvailablePoints() == getSummaryFromMemberPoint()
     }
 
     private publishNTimes(int times, int point) {
@@ -110,17 +110,17 @@ class MemberPointServiceIntegrationTest extends Specification {
         when:
         consumePointService.cancelConsumeByOrder(cancelRequest)
         then:
-        summuriseFromAvailablePoints() == summaryFromMemberPoint()
+        summariseFromAvailablePoints() == getSummaryFromMemberPoint()
     }
 
     def '5. should reserve points not include in available points'(){
         when:
-        def reserveVO = PublishPointReservationRequestVO.create(
+        def reserveVO = ReservationRequestVO.create(
                 MEMBER_NO,
                 ORDER_NUMBER,
                 RESERVE_POINT,
                 0.1f,
-                HistoryType.TYPE_1,
+                HistoryType.TYPE_1.getValue(),
                 true,
                 false,
                 false,
@@ -138,24 +138,24 @@ class MemberPointServiceIntegrationTest extends Specification {
 
     def '6. convert the reserved point to available point'() {
         given:
-        def sumBeforeConversion = summuriseFromAvailablePoints()
+        def sumBeforeConversion = summariseFromAvailablePoints()
         def before = pointReservationDomainService.findPointReservations(MEMBER_NO).first()
         before.getPointEntity() == null
         !before.isApplied()
         when:
         pointReservationDomainService.transformIfReservedPointBefore(MEMBER_NO, LocalDateTime.now().plusDays(2))
         then:
-        sumBeforeConversion + RESERVE_POINT == summuriseFromAvailablePoints()
+        sumBeforeConversion + RESERVE_POINT == summariseFromAvailablePoints()
         def after = pointReservationDomainService.findPointReservations(MEMBER_NO).first()
         after.getPointEntity() != null
         after.isApplied()
     }
 
-    private long summaryFromMemberPoint() {
+    private long getSummaryFromMemberPoint() {
         memberPointService.getMemberPoint(MEMBER_NO).getTotalPoint()
     }
 
-    private long summuriseFromAvailablePoints() {
+    private long summariseFromAvailablePoints() {
         pointDomainService.getAvailableMemberPoint(MEMBER_NO).stream().mapToLong({ it -> it.getRemain() }).sum()
     }
 }

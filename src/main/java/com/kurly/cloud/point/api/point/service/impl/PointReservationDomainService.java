@@ -1,6 +1,7 @@
 package com.kurly.cloud.point.api.point.service.impl;
 
-import com.kurly.cloud.point.api.point.domain.publish.PublishPointReservationRequestVO;
+import com.kurly.cloud.point.api.point.domain.publish.ReservationRequestVO;
+import com.kurly.cloud.point.api.point.domain.publish.ReservationResultVO;
 import com.kurly.cloud.point.api.point.entity.PointReservationEntity;
 import com.kurly.cloud.point.api.point.repository.PointReservationRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,9 +19,11 @@ public class PointReservationDomainService {
     private final PointReservationRepository pointReservationRepository;
     private final PublishPointServiceV2 publishPointServiceV2;
 
-    public void reserve(
-            PublishPointReservationRequestVO publishPointReservationRequestVO) {
-        pointReservationRepository.save(publishPointReservationRequestVO.convertToEntity());
+    public ReservationResultVO reserve(
+            ReservationRequestVO reservationRequestVO) {
+        PointReservationEntity saved = pointReservationRepository.save(reservationRequestVO.convertToEntity());
+
+        return ReservationResultVO.from(saved);
     }
 
     public long sumReservedPoint(long memberNumber) {
