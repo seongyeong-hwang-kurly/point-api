@@ -67,7 +67,7 @@ class MemberPointServiceIntegrationTest extends Specification {
         def pointHistories = memberPointService.getMemberHistoryList(historyRequest)
         then:
         pointHistories.size() == FIRST_TRY + SECOND_TRY
-        summaryFromAvailablePoints() == summaryFromMemberPoint()
+        summuriseFromAvailablePoints() == summaryFromMemberPoint()
     }
 
     private publishNTimes(int times, int point) {
@@ -110,7 +110,7 @@ class MemberPointServiceIntegrationTest extends Specification {
         when:
         consumePointService.cancelConsumeByOrder(cancelRequest)
         then:
-        summaryFromAvailablePoints() == summaryFromMemberPoint()
+        summuriseFromAvailablePoints() == summaryFromMemberPoint()
     }
 
     def '5. should reserve points not include in available points'(){
@@ -138,19 +138,24 @@ class MemberPointServiceIntegrationTest extends Specification {
 
     def '6. convert the reserved point to available point'() {
         given:
-        sumBeforeConversion == summaryFromAvailablePoints()
+        def sumBeforeConversion = summuriseFromAvailablePoints()
+        def before = pointReservationDomainService.findPointReservations(MEMBER_NO).first()
+        before.getPointEntity() == null
+        !before.isApplied()
         when:
-        pointReservationDomainService.transform(MEMBER_NO, LocalDateTime.now().plusDays(2))
+        pointReservationDomainService.transformIfReservedPointBefore(MEMBER_NO, LocalDateTime.now().plusDays(2))
         then:
-        sumBeforeConversion + RESERVE_POINT == summaryFromAvailablePoints()
+        sumBeforeConversion + RESERVE_POINT == summuriseFromAvailablePoints()
+        def after = pointReservationDomainService.findPointReservations(MEMBER_NO).first()
+        after.getPointEntity() != null
+        after.isApplied()
     }
-
 
     private long summaryFromMemberPoint() {
         memberPointService.getMemberPoint(MEMBER_NO).getTotalPoint()
     }
 
-    private long summaryFromAvailablePoints() {
+    private long summuriseFromAvailablePoints() {
         pointDomainService.getAvailableMemberPoint(MEMBER_NO).stream().mapToLong({ it -> it.getRemain() }).sum()
     }
 }
