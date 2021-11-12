@@ -10,7 +10,6 @@ import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 
 @Entity
 @Getter
@@ -35,7 +34,7 @@ public class PointReservationEntity {
     private boolean payment;
     private boolean settle;
     private boolean unlimitedDate;
-    private ZonedDateTime expireDate;
+    private LocalDateTime expireDate;
     @Builder.Default
     private String memo = "";
     private String detail;

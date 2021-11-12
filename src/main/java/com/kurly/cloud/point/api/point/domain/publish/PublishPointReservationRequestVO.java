@@ -85,7 +85,7 @@ public class PublishPointReservationRequestVO extends PublishPointRequest {
             .payment(payment)
             .settle(settle)
             .unlimitedDate(unlimitedDate)
-            .expireDate(expireDate)
+            .expireDate(expireDate.toLocalDateTime())
             .memo(memo)
             .detail(detail)
             .actionMemberNumber(actionMemberNumber)

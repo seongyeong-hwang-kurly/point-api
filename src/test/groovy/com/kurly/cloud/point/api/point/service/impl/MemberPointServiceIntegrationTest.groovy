@@ -140,7 +140,7 @@ class MemberPointServiceIntegrationTest extends Specification {
         given:
         sumBeforeConversion == summaryFromAvailablePoints()
         when:
-        pointReservationDomainService.transform(MEMBER_NO)
+        pointReservationDomainService.transform(MEMBER_NO, LocalDateTime.now().plusDays(2))
         then:
         sumBeforeConversion + RESERVE_POINT == summaryFromAvailablePoints()
     }

@@ -7,27 +7,39 @@ import spock.lang.Specification
 import java.time.LocalDateTime
 
 class PointReservationHelperTest extends Specification {
+
+    public static final int MEMBER_NUMBER = 1004
+    public static final int ORDER_NUMBER = 999999
+    public static final int POINT = 1000
+    public static final float POINT_RATIO = 0.1f
+    public static final int HISTORY_TYPE = 1
+
     def 'should convert from PointReservation to PublishPointRequest'() {
         given:
         def reservation = PointReservationEntity.builder()
-                .memberNumber(1)
-                .orderNumber(1)
-                .charge(1000)
-                .remain(1000)
-                .pointRatio(0.1)
-                .historyType(1)
-                .refundType(1)
+                .memberNumber(MEMBER_NUMBER)
+                .orderNumber(ORDER_NUMBER)
+                .point(POINT)
+                .pointRatio(POINT_RATIO)
+                .historyType(HISTORY_TYPE)
                 .payment(false)
                 .settle(false)
+                .unlimitedDate(false)
+                .expireDate(LocalDateTime.now().plusDays(7))
                 .startedAt(LocalDateTime.now())
-                .expiredAt(LocalDateTime.now().plusDays(7))
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build()
         when:
         PublishPointRequest request = PointReservationHelper.convert(reservation)
         then:
-        noExceptionThrown()
+        with(request) {
+            assert memberNumber.longValue() == MEMBER_NUMBER
+            assert orderNumber.longValue() == ORDER_NUMBER
+            assert point.longValue() == POINT
+            assert pointRatio.floatValue() == POINT_RATIO
+            assert historyType.intValue() == HISTORY_TYPE
+        }
     }
 }
 
