@@ -3,6 +3,8 @@ package com.kurly.cloud.point.api.point.service.impl;
 import com.kurly.cloud.point.api.point.domain.publish.ReservationRequestVO;
 import com.kurly.cloud.point.api.point.domain.publish.ReservationResultVO;
 import com.kurly.cloud.point.api.point.entity.PointReservationEntity;
+import com.kurly.cloud.point.api.point.entity.PointReservationHistoryEntity;
+import com.kurly.cloud.point.api.point.repository.PointReservationHistoryRepository;
 import com.kurly.cloud.point.api.point.repository.PointReservationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,13 +18,15 @@ import static com.kurly.cloud.point.api.point.service.helper.PointReservationHel
 @Service
 @RequiredArgsConstructor
 public class PointReservationDomainService {
-    private final PointReservationRepository pointReservationRepository;
     private final PublishPointServiceV2 publishPointServiceV2;
+    private final PointReservationRepository pointReservationRepository;
+    private final PointReservationHistoryRepository pointReservationHistoryRepository;
 
+    @Transactional
     public ReservationResultVO reserve(
             ReservationRequestVO reservationRequestVO) {
         PointReservationEntity saved = pointReservationRepository.save(reservationRequestVO.convertToEntity());
-
+        pointReservationHistoryRepository.save(PointReservationHistoryEntity.from(saved));
         return ReservationResultVO.from(saved);
     }
 
@@ -44,5 +48,6 @@ public class PointReservationDomainService {
 
     private void transform(PointReservationEntity reservedOne) {
         reservedOne.apply(publishPointServiceV2.publish(convert(reservedOne)));
+        pointReservationHistoryRepository.save(PointReservationHistoryEntity.from(reservedOne));
     }
 }
