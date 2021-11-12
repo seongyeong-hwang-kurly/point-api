@@ -15,6 +15,7 @@ import java.time.ZonedDateTime
 @SpringBootTest
 @ActiveProfiles("local")
 class PointReservationRepositoryTest extends Specification {
+    public static final int POINT = 1000
     @Subject
     @Autowired
     PointReservationRepository pointReservationRepository
@@ -28,7 +29,7 @@ class PointReservationRepositoryTest extends Specification {
         def pointReservation = PointReservationEntity.builder()
                 .id(0)
                 .memberNumber(1)
-                .point(1000)
+                .point(POINT)
                 .historyType(1)
                 .expireDate(ZonedDateTime.now())
                 .startedAt(LocalDateTime.now())
@@ -42,10 +43,10 @@ class PointReservationRepositoryTest extends Specification {
         found.isPresent()
         !found.get().isApplied()
 
-        when: "apply new point to the previous point reserve"
+        when: "apply new point to the previous point reservation"
         def point = Point.builder().seq(0)
-                .memberNumber(1).remain(1000)
-                .charge(1000).historyType(1)
+                .memberNumber(1).remain(POINT)
+                .charge(POINT).historyType(1)
                 .build()
         pointRepository.save(point)
         pointReservation.apply(point)
@@ -55,5 +56,6 @@ class PointReservationRepositoryTest extends Specification {
         def foundAfterApply = pointReservationRepository.findById(saved.getId())
         foundAfterApply.get().getPoint() != 0
         found.get().isApplied()
+        found.get().getPointEntity().getRemain().longValue() == POINT
     }
 }

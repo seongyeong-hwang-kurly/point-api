@@ -17,7 +17,11 @@ import java.time.ZonedDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "mk_point_reservation")
+@Table(name = "mk_point_reservation",
+        indexes = {
+        @Index(columnList = "memberNumber, startedAt")
+    }
+)
 public class PointReservationEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,7 +47,6 @@ public class PointReservationEntity {
     private Point pointEntity;
     @Builder.Default
     private boolean applied = false;
-    @Column(name = "started_at")
     private LocalDateTime startedAt;
     @CreatedDate
     private LocalDateTime createdAt;
