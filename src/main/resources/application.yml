@@ -43,7 +43,6 @@ server:
       enabled: true
   port: 8080
 
-
 notification:
   slack:
     bot:

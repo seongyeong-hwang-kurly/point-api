@@ -29,7 +29,7 @@ Content-Type: application/json
   "historyType" : 1,
   "payment" : false,
   "settle" : false,
-  "startDate" : "2025-01-01T00:00:00Z",
+  "startDate" : "2021-11-12T19:00:00Z",
   "expireDate" : "2030-12-31T23:59:59Z",
   "memo" : "발급사유(내부)",
   "detail" : "발급사유(고객용)",

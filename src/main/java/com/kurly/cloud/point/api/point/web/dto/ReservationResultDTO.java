@@ -12,21 +12,21 @@ import java.time.ZonedDateTime;
 @AllArgsConstructor(staticName = "create")
 public class ReservationResultDTO {
   public static final ZoneId ZONE_ID = ZoneId.of("Asia/Seoul");
-  private long id;
-  private Long memberNumber;
-  private long orderNumber;
-  private Long reservedPoint;
-  private float pointRatio;
-  private Integer historyType;
-  private boolean payment;
-  private boolean settle;
-  private boolean applied;
+  private final long id;
+  private final Long memberNumber;
+  private final long orderNumber;
+  private final Long reservedPoint;
+  private final float pointRatio;
+  private final Integer historyType;
+  private final boolean payment;
+  private final boolean settle;
+  private final boolean applied;
   @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
-  private ZonedDateTime startDateTime;
+  private final ZonedDateTime startDateTime;
   @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
-  private ZonedDateTime createDateTime;
+  private final ZonedDateTime createDateTime;
   @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
-  private ZonedDateTime expireDateTime;
+  private final ZonedDateTime expireDateTime;
 
 
   public static ReservationResultDTO from(ReservationResultVO vo) {

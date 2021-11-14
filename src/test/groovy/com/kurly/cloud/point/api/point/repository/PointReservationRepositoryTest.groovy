@@ -10,7 +10,6 @@ import spock.lang.Subject
 
 import javax.transaction.Transactional
 import java.time.LocalDateTime
-import java.time.ZonedDateTime
 
 @SpringBootTest
 @ActiveProfiles("local")
@@ -31,7 +30,7 @@ class PointReservationRepositoryTest extends Specification {
                 .memberNumber(1)
                 .point(POINT)
                 .historyType(1)
-                .expireDate(ZonedDateTime.now())
+                .expireDate(LocalDateTime.now())
                 .startedAt(LocalDateTime.now())
                 .build()
 
