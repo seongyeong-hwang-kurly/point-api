@@ -47,7 +47,6 @@ public class ReservationRequestVO extends PublishPointRequest {
                                             long actionMemberNumber,
                                             boolean hidden,
                                             LocalDateTime startedAt) {
-    validate(startedAt);
     return new ReservationRequestVO(
       memberNumber,
       orderNumber,
@@ -65,12 +64,6 @@ public class ReservationRequestVO extends PublishPointRequest {
       false,
       startedAt
     );
-  }
-
-  private static void validate(LocalDateTime startedAt) {
-    if(LocalDateTime.now().isAfter(startedAt)){
-      throw new IllegalArgumentException("startAt must be future");
-    }
   }
 
   public PointReservationEntity convertToEntity() {
