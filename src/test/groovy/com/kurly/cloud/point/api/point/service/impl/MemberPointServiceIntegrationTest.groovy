@@ -145,10 +145,10 @@ class MemberPointServiceIntegrationTest extends Specification {
         when:
         pointReservationDomainService.transformIfReservedPointBefore(MEMBER_NO, LocalDateTime.now().plusDays(2))
         then:
-        sumBeforeConversion + RESERVE_POINT == summariseFromAvailablePoints()
-        def after = pointReservationDomainService.findPointReservations(MEMBER_NO).first()
-        after.getPointEntity() != null
-        after.isApplied()
+        sumBeforeConversion + RESERVE_POINT == getSummaryFromMemberPoint()
+        getSummaryFromMemberPoint() == summariseFromAvailablePoints()
+        def reservations = pointReservationDomainService.findPointReservations(MEMBER_NO)
+        reservations.size() == 0 // it's already transformed to a real point
     }
 
     private long getSummaryFromMemberPoint() {
