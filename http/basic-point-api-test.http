@@ -40,7 +40,7 @@ Content-Type: application/json
 {
   "memberNumber" : 888888888,
   "orderNumber" : 88888888,
-  "point" : 250,
+  "point" : 150,
   "settle" : false
 }
 

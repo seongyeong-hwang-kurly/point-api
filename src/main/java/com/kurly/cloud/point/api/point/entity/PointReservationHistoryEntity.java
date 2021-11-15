@@ -20,35 +20,35 @@ import java.time.LocalDateTime;
 public class PointReservationHistoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private final long id;
 
-    private long memberNumber;
-    private long orderNumber;
-    private long point;
-    private float pointRatio;
-    private int historyType;
-    private boolean payment;
-    private boolean settle;
-    private boolean unlimitedDate;
-    private LocalDateTime expireDate;
+    private final long memberNumber;
+    private final long orderNumber;
+    private final long point;
+    private final float pointRatio;
+    private final int historyType;
+    private final boolean payment;
+    private final boolean settle;
+    private final boolean unlimitedDate;
+    private final LocalDateTime expireDate;
     @Builder.Default
-    private String memo = "";
-    private String detail;
-    private long actionMemberNumber;
-    private boolean hidden;
+    private final String memo = "";
+    private final String detail;
+    private final long actionMemberNumber;
+    private final boolean hidden;
 
     @Nullable
     @OneToOne(fetch = FetchType.LAZY)
-    private Point pointEntity;
+    private final Point pointEntity;
     @Nullable
     @ManyToOne(fetch = FetchType.LAZY)
-    private PointReservationEntity pointReservationEntity;
+    private final PointReservationEntity pointReservationEntity;
 
     @Builder.Default
-    private boolean applied = false;
-    private LocalDateTime startedAt;
+    private final boolean applied = false;
+    private final LocalDateTime startedAt;
     @CreatedDate
-    private LocalDateTime createdAt;
+    private final LocalDateTime createdAt;
 
     public static PointReservationHistoryEntity from(PointReservationEntity entity) {
         return new PointReservationHistoryEntity(

@@ -50,7 +50,7 @@ public class PointReservationEntity {
     @CreatedDate
     private LocalDateTime createdAt;
     @LastModifiedDate
-    LocalDateTime updatedAt;
+    private LocalDateTime updatedAt;
 
     public void apply(Point point) {
         this.pointEntity = point;

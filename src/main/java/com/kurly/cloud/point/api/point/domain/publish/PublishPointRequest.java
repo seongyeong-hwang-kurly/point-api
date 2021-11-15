@@ -21,7 +21,7 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class  PublishPointRequest {
+public class PublishPointRequest {
   @NotNull
   Long memberNumber;
   @JsonIgnore
