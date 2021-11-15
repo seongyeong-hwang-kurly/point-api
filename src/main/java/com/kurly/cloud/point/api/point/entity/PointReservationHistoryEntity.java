@@ -1,10 +1,8 @@
 package com.kurly.cloud.point.api.point.entity;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -31,28 +29,24 @@ public class PointReservationHistoryEntity {
     private final boolean settle;
     private final boolean unlimitedDate;
     private final LocalDateTime expireDate;
-    @Builder.Default
-    private final String memo = "";
+    private final String memo;
     private final String detail;
     private final long actionMemberNumber;
     private final boolean hidden;
 
-    @Nullable
     @OneToOne(fetch = FetchType.LAZY)
     private final Point pointEntity;
-    @Nullable
     @ManyToOne(fetch = FetchType.LAZY)
     private final PointReservationEntity pointReservationEntity;
 
-    @Builder.Default
-    private final boolean applied = false;
+    private final boolean applied;
     private final LocalDateTime startedAt;
     @CreatedDate
     private final LocalDateTime createdAt;
 
     public static PointReservationHistoryEntity from(PointReservationEntity entity) {
         return new PointReservationHistoryEntity(
-                0,
+                0L,
                 entity.getMemberNumber(),
                 entity.getOrderNumber(),
                 entity.getPoint(),
