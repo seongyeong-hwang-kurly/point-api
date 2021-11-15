@@ -18,13 +18,10 @@ class PointReservationHelperTest extends Specification {
         given:
         def reservation = PointReservationEntity.builder()
                 .memberNumber(MEMBER_NUMBER)
-                .orderNumber(ORDER_NUMBER)
                 .point(POINT)
-                .pointRatio(POINT_RATIO)
                 .historyType(HISTORY_TYPE)
                 .payment(false)
                 .settle(false)
-                .unlimitedDate(false)
                 .expireDate(LocalDateTime.now().plusDays(7))
                 .startedAt(LocalDateTime.now())
                 .createdAt(LocalDateTime.now())
@@ -35,9 +32,7 @@ class PointReservationHelperTest extends Specification {
         then:
         with(request) {
             assert memberNumber.longValue() == MEMBER_NUMBER
-            assert orderNumber.longValue() == ORDER_NUMBER
             assert point.longValue() == POINT
-            assert pointRatio.floatValue() == POINT_RATIO
             assert historyType.intValue() == HISTORY_TYPE
         }
     }
