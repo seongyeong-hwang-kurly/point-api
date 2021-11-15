@@ -2,6 +2,7 @@ package com.kurly.cloud.point.api.point.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -9,6 +10,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "mk_point_reservation_history",
         indexes = {
@@ -18,43 +20,37 @@ import java.time.LocalDateTime;
 public class PointReservationHistoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private final long id;
+    private long id;
 
-    private final long memberNumber;
-    private final long orderNumber;
-    private final long point;
-    private final float pointRatio;
-    private final int historyType;
-    private final boolean payment;
-    private final boolean settle;
-    private final boolean unlimitedDate;
-    private final LocalDateTime expireDate;
-    private final String memo;
-    private final String detail;
-    private final long actionMemberNumber;
-    private final boolean hidden;
+    private long memberNumber;
+    private long point;
+    private int historyType;
+    private boolean payment;
+    private boolean settle;
+    private LocalDateTime expireDate;
+    private String memo;
+    private String detail;
+    private long actionMemberNumber;
+    private boolean hidden;
 
     @OneToOne(fetch = FetchType.LAZY)
-    private final Point pointEntity;
+    private Point pointEntity;
     @ManyToOne(fetch = FetchType.LAZY)
-    private final PointReservationEntity pointReservationEntity;
+    private PointReservationEntity pointReservationEntity;
 
-    private final boolean applied;
-    private final LocalDateTime startedAt;
+    private boolean applied;
+    private LocalDateTime startedAt;
     @CreatedDate
-    private final LocalDateTime createdAt;
+    private LocalDateTime createdAt;
 
     public static PointReservationHistoryEntity from(PointReservationEntity entity) {
         return new PointReservationHistoryEntity(
                 0L,
                 entity.getMemberNumber(),
-                entity.getOrderNumber(),
                 entity.getPoint(),
-                entity.getPointRatio(),
                 entity.getHistoryType(),
                 entity.isPayment(),
                 entity.isSettle(),
-                entity.isUnlimitedDate(),
                 entity.getExpireDate(),
                 entity.getMemo(),
                 entity.getDetail(),

@@ -36,7 +36,7 @@ public class PointReservationDomainService {
     }
 
     public List<PointReservationEntity> findPointReservations(long memberNumber) {
-        return pointReservationRepository.findAllByMemberNumber(memberNumber);
+        return pointReservationRepository.findAllByMemberNumberAndAppliedIsFalse(memberNumber);
     }
 
     @Transactional

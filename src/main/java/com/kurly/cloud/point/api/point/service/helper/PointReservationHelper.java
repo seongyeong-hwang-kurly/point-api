@@ -7,13 +7,10 @@ public class PointReservationHelper {
     public static PublishPointRequest convert(PointReservationEntity reservation) {
         return PublishPointRequest.builder()
                 .memberNumber(reservation.getMemberNumber())
-                .orderNumber(reservation.getOrderNumber())
                 .point(reservation.getPoint())
-                .pointRatio(reservation.getPointRatio())
                 .historyType(reservation.getHistoryType())
                 .payment(reservation.isPayment())
                 .settle(reservation.isSettle())
-                .unlimitedDate(reservation.isUnlimitedDate())
                 .expireDate(reservation.getExpireDate())
                 .memo(reservation.getMemo())
                 .detail(reservation.getDetail())

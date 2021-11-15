@@ -13,9 +13,7 @@ import java.time.LocalDateTime;
 public class ReservationResultVO {
   private long id;
   private Long memberNumber;
-  private long orderNumber;
   private Long reservedPoint;
-  private float pointRatio;
   private Integer historyType;
   private boolean payment;
   private boolean settle;
@@ -26,8 +24,8 @@ public class ReservationResultVO {
 
   public static ReservationResultVO from(PointReservationEntity entity){
     return ReservationResultVO.create(
-            entity.getId(), entity.getMemberNumber(), entity.getOrderNumber(), entity.getPoint(),
-            entity.getPointRatio(), entity.getHistoryType(), entity.isPayment(),
+            entity.getId(), entity.getMemberNumber(), entity.getPoint(),
+             entity.getHistoryType(), entity.isPayment(),
             entity.isSettle(), entity.isApplied(), entity.getStartedAt(),
             entity.getCreatedAt(), entity.getExpireDate());
   }

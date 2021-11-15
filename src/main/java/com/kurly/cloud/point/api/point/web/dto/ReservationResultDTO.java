@@ -14,9 +14,7 @@ public class ReservationResultDTO {
   public static final ZoneId ZONE_ID = ZoneId.of("Asia/Seoul");
   private final long id;
   private final Long memberNumber;
-  private final long orderNumber;
   private final Long reservedPoint;
-  private final float pointRatio;
   private final Integer historyType;
   private final boolean payment;
   private final boolean settle;
@@ -31,8 +29,8 @@ public class ReservationResultDTO {
 
   public static ReservationResultDTO from(ReservationResultVO vo) {
     return ReservationResultDTO.create(
-         vo.getId(), vo.getMemberNumber(), vo.getOrderNumber(),
-         vo.getReservedPoint(), vo.getPointRatio(), vo.getHistoryType(),
+         vo.getId(), vo.getMemberNumber(),
+         vo.getReservedPoint(), vo.getHistoryType(),
          vo.isPayment(), vo.isSettle(), vo.isApplied(),
          ZonedDateTime.of(vo.getStartedAt(), ZONE_ID),
          ZonedDateTime.of(vo.getCreatedAt(), ZONE_ID),

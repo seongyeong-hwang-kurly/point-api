@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Table(name = "mk_point_reservation",
         indexes = {
-        @Index(columnList = "memberNumber, startedAt")
+        @Index(columnList = "memberNumber")
     }
 )
 public class PointReservationEntity {
@@ -27,13 +27,10 @@ public class PointReservationEntity {
     private long id;
 
     private long memberNumber;
-    private long orderNumber;
     private long point;
-    private float pointRatio;
     private int historyType;
     private boolean payment;
     private boolean settle;
-    private boolean unlimitedDate;
     private LocalDateTime expireDate;
     @Builder.Default
     private String memo = "";
