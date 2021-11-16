@@ -1,8 +1,5 @@
 package com.kurly.cloud.point.api.point.service.impl;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.TransactionalTest;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
@@ -10,10 +7,6 @@ import com.kurly.cloud.point.api.point.domain.history.PointHistoryInsertRequest;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
 import com.kurly.cloud.point.api.point.entity.Point;
 import com.kurly.cloud.point.api.point.entity.PointHistory;
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import javax.validation.ConstraintViolationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -23,6 +16,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import javax.validation.ConstraintViolationException;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -118,7 +119,14 @@ class PointHistoryDomainServiceTest implements CommonTestGiven {
       @DisplayName("입력하고 값을 리턴 한다")
       @Test
       void test() {
-        PointHistoryInsertRequest given = given();
+        Point point = pointDomainService.publishPoint(PublishPointRequest.builder()
+                .historyType(HistoryType.TYPE_1.getValue())
+                .point(1000L)
+                .memberNumber(givenMemberNumber())
+                .orderNumber(1L)
+                .build());
+
+        PointHistoryInsertRequest given = given(point);
         PointHistory subject = subject(given);
 
         assertThat(subject.getSeq()).isNotZero();
@@ -134,9 +142,9 @@ class PointHistoryDomainServiceTest implements CommonTestGiven {
 
       }
 
-      private PointHistoryInsertRequest given() {
+      private PointHistoryInsertRequest given(Point point) {
         return PointHistoryInsertRequest.builder()
-            .pointSeq(1L)
+            .pointSeq(point.getSeq())
             .amount(1000L)
             .historyType(HistoryType.TYPE_1.getValue())
             .actionMemberNumber(givenMemberNumber())
