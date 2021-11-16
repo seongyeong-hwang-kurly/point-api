@@ -15,9 +15,21 @@ Content-Type: application/json
   "hidden" : false
 }
 
+> {%
+client.test("Request executed successfully", function() {
+  client.assert(response.status === 200, "Response status is not 200");
+});
+%}
+
 ### 2. 가용 포인트 조회
 GET {{host}}/v1/available/888888888 HTTP/1.1
 Content-Type: application/json
+
+> {%
+client.test("Request executed successfully", function() {
+  client.assert(response.status === 200, "Response status is not 200");
+});
+%}
 
 ### 3. 포인트 예약
 POST http://127.0.0.1:8080/v2/reserve
@@ -37,6 +49,18 @@ Content-Type: application/json
   "hidden" : false
 }
 
+> {%
+client.test("Request executed successfully", function() {
+  client.assert(response.status === 200, "Response status is not 200");
+});
+%}
+
 ### 4. 가용 포인트 조회
 GET {{host}}/v1/available/888888888 HTTP/1.1
 Content-Type: application/json
+
+> {%
+client.test("Request executed successfully", function() {
+  client.assert(response.status === 200, "Response status is not 200");
+});
+%}
