@@ -32,7 +32,7 @@ client.test("Request executed successfully", function() {
 %}
 
 ### 3. 포인트 예약
-POST http://127.0.0.1:8080/v2/reserve
+POST {{host}}/v2/reserve
 Content-Type: application/json
 
 {
@@ -41,7 +41,7 @@ Content-Type: application/json
   "historyType" : 1,
   "payment" : false,
   "settle" : false,
-  "startDate" : "2021-11-15T19:00:00Z",
+  "startDate" : "2022-11-19T19:00:00Z",
   "expireDate" : "2030-12-31T23:59:59Z",
   "memo" : "발급사유(내부)",
   "detail" : "발급사유(고객용)",
