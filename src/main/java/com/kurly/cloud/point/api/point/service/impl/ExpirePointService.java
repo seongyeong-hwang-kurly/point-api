@@ -7,13 +7,14 @@ import com.kurly.cloud.point.api.point.domain.history.MemberPointHistoryInsertRe
 import com.kurly.cloud.point.api.point.domain.history.PointHistoryInsertRequest;
 import com.kurly.cloud.point.api.point.entity.Point;
 import com.kurly.cloud.point.api.point.service.ExpirePointUseCase;
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -69,6 +70,7 @@ class ExpirePointService implements ExpirePointUseCase {
           .amount(-remain)
           .historyType(HistoryType.TYPE_103.getValue())
           .detail(HistoryType.TYPE_103.buildMessage())
+          .expireTime(point.getExpireTime())
           .pointSeq(pointSeq)
           .build());
     });

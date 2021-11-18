@@ -1,15 +1,16 @@
 package com.kurly.cloud.point.api.point.service.impl;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.TransactionalTest;
 import com.kurly.cloud.point.api.point.domain.PointExpireResult;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
+import com.kurly.cloud.point.api.point.entity.PointHistory;
 import com.kurly.cloud.point.api.point.service.ExpirePointUseCase;
 import com.kurly.cloud.point.api.point.service.PublishPointUseCase;
-import java.time.LocalDateTime;
+import com.kurly.cloud.point.api.point.util.PointExpireDateCalculator;
+import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -28,6 +36,9 @@ public class ExpirePointServiceTest implements CommonTestGiven {
 
   @Autowired
   PublishPointUseCase publishPointUseCase;
+
+  @Autowired
+  PointHistoryDomainService pointHistoryDomainService;
 
   @Nested
   @DisplayName("회원의 적립금을 만료 시킬 때")
@@ -41,9 +52,9 @@ public class ExpirePointServiceTest implements CommonTestGiven {
       return LocalDateTime.of(2020, 1, 3, 0, 0, 0);
     }
 
-    PointExpireResult subject() {
+    PointExpireResult expireByDate(LocalDateTime expiringExecutionDate) {
       return expirePointUseCase
-          .expireMemberPoint(givenMemberNumber(), givenExpiredTargetDateTime());
+          .expireMemberPoint(givenMemberNumber(), expiringExecutionDate);
     }
 
     LocalDateTime givenExpiredTargetDateTime() {
@@ -74,11 +85,27 @@ public class ExpirePointServiceTest implements CommonTestGiven {
       @Test
       public void test() {
         givenPoint(givenExpiredDateTime());
-        PointExpireResult pointExpireResult = subject();
+        PointExpireResult pointExpireResult = expireByDate(givenExpiredTargetDateTime());
 
         assertThat(pointExpireResult.getMemberNumber()).isEqualTo(givenMemberNumber());
         assertThat(pointExpireResult.getTotalExpired()).isEqualTo(givenPointAmount());
+        List<LocalDateTime> dates = getDatesOfExpiredPoints(pointExpireResult);
+
+        dates.forEach(this::accept);
       }
+
+      private void accept(LocalDateTime it) {
+        Assertions.assertEquals(it, PointExpireDateCalculator.withEndOfDate(givenExpiredDateTime()));
+      }
+    }
+
+    @NotNull
+    private List<LocalDateTime> getDatesOfExpiredPoints(PointExpireResult pointExpireResult) {
+      return pointExpireResult.getExpiredPointSeq().stream()
+              .flatMap(it -> pointHistoryDomainService.getByPointSeq(it).stream())
+              .map(PointHistory::getRegTime)
+              .filter(Objects::nonNull)
+              .collect(Collectors.toList());
     }
 
     @TransactionalTest
@@ -89,7 +116,7 @@ public class ExpirePointServiceTest implements CommonTestGiven {
       @Test
       public void test() {
         givenPoint(givenNonExpiredDateTime());
-        PointExpireResult pointExpireResult = subject();
+        PointExpireResult pointExpireResult = expireByDate(givenExpiredTargetDateTime());
 
         assertThat(pointExpireResult.getMemberNumber()).isEqualTo(givenMemberNumber());
         assertThat(pointExpireResult.getTotalExpired()).isEqualTo(0);
