@@ -25,6 +25,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -120,6 +121,8 @@ public class ExpirePointServiceTest implements CommonTestGiven {
 
         assertThat(pointExpireResult.getMemberNumber()).isEqualTo(givenMemberNumber());
         assertThat(pointExpireResult.getTotalExpired()).isEqualTo(0);
+        List<LocalDateTime> dates = getDatesOfExpiredPoints(pointExpireResult);
+        assertEquals(0, dates.size());
       }
     }
   }
