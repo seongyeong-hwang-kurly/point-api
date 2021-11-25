@@ -1,9 +1,10 @@
 package com.kurly.cloud.point.api.point.domain.history;
 
 import com.kurly.cloud.point.api.point.entity.MemberPointHistory;
-import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Builder
@@ -22,6 +23,7 @@ public class MemberPointHistoryInsertRequest {
   @Builder.Default
   private LocalDateTime regTime = LocalDateTime.now();
   private LocalDateTime expireTime;
+  private LocalDateTime expiredAt;
 
   /**
    * Entity로 변환 한다.

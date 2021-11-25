@@ -54,6 +54,11 @@ public class MemberPoint {
     setUpdateTime(LocalDateTime.now());
   }
 
+  public void expire(long freePoint, long cashPoint, LocalDateTime expiredAt){
+    minusPoint(freePoint, cashPoint);
+    this.expiredAt = expiredAt;
+  }
+
   public long getRepayAmount(long publishedAmount) {
     if (getTotalPoint() >= publishedAmount) {
       return 0;
