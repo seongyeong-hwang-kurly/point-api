@@ -36,6 +36,10 @@ public class MemberPoint {
   @Column(name = "update_time")
   LocalDateTime updateTime;
 
+  @Convert(converter = UnixTimestampConverter.class)
+  @Column(name = "expired_at")
+  LocalDateTime expiredAt;
+
   public void plusPoint(long freePoint, long cashPoint) {
     setTotalPoint(getTotalPoint() + freePoint + cashPoint);
     setFreePoint(getFreePoint() + freePoint);

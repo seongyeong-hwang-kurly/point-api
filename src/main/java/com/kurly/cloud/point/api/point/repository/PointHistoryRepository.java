@@ -48,5 +48,5 @@ public interface PointHistoryRepository extends JpaRepository<PointHistory, Long
       Pageable pageable
   );
 
-  List<PointHistory> findAllByMemberNumber(long memberNumber);
+  List<PointHistory> findAllByPointSeq(long poing);
 }
