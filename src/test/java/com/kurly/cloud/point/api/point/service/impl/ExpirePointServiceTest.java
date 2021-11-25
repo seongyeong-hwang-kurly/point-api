@@ -5,7 +5,14 @@ import com.kurly.cloud.point.api.point.common.TransactionalTest;
 import com.kurly.cloud.point.api.point.domain.PointExpireResult;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
+import com.kurly.cloud.point.api.point.entity.MemberPoint;
+import com.kurly.cloud.point.api.point.entity.MemberPointHistory;
+import com.kurly.cloud.point.api.point.entity.Point;
 import com.kurly.cloud.point.api.point.entity.PointHistory;
+import com.kurly.cloud.point.api.point.repository.MemberPointHistoryRepository;
+import com.kurly.cloud.point.api.point.repository.MemberPointRepository;
+import com.kurly.cloud.point.api.point.repository.PointHistoryRepository;
+import com.kurly.cloud.point.api.point.repository.PointRepository;
 import com.kurly.cloud.point.api.point.service.ExpirePointUseCase;
 import com.kurly.cloud.point.api.point.service.PublishPointUseCase;
 import com.kurly.cloud.point.api.point.util.PointExpireDateCalculator;
@@ -33,13 +40,25 @@ import static org.junit.Assert.assertEquals;
 public class ExpirePointServiceTest implements CommonTestGiven {
 
   @Autowired
-  ExpirePointUseCase expirePointUseCase;
+  private ExpirePointUseCase expirePointUseCase;
 
   @Autowired
-  PublishPointUseCase publishPointUseCase;
+  private PublishPointUseCase publishPointUseCase;
 
   @Autowired
-  PointHistoryDomainService pointHistoryDomainService;
+  private PointHistoryDomainService pointHistoryDomainService;
+
+  @Autowired
+  private MemberPointRepository memberPointRepository;
+
+  @Autowired
+  private MemberPointHistoryRepository memberPointHistoryRepository;
+
+  @Autowired
+  private PointRepository pointRepository;
+
+  @Autowired
+  private PointHistoryRepository pointHistoryRepository;
 
   @Nested
   @DisplayName("회원의 적립금을 만료 시킬 때")
@@ -90,12 +109,18 @@ public class ExpirePointServiceTest implements CommonTestGiven {
 
         assertThat(pointExpireResult.getMemberNumber()).isEqualTo(givenMemberNumber());
         assertThat(pointExpireResult.getTotalExpired()).isEqualTo(givenPointAmount());
-        List<LocalDateTime> dates = getDatesOfExpiredPoints(pointExpireResult);
 
-        dates.forEach(this::accept);
+        List<MemberPoint> memberPoints = memberPointRepository.findAllByMemberNumber(givenMemberNumber());
+
+        List<MemberPointHistory> memberPointHistories = memberPointHistoryRepository.findAllByMemberNumber(givenMemberNumber());
+
+        List<Point> points = pointRepository.findAllByMemberNumber(givenMemberNumber());
+
+        List<PointHistory> pointHistories = pointHistoryRepository.findAllByMemberNumber(givenMemberNumber());
+
       }
 
-      private void accept(LocalDateTime it) {
+      private void check(LocalDateTime it) {
         Assertions.assertEquals(it, PointExpireDateCalculator.withEndOfDate(givenExpiredDateTime()));
       }
     }
