@@ -35,7 +35,7 @@ class ExpirePointService implements ExpirePointUseCase {
     PointExpireResult pointExpireResult = doExpire(expiredMemberPoint);
     pointExpireResult.setMemberNumber(memberNumber);
 
-    memberPointDomainService.minusFreePoint(memberNumber, pointExpireResult.getTotalExpired());
+    memberPointDomainService.expireFreePoint(memberNumber, pointExpireResult.getTotalExpired(), expireTime);
 
     memberPointHistoryDomainService.insertHistory(MemberPointHistoryInsertRequest.builder()
         .detail(HistoryType.TYPE_103.buildMessage())
@@ -72,7 +72,7 @@ class ExpirePointService implements ExpirePointUseCase {
           .historyType(HistoryType.TYPE_103.getValue())
           .detail(HistoryType.TYPE_103.buildMessage())
           .expireTime(point.getExpireTime())
-          .expiredAt(point.getExpiredAt())
+          .expiredAt(point.getExpireTime())
           .pointSeq(pointSeq)
           .build());
     });

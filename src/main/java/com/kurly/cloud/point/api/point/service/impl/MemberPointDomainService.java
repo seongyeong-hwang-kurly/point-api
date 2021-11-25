@@ -63,10 +63,10 @@ class MemberPointDomainService {
     return memberPointRepository.saveAndFlush(memberPoint);
   }
 
-  public void expireFreePoint(long memberNumber, long amount, LocalDateTime expiredAt) {
-    MemberPoint memberPoint = getMemberPoint(memberNumber)
-            .orElseThrow(()->new IllegalArgumentException("없는 회원번호(" + memberNumber + ")입니다"));
+  MemberPoint expireFreePoint(long memberNumber, long amount, LocalDateTime expiredAt) {
+    MemberPoint memberPoint = getOrCreateMemberPoint(memberNumber);
     memberPoint.expire(amount, 0, expiredAt);
+    return memberPointRepository.saveAndFlush(memberPoint);
   }
 
   MemberPoint minusCashPoint(long memberNumber, long amount) {
