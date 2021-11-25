@@ -111,15 +111,18 @@ public class ExpirePointServiceTest implements CommonTestGiven {
         assertThat(pointExpireResult.getTotalExpired()).isEqualTo(givenPointAmount());
 
         List<MemberPoint> memberPoints = memberPointRepository.findAllByMemberNumber(givenMemberNumber());
-        memberPoints.forEach(it->check(it.getExpiredAt()));
+//        memberPoints.forEach(it->check(it.getExpiredAt()));
         List<MemberPointHistory> memberPointHistories = memberPointHistoryRepository.findAllByMemberNumber(givenMemberNumber());
-        memberPointHistories.forEach(it->check(it.getExpiredAt()));
+//        memberPointHistories.forEach(it->check(it.getExpiredAt()));
         List<Point> points = pointRepository.findAllByMemberNumber(givenMemberNumber());
-        points.forEach(it->check(it.getExpiredAt()));
+        points.forEach(it-> checkExpiredDate(it.getExpiredAt()));
         List<PointHistory> pointHistories = pointHistoryRepository.findAllByPointSeq(givenMemberNumber());
+        pointHistories.stream()
+                .filter(it->it.getExpiredAt()!=null)
+                .forEach(it-> checkExpiredDate(it.getExpiredAt()));
       }
 
-      private void check(LocalDateTime it) {
+      private void checkExpiredDate(LocalDateTime it) {
         Assertions.assertEquals(it, PointExpireDateCalculator.withEndOfDate(givenExpiredDateTime()));
       }
     }

@@ -23,6 +23,7 @@ public class PointHistoryInsertRequest {
   boolean settle;
   long actionMemberNumber;
   LocalDateTime expireTime;
+  LocalDateTime expiredAt;
 
   /**
    * Entity로 변환.

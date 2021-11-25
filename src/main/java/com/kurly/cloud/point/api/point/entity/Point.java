@@ -75,5 +75,6 @@ public class Point {
 
   public void expire() {
     this.remain = 0L;
+    this.expiredAt = expireTime;
   }
 }
