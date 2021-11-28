@@ -15,7 +15,6 @@ import com.kurly.cloud.point.api.point.repository.PointHistoryRepository;
 import com.kurly.cloud.point.api.point.repository.PointRepository;
 import com.kurly.cloud.point.api.point.service.ExpirePointUseCase;
 import com.kurly.cloud.point.api.point.service.PublishPointUseCase;
-import com.kurly.cloud.point.api.point.util.PointExpireDateCalculator;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -31,6 +30,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static com.kurly.cloud.point.api.point.util.PointExpireDateCalculator.withEndOfDate;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
@@ -77,7 +77,7 @@ public class ExpirePointServiceTest implements CommonTestGiven {
           .expireMemberPoint(givenMemberNumber(), expiringExecutionDate);
     }
 
-    LocalDateTime givenExpiredTargetDateTime() {
+    LocalDateTime givenTargetDateTime() {
       return LocalDateTime.of(2020, 1, 2, 0, 0, 0);
     }
 
@@ -105,7 +105,7 @@ public class ExpirePointServiceTest implements CommonTestGiven {
       @Test
       public void test() {
         givenPoint(givenExpiredDateTime());
-        PointExpireResult pointExpireResult = expireByDate(givenExpiredTargetDateTime());
+        PointExpireResult pointExpireResult = expireByDate(givenTargetDateTime());
 
         assertThat(pointExpireResult.getMemberNumber()).isEqualTo(givenMemberNumber());
         assertThat(pointExpireResult.getTotalExpired()).isEqualTo(givenPointAmount());
@@ -125,7 +125,7 @@ public class ExpirePointServiceTest implements CommonTestGiven {
       }
 
       private void checkExpiredDate(LocalDateTime it) {
-        Assertions.assertEquals(it, PointExpireDateCalculator.withEndOfDate(givenExpiredDateTime()));
+        Assertions.assertEquals(it, withEndOfDate(givenExpiredDateTime()));
       }
     }
 
@@ -146,7 +146,7 @@ public class ExpirePointServiceTest implements CommonTestGiven {
       @Test
       public void test() {
         givenPoint(givenNonExpiredDateTime());
-        PointExpireResult pointExpireResult = expireByDate(givenExpiredTargetDateTime());
+        PointExpireResult pointExpireResult = expireByDate(givenTargetDateTime());
 
         assertThat(pointExpireResult.getMemberNumber()).isEqualTo(givenMemberNumber());
         assertThat(pointExpireResult.getTotalExpired()).isEqualTo(0);

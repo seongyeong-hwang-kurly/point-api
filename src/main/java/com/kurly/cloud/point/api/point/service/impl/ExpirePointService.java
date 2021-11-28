@@ -29,20 +29,20 @@ class ExpirePointService implements ExpirePointUseCase {
   @Transactional
   @Override
   public PointExpireResult expireMemberPoint(long memberNumber,
-                                             LocalDateTime expireTime) {
-    List<Point> expiredMemberPoint = pointDomainService
-        .getExpiredMemberPoint(memberNumber, expireTime);
-    PointExpireResult pointExpireResult = doExpire(expiredMemberPoint);
+                                             LocalDateTime executionExpiringTime) {
+    List<Point> targetPoints = pointDomainService
+        .getExpiredPointBy(memberNumber, executionExpiringTime);
+    PointExpireResult pointExpireResult = doExpire(targetPoints);
     pointExpireResult.setMemberNumber(memberNumber);
 
-    memberPointDomainService.expireFreePoint(memberNumber, pointExpireResult.getTotalExpired(), expireTime);
+    memberPointDomainService.expireFreePoint(memberNumber, pointExpireResult.getTotalExpired(), executionExpiringTime);
 
     memberPointHistoryDomainService.insertHistory(MemberPointHistoryInsertRequest.builder()
         .detail(HistoryType.TYPE_103.buildMessage())
         .freePoint(-pointExpireResult.getTotalExpired())
         .memberNumber(memberNumber)
         .type(HistoryType.TYPE_103.getValue())
-        .expiredAt(expireTime)
+        .expiredAt(executionExpiringTime)
         .build());
 
     FileBeatLogger.info(new HashMap<>() {
@@ -77,6 +77,10 @@ class ExpirePointService implements ExpirePointUseCase {
           .build());
     });
 
+    pointExpireResult.setExpiredAt(
+            ExpirePointServiceHelper.getLatestExpiredAt(points));
+
     return pointExpireResult;
   }
+
 }

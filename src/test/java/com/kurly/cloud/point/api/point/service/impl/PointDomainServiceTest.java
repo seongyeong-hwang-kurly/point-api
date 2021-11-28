@@ -1,8 +1,5 @@
 package com.kurly.cloud.point.api.point.service.impl;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.TransactionalTest;
 import com.kurly.cloud.point.api.point.domain.consume.PointConsumeResult;
@@ -11,10 +8,6 @@ import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
 import com.kurly.cloud.point.api.point.entity.Point;
 import com.kurly.cloud.point.api.point.util.DateTimeUtil;
 import com.kurly.cloud.point.api.point.util.PointExpireDateCalculator;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import javax.validation.ConstraintViolationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -22,6 +15,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import javax.validation.ConstraintViolationException;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -697,7 +698,7 @@ class PointDomainServiceTest implements CommonTestGiven {
 
     List<Point> subject() {
       return pointDomainService
-          .getExpiredMemberPoint(givenMemberNumber(), givenExpiredTargetDateTime());
+          .getExpiredPointBy(givenMemberNumber(), givenExpiredTargetDateTime());
     }
 
     LocalDateTime givenExpiredTargetDateTime() {

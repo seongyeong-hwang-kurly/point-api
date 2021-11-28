@@ -6,13 +6,14 @@ import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
 import com.kurly.cloud.point.api.point.entity.Point;
 import com.kurly.cloud.point.api.point.repository.PointRepository;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -101,7 +102,7 @@ class PointDomainService {
     return pointConsumeResult;
   }
 
-  public List<Point> getExpiredMemberPoint(long memberNumber, LocalDateTime expireTime) {
+  public List<Point> getExpiredPointBy(long memberNumber, LocalDateTime expireTime) {
     return pointRepository.findAllExpiredMemberPoint(memberNumber, expireTime);
   }
 
