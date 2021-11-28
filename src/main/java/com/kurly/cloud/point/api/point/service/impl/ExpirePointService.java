@@ -16,6 +16,8 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.kurly.cloud.point.api.point.service.impl.ExpirePointServiceHelper.getLatestExpiredAt;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -35,7 +37,8 @@ class ExpirePointService implements ExpirePointUseCase {
     PointExpireResult pointExpireResult = doExpire(targetPoints);
     pointExpireResult.setMemberNumber(memberNumber);
 
-    memberPointDomainService.expireFreePoint(memberNumber, pointExpireResult.getTotalExpired(), executionExpiringTime);
+    memberPointDomainService.expireFreePoint(
+            memberNumber, pointExpireResult.getTotalExpired(), pointExpireResult.getExpiredAt());
 
     memberPointHistoryDomainService.insertHistory(MemberPointHistoryInsertRequest.builder()
         .detail(HistoryType.TYPE_103.buildMessage())
@@ -77,8 +80,7 @@ class ExpirePointService implements ExpirePointUseCase {
           .build());
     });
 
-    pointExpireResult.setExpiredAt(
-            ExpirePointServiceHelper.getLatestExpiredAt(points));
+    pointExpireResult.setExpiredAt(getLatestExpiredAt(points));
 
     return pointExpireResult;
   }
