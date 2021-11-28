@@ -45,7 +45,8 @@ class ExpirePointService implements ExpirePointUseCase {
         .freePoint(-pointExpireResult.getTotalExpired())
         .memberNumber(memberNumber)
         .type(HistoryType.TYPE_103.getValue())
-        .expiredAt(executionExpiringTime)
+        .expireTime(pointExpireResult.getExpiredAt())
+        .expiredAt(pointExpireResult.getExpiredAt())
         .build());
 
     FileBeatLogger.info(new HashMap<>() {

@@ -40,6 +40,7 @@ public class MemberPointHistoryInsertRequest {
         .memo(this.memo)
         .orderNumber(this.orderNumber)
         .expireTime(this.expireTime)
+        .expiredAt(this.expiredAt)
         .regTime(this.regTime)
         .build();
   }

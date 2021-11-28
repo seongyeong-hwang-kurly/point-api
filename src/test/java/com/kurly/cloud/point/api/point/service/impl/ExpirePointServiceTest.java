@@ -26,6 +26,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -113,7 +114,10 @@ public class ExpirePointServiceTest implements CommonTestGiven {
         List<MemberPoint> memberPoints = memberPointRepository.findAllByMemberNumber(givenMemberNumber());
         memberPoints.forEach(it->checkExpiredDate(it.getExpiredAt()));
         List<MemberPointHistory> memberPointHistories = memberPointHistoryRepository.findAllByMemberNumber(givenMemberNumber());
-        memberPointHistories.forEach(it->checkExpiredDate(it.getExpiredAt()));
+        List<MemberPointHistory> sorted = memberPointHistories.stream()
+                .filter(it->it.getExpiredAt()!=null)
+                .sorted(Comparator.comparing(MemberPointHistory::getExpiredAt).reversed()).collect(Collectors.toList());
+        checkExpiredDate(sorted.get(0).getExpiredAt());
         List<Point> points = pointRepository.findAllByMemberNumber(givenMemberNumber());
         points.forEach(it-> checkExpiredDate(it.getExpiredAt()));
         List<PointHistory> pointHistories = points.stream()
