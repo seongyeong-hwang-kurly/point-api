@@ -121,14 +121,6 @@ public class ExpirePointServiceTest implements CommonTestGiven {
         checkExpiredDate(getLatestPointHistoriesExpiredAt(points));
       }
 
-      private List<PointHistory> getExpiredPointHistories(List<Point> points) {
-        List<PointHistory> pointHistories = points.stream()
-                .flatMap(it->pointHistoryRepository.findAllByPointSeq(it.getSeq()).stream())
-                .collect(Collectors.toList());
-
-        return pointHistories.stream().filter(it -> it.getExpiredAt() != null).collect(Collectors.toList());
-      }
-
       private LocalDateTime getLatestPointHistoriesExpiredAt(List<Point> points) {
         return points.stream()
                 .flatMap(it->pointHistoryRepository.findAllByPointSeq(it.getSeq()).stream())
