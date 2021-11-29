@@ -102,7 +102,7 @@ public class ExpirePointServiceTest implements CommonTestGiven {
     @DisplayName("만료된 적립금이 있다면")
     class Context0 {
 
-      @DisplayName("적립금이 만료처리 된다")
+      @DisplayName("적립금이 만료처리 되고 만료처리 날짜가 expiredAt에 기입된다.")
       @Test
       public void test() {
         givenPoint(givenExpiredDateTime());
