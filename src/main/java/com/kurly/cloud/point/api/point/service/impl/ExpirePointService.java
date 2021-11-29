@@ -75,7 +75,6 @@ class ExpirePointService implements ExpirePointUseCase {
           .amount(-remain)
           .historyType(HistoryType.TYPE_103.getValue())
           .detail(HistoryType.TYPE_103.buildMessage())
-          .expireTime(point.getExpireTime())
           .expiredAt(point.getExpireTime())
           .pointSeq(pointSeq)
           .build());

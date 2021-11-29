@@ -15,7 +15,6 @@ import com.kurly.cloud.point.api.point.repository.PointHistoryRepository;
 import com.kurly.cloud.point.api.point.repository.PointRepository;
 import com.kurly.cloud.point.api.point.service.ExpirePointUseCase;
 import com.kurly.cloud.point.api.point.service.PublishPointUseCase;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -114,18 +113,14 @@ public class ExpirePointServiceTest implements CommonTestGiven {
         List<MemberPoint> memberPoints = memberPointRepository.findAllByMemberNumber(givenMemberNumber());
         memberPoints.forEach(it->checkExpiredDate(it.getExpiredAt()));
 
-        List<MemberPointHistory> sorted = getReversedHistory();
-        checkExpiredDate(sorted.get(0).getExpiredAt());
+        checkExpiredDate(getLatestMemberPointHistoryExpiredAt());
 
         List<Point> points = pointRepository.findAllByMemberNumber(givenMemberNumber());
         points.forEach(it-> checkExpiredDate(it.getExpiredAt()));
 
-        List<PointHistory> expiredPointHistory = getExpiredPointHistories(points);
-        assertEquals(1, expiredPointHistory.size());
-        expiredPointHistory.forEach(it-> checkExpiredDate(it.getExpiredAt()));
+        checkExpiredDate(getLatestPointHistoriesExpiredAt(points));
       }
 
-      @NotNull
       private List<PointHistory> getExpiredPointHistories(List<Point> points) {
         List<PointHistory> pointHistories = points.stream()
                 .flatMap(it->pointHistoryRepository.findAllByPointSeq(it.getSeq()).stream())
@@ -134,11 +129,19 @@ public class ExpirePointServiceTest implements CommonTestGiven {
         return pointHistories.stream().filter(it -> it.getExpiredAt() != null).collect(Collectors.toList());
       }
 
-      @NotNull
-      private List<MemberPointHistory> getReversedHistory() {
+      private LocalDateTime getLatestPointHistoriesExpiredAt(List<Point> points) {
+        return points.stream()
+                .flatMap(it->pointHistoryRepository.findAllByPointSeq(it.getSeq()).stream())
+                .filter(it -> it.getExpiredAt() != null)
+                .max(Comparator.comparing(PointHistory::getExpiredAt))
+                .orElseThrow().getExpiredAt();
+      }
+
+      private LocalDateTime getLatestMemberPointHistoryExpiredAt() {
         return memberPointHistoryRepository.findAllByMemberNumber(givenMemberNumber()).stream()
                 .filter(it -> it.getExpiredAt() != null)
-                .sorted(Comparator.comparing(MemberPointHistory::getExpiredAt).reversed()).collect(Collectors.toList());
+                .max(Comparator.comparing(MemberPointHistory::getExpiredAt))
+                .orElseThrow().getExpiredAt();
       }
 
       private void checkExpiredDate(LocalDateTime it) {
@@ -146,7 +149,6 @@ public class ExpirePointServiceTest implements CommonTestGiven {
       }
     }
 
-    @NotNull
     private List<LocalDateTime> getDatesOfExpiredPoints(PointExpireResult pointExpireResult) {
       return pointExpireResult.getExpiredPointSeq().stream()
               .flatMap(it -> pointHistoryDomainService.getByPointSeq(it).stream())

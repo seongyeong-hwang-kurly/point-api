@@ -22,7 +22,6 @@ public class PointHistoryInsertRequest {
   String memo = "";
   boolean settle;
   long actionMemberNumber;
-  LocalDateTime expireTime;
   LocalDateTime expiredAt;
 
   /**
