@@ -61,7 +61,6 @@ public class PointHistory {
   @Column(name = "reg_time")
   LocalDateTime regTime;
 
-  @Convert(converter = UnixTimestampConverter.class)
   @Column(name = "expired_at")
   LocalDateTime expiredAt;
 

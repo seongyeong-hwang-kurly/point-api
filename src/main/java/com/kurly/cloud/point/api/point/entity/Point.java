@@ -69,7 +69,6 @@ public class Point {
   @Column(name = "expire_time")
   LocalDateTime expireTime;
 
-  @Convert(converter = UnixTimestampConverter.class)
   @Column(name = "expired_at")
   LocalDateTime expiredAt;
 
