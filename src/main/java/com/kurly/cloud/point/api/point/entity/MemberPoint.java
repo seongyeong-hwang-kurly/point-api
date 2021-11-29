@@ -9,6 +9,7 @@ import org.hibernate.annotations.OptimisticLocking;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @DynamicUpdate
 @OptimisticLocking(type = OptimisticLockType.DIRTY)
@@ -56,7 +57,9 @@ public class MemberPoint {
 
   public void expire(long freePoint, long cashPoint, LocalDateTime expiredAt){
     minusPoint(freePoint, cashPoint);
-    setExpiredAt(PointExpireDateCalculator.withEndOfDate(expiredAt));
+    Optional.ofNullable(expiredAt)
+            .ifPresent(it ->
+                    setExpiredAt(PointExpireDateCalculator.withEndOfDate(it)));
   }
 
   public long getRepayAmount(long publishedAmount) {

@@ -10,9 +10,12 @@ class ExpirePointServiceHelperTest extends Specification {
         given:
         def points = [Point.builder().expiredAt(null).build()]
         when:
-        ExpirePointServiceHelper.getLatestExpiredAt(points)
+        def expiredAt = ExpirePointServiceHelper.getLatestExpiredAt(points)
+        def now = LocalDateTime.now()
         then:
-        thrown(IllegalStateException)
+        now.minusMinutes(1).isBefore(expiredAt) &&
+                now.plusMinutes(1).isAfter(expiredAt)
+
     }
 
     def 'should get the latest expireDate from points' () {

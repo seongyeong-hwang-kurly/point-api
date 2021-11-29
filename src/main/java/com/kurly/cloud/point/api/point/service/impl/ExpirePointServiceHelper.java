@@ -8,11 +8,10 @@ import java.util.List;
 
 public class ExpirePointServiceHelper {
     public static LocalDateTime getLatestExpiredAt(List<Point> points) {
-      return points.stream()
-              .filter(it->it.getExpiredAt()!=null)
-              .max(Comparator.comparing(Point::getExpiredAt))
-              .orElseThrow(() ->
-                      new IllegalStateException("there is no expireAt in points during doExpire"))
-              .getExpiredAt();
+        return points.stream()
+                .filter(it -> it.getExpiredAt() != null)
+                .max(Comparator.comparing(Point::getExpiredAt))
+                .map(Point::getExpiredAt)
+                .orElse(LocalDateTime.now());
     }
 }
