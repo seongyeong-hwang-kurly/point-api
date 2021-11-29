@@ -113,19 +113,32 @@ public class ExpirePointServiceTest implements CommonTestGiven {
 
         List<MemberPoint> memberPoints = memberPointRepository.findAllByMemberNumber(givenMemberNumber());
         memberPoints.forEach(it->checkExpiredDate(it.getExpiredAt()));
-        List<MemberPointHistory> memberPointHistories = memberPointHistoryRepository.findAllByMemberNumber(givenMemberNumber());
-        List<MemberPointHistory> sorted = memberPointHistories.stream()
-                .filter(it->it.getExpiredAt()!=null)
-                .sorted(Comparator.comparing(MemberPointHistory::getExpiredAt).reversed()).collect(Collectors.toList());
+
+        List<MemberPointHistory> sorted = getReversedHistory();
         checkExpiredDate(sorted.get(0).getExpiredAt());
+
         List<Point> points = pointRepository.findAllByMemberNumber(givenMemberNumber());
         points.forEach(it-> checkExpiredDate(it.getExpiredAt()));
+
+        List<PointHistory> expiredPointHistory = getExpiredPointHistories(points);
+        assertEquals(1, expiredPointHistory.size());
+        expiredPointHistory.forEach(it-> checkExpiredDate(it.getExpiredAt()));
+      }
+
+      @NotNull
+      private List<PointHistory> getExpiredPointHistories(List<Point> points) {
         List<PointHistory> pointHistories = points.stream()
                 .flatMap(it->pointHistoryRepository.findAllByPointSeq(it.getSeq()).stream())
                 .collect(Collectors.toList());
-        List<PointHistory> expiredPointHistory = pointHistories.stream().filter(it -> it.getExpiredAt() != null).collect(Collectors.toList());
-        assertEquals(1, expiredPointHistory.size());
-        expiredPointHistory.forEach(it-> checkExpiredDate(it.getExpiredAt()));
+
+        return pointHistories.stream().filter(it -> it.getExpiredAt() != null).collect(Collectors.toList());
+      }
+
+      @NotNull
+      private List<MemberPointHistory> getReversedHistory() {
+        return memberPointHistoryRepository.findAllByMemberNumber(givenMemberNumber()).stream()
+                .filter(it -> it.getExpiredAt() != null)
+                .sorted(Comparator.comparing(MemberPointHistory::getExpiredAt).reversed()).collect(Collectors.toList());
       }
 
       private void checkExpiredDate(LocalDateTime it) {

@@ -37,8 +37,9 @@ public class PointHistoryInsertRequest {
         .historyType(historyType)
         .memo(memo)
         .orderNumber(orderNumber)
-        .regTime(expireTime)
+        .regTime(LocalDateTime.now())
         .settle(settle)
+        .expiredAt(expiredAt)
         .build();
   }
 
