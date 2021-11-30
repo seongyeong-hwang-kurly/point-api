@@ -1,0 +1,27 @@
+=== 적립금 예약
+
+회원 에게 적립금을 지급을 예약 합니다. 대규모
+
+NOTE: 포인트 지급시 사용할 수 있습니다.
+
+IMPORTANT: 버전은 `v2`로 하셔야 합니다.
+
+==== HTTP method
+
+POST
+
+==== HTTP request
+
+include::{snippets}/point/pri/reserve-point/http-request.adoc[]
+
+==== Request Fields
+
+include::{snippets}/point/pri/reserve-point/request-fields.adoc[]
+
+==== Response fields
+
+include::{snippets}/point/pri/reserve-point/response-fields-data.adoc[]
+
+==== Response body
+
+include::{snippets}/point/pri/reserve-point/response-body.adoc[]
