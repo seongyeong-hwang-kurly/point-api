@@ -103,6 +103,8 @@ include::cancel-order-publish.adoc[]
 
 include::calculate-reserve.adoc[]
 
+include::reserve-point.adoc[]
+
 == 사용
 
 include::order-consume.adoc[]
