@@ -29,6 +29,7 @@ import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import static com.kurly.cloud.point.api.point.util.PointExpireDateCalculator.withEndOfDate;
@@ -62,6 +63,8 @@ public class ExpirePointServiceTest implements CommonTestGiven {
   @Autowired
   private PointHistoryRepository pointHistoryRepository;
 
+  private final long MEMBER_NUMBER = new Random().nextLong();
+
   @Nested
   @DisplayName("회원의 적립금을 만료 시킬 때")
   class DescribeExpireMemberPoint {
@@ -74,23 +77,23 @@ public class ExpirePointServiceTest implements CommonTestGiven {
       return LocalDateTime.of(2020, 1, 3, 0, 0, 0);
     }
 
-    PointExpireResult expireByDate(LocalDateTime expiringExecutionDate) {
-      return expirePointUseCase
-          .expireMemberPoint(givenMemberNumber(), givenTargetDateTime());
-    }
-
     LocalDateTime givenTargetDateTime() {
       return LocalDateTime.of(2020, 1, 2, 0, 0, 0);
+    }
+
+    PointExpireResult expireByDate(LocalDateTime expiringExecutionDate) {
+      return expirePointUseCase
+          .expireMemberPoint(MEMBER_NUMBER, givenTargetDateTime());
     }
 
     void givenPoint(LocalDateTime expireDate) {
       publishPointUseCase.publish(PublishPointRequest.builder()
           .point(givenPointAmount())
-          .memberNumber(givenMemberNumber())
+          .memberNumber(MEMBER_NUMBER)
           .historyType(HistoryType.TYPE_12.getValue())
-          .actionMemberNumber(givenMemberNumber())
+          .actionMemberNumber(MEMBER_NUMBER)
           .expireDate(expireDate)
-          .detail("지급")
+          .detail("expire test point")
           .build());
     }
 
@@ -109,15 +112,15 @@ public class ExpirePointServiceTest implements CommonTestGiven {
         givenPoint(givenExpiredDateTime());
         PointExpireResult pointExpireResult = expireByDate(givenTargetDateTime());
 
-        assertThat(pointExpireResult.getMemberNumber()).isEqualTo(givenMemberNumber());
+        assertThat(pointExpireResult.getMemberNumber()).isEqualTo(MEMBER_NUMBER);
         assertThat(pointExpireResult.getTotalExpired()).isEqualTo(givenPointAmount());
 
-        List<MemberPoint> memberPoints = memberPointRepository.findAllByMemberNumber(givenMemberNumber());
+        List<MemberPoint> memberPoints = memberPointRepository.findAllByMemberNumber(MEMBER_NUMBER);
         memberPoints.forEach(it->checkExpiredDate(it.getExpiredAt()));
 
         checkExpiredDate(getLatestMemberPointHistoryExpiredAt());
 
-        List<Point> points = pointRepository.findAllByMemberNumber(givenMemberNumber());
+        List<Point> points = pointRepository.findAllByMemberNumber(MEMBER_NUMBER);
         points.forEach(it-> checkExpiredDate(it.getExpiredAt()));
 
         checkExpiredDate(getLatestPointHistoriesExpiredAt(points));
@@ -132,7 +135,7 @@ public class ExpirePointServiceTest implements CommonTestGiven {
       }
 
       private LocalDateTime getLatestMemberPointHistoryExpiredAt() {
-        return memberPointHistoryRepository.findAllByMemberNumber(givenMemberNumber()).stream()
+        return memberPointHistoryRepository.findAllByMemberNumber(MEMBER_NUMBER).stream()
                 .filter(it -> it.getExpiredAt() != null)
                 .max(Comparator.comparing(MemberPointHistory::getExpiredAt))
                 .orElseThrow().getExpiredAt();
@@ -161,7 +164,7 @@ public class ExpirePointServiceTest implements CommonTestGiven {
         givenPoint(givenNonExpiredDateTime());
         PointExpireResult pointExpireResult = expireByDate(givenTargetDateTime());
 
-        assertThat(pointExpireResult.getMemberNumber()).isEqualTo(givenMemberNumber());
+        assertThat(pointExpireResult.getMemberNumber()).isEqualTo(MEMBER_NUMBER);
         assertThat(pointExpireResult.getTotalExpired()).isEqualTo(0);
         List<LocalDateTime> dates = getDatesOfExpiredPoints(pointExpireResult);
         assertEquals(0, dates.size());

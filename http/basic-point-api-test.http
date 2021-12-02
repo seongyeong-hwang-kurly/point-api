@@ -16,7 +16,7 @@ Content-Type: application/json
 }
 
 ### 2. 가용 포인트 조회
-GET {{host}}/v1/available/888888888 HTTP/1.1
+GET {{host}}/public/v1/available/888888888 HTTP/1.1
 Content-Type: application/json
 
 ### 3. 히스토리 조회
@@ -93,4 +93,12 @@ Content-Type: application/json
 
 ### 11. 적립금 취소 후 조회
 GET {{host}}/v1/history/888888888?regDateTimeFrom=2020-01-01T00%3A00%3A00%2B09%3A00&regDateTimeTo=2030-01-01T00%3A00%3A00%2B09%3A00&size=10&page=0 HTTP/1.1
+Content-Type: application/json
+
+### 12. 요약 정보 조회
+GET {{host}}/public/v1/summary/888888888
+Content-Type: application/json
+
+### 13. 히스토리 정보 조회
+GET {{host}}/public/v1/history/888888888
 Content-Type: application/json

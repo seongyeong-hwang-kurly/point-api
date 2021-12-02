@@ -18,7 +18,7 @@ class PointReservationDomainServiceTest extends Specification {
     @Sql("/sql/insert_reserved_points.sql")
     def 'should return reserved points already saved'(){
         given:
-        def memberNumber = 1234567
+        def memberNumber = 1237654
         when:
         def allReserved = pointReservationRepository.findAllByMemberNumber(memberNumber)
         then:

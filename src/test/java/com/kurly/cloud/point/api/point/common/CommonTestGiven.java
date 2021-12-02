@@ -9,6 +9,10 @@ public interface CommonTestGiven {
     return Long.parseLong(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddhh")));
   }
 
+  default long givenStaticMemberNumber() {
+    return 999999999;
+  }
+
   default long givenOrderNumber() {
     return 88888888;
   }

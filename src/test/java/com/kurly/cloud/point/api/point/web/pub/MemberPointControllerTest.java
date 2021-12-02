@@ -1,7 +1,5 @@
 package com.kurly.cloud.point.api.point.web.pub;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.ControllerTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +15,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
+
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -40,7 +40,7 @@ public class MemberPointControllerTest implements CommonTestGiven {
   void test() throws Exception {
     mockMvc
         .perform(
-            MockMvcRequestBuilders.get("/public/v1/history/{memberNumber}", givenMemberNumber())
+            MockMvcRequestBuilders.get("/public/v1/history/{memberNumber}", givenStaticMemberNumber())
                 .param("regDateTimeFrom", "2020-05-10T10:00:00+09:00")
                 .param("regDateTimeTo", "2020-05-10T10:00:00+09:00")
         )
@@ -54,7 +54,7 @@ public class MemberPointControllerTest implements CommonTestGiven {
   void test1() throws Exception {
     mockMvc
         .perform(
-            MockMvcRequestBuilders.get("/public/v1/summary/{memberNumber}", givenMemberNumber()))
+            MockMvcRequestBuilders.get("/public/v1/summary/{memberNumber}", givenStaticMemberNumber()))
         .andDo(MockMvcResultHandlers.print())
         .andExpect(status().isOk());
   }
@@ -65,7 +65,7 @@ public class MemberPointControllerTest implements CommonTestGiven {
   void test2() throws Exception {
     mockMvc
         .perform(
-            MockMvcRequestBuilders.get("/public/v1/available/{memberNumber}", givenMemberNumber()))
+            MockMvcRequestBuilders.get("/public/v1/available/{memberNumber}", givenStaticMemberNumber()))
         .andDo(MockMvcResultHandlers.print())
         .andExpect(status().isOk());
   }

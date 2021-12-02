@@ -20,7 +20,6 @@ import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -39,7 +38,6 @@ import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ActiveProfiles("local")
 @Import(SpringSecurityTestConfig.class)
 @ExtendWith({SpringExtension.class, RestDocumentationExtension.class})
 @Transactional
@@ -68,9 +66,9 @@ public class MemberPointDocumentationTest implements CommonTestGiven {
   void givenPoint() {
     publishPointUseCase.publish(PublishPointRequest.builder()
         .point(1000L)
-        .memberNumber(givenMemberNumber())
+        .memberNumber(givenStaticMemberNumber())
         .historyType(HistoryType.TYPE_12.getValue())
-        .actionMemberNumber(givenMemberNumber())
+        .actionMemberNumber(givenStaticMemberNumber())
         .expireDate(LocalDateTime.now())
         .detail("지급")
         .memo("메모")
@@ -83,7 +81,7 @@ public class MemberPointDocumentationTest implements CommonTestGiven {
   void history() throws Exception {
     ResultActions resultActions = mockMvc.perform(
         RestDocumentationRequestBuilders
-            .get("/public/v1/history/{memberNumber}", givenMemberNumber())
+            .get("/public/v1/history/{memberNumber}", givenStaticMemberNumber())
             .param("regDateTimeFrom", "2020-01-01T00:00:00+09:00")
             .param("regDateTimeTo", "2030-01-01T00:00:00+09:00")
             .param("size", "10")
@@ -156,7 +154,7 @@ public class MemberPointDocumentationTest implements CommonTestGiven {
   void summary() throws Exception {
     ResultActions resultActions = mockMvc.perform(
         RestDocumentationRequestBuilders
-            .get("/public/v1/summary/{memberNumber}", givenMemberNumber())
+            .get("/public/v1/summary/{memberNumber}", givenStaticMemberNumber())
     );
 
     resultActions
@@ -190,7 +188,7 @@ public class MemberPointDocumentationTest implements CommonTestGiven {
   void available() throws Exception {
     ResultActions resultActions = mockMvc.perform(
         RestDocumentationRequestBuilders
-            .get("/public/v1/available/{memberNumber}", givenMemberNumber())
+            .get("/public/v1/available/{memberNumber}", givenStaticMemberNumber())
     );
 
     resultActions
