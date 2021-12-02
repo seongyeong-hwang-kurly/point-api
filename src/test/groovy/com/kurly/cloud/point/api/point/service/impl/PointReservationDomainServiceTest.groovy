@@ -3,9 +3,11 @@ package com.kurly.cloud.point.api.point.service.impl
 import com.kurly.cloud.point.api.point.repository.PointReservationRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.jdbc.Sql
 import spock.lang.Specification
 
+@ActiveProfiles("local")
 @SpringBootTest
 class PointReservationDomainServiceTest extends Specification {
     @Autowired
