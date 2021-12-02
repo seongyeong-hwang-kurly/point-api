@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 import static com.kurly.cloud.point.api.point.service.helper.PointReservationHelper.convert;
@@ -49,5 +50,9 @@ public class PointReservationDomainService {
     private void transform(PointReservationEntity reservedOne) {
         reservedOne.apply(publishPointServiceV2.publish(convert(reservedOne)));
         pointReservationHistoryRepository.save(PointReservationHistoryEntity.from(reservedOne));
+    }
+
+    public List<ReservationResultVO> getReservedPoints(long memberNumber) {
+        return Collections.emptyList();
     }
 }
