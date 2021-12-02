@@ -3,7 +3,7 @@ POST {{host}}/v1/publish HTTP/1.1
 Content-Type: application/json
 
 {
-  "memberNumber" : 888888888,
+  "memberNumber" : 2021120119,
   "point" : 100,
   "historyType" : 1,
   "payment" : false,
@@ -22,7 +22,7 @@ client.test("Request executed successfully", function() {
 %}
 
 ### 2. 가용 포인트 조회
-GET {{host}}/v1/available/888888888 HTTP/1.1
+GET {{host}}/v1/available/2021120119 HTTP/1.1
 Content-Type: application/json
 
 > {%
@@ -41,7 +41,7 @@ Content-Type: application/json
   "historyType" : 1,
   "payment" : false,
   "settle" : false,
-  "startDate" : "2021-12-01T17:13:00Z",
+  "startDate" : "2021-12-02T17:13:00Z",
   "expireDate" : "2030-12-31T23:59:59Z",
   "memo" : "발급사유(내부)",
   "detail" : "발급사유(고객용)",
