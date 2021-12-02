@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface PointReservationRepository extends JpaRepository<PointReservationEntity, Long> {
     List<PointReservationEntity> findAllByMemberNumberAndAppliedIsFalse(long memberNumber);
+    List<PointReservationEntity>  findAllByMemberNumber(long memberNumber);
 }

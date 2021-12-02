@@ -29,11 +29,11 @@ public class ReservationController {
 
     @GetMapping(value = "/v2/members/{memberNumber}/reserved-points", consumes = MediaType.APPLICATION_JSON_VALUE)
     List<ReservationResultDTO> getReservedPoints(@PathVariable("memberNumber") long memberNumber) {
-        List<ReservationResultParam> reservedPoints = pointReservationDomainService.getReservedPoints(memberNumber);
-        return convertFrom(reservedPoints);
+        List<ReservationResultParam> reservedPointReturnParams = pointReservationDomainService.getReservedPoints(memberNumber);
+        return convertToDtosFrom(reservedPointReturnParams);
     }
 
-  private List<ReservationResultDTO> convertFrom(List<ReservationResultParam> reservedPointParams) {
+  private List<ReservationResultDTO> convertToDtosFrom(List<ReservationResultParam> reservedPointParams) {
     return reservedPointParams.stream().map(ReservationResultDTO::from).collect(Collectors.toList());
   }
 }

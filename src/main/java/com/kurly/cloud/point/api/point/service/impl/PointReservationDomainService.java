@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.kurly.cloud.point.api.point.service.helper.PointReservationHelper.convert;
 
@@ -53,6 +53,12 @@ public class PointReservationDomainService {
     }
 
     public List<ReservationResultParam> getReservedPoints(long memberNumber) {
-        return Collections.emptyList();
+        List<PointReservationEntity> entities =
+                pointReservationRepository.findAllByMemberNumberAndAppliedIsFalse(memberNumber);
+        return convertToParamsFrom(entities);
+    }
+
+    private List<ReservationResultParam> convertToParamsFrom(List<PointReservationEntity> entities) {
+        return entities.stream().map(ReservationResultParam::from).collect(Collectors.toList());
     }
 }
