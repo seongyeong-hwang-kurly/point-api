@@ -8,7 +8,6 @@ import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.domain.publish.ReservationResultParam;
 import com.kurly.cloud.point.api.point.domain.publish.ReservePointRequestDTO;
 import com.kurly.cloud.point.api.point.service.impl.PointReservationDomainService;
-import com.kurly.cloud.point.api.point.web.dto.ReservationResultDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,7 +30,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 
@@ -73,7 +71,6 @@ public class PointReservationDocumentTest implements CommonTestGiven {
   void reservePoint() throws Exception {
     ReservePointRequestDTO reservationRequest = givenReservationRequestDTO();
     ReservationResultParam reservationResultParam = givenReservationResultVO(reservationRequest, 1);
-    ReservationResultDTO reservationResultDTO = givenReservationResultDTO(reservationResultParam);
 
       given(pointReservationDomainService.reserve(any()))
             .willReturn(reservationResultParam);
@@ -155,34 +152,18 @@ public class PointReservationDocumentTest implements CommonTestGiven {
     );
   }
 
-  ReservationResultParam givenReservationResultVO(ReservePointRequestDTO requestVO, long id) {
+  ReservationResultParam givenReservationResultVO(ReservePointRequestDTO requestParam, long id) {
       return ReservationResultParam.create(
               id,
-              requestVO.getMemberNumber(),
-              requestVO.getPoint(),
-              requestVO.getHistoryType(),
-              requestVO.isPayment(),
-              requestVO.isSettle(),
+              requestParam.getMemberNumber(),
+              requestParam.getPoint(),
+              requestParam.getHistoryType(),
+              requestParam.isPayment(),
+              requestParam.isSettle(),
               false,
-              requestVO.getStartDate().toLocalDateTime(),
+              requestParam.getStartDate().toLocalDateTime(),
               LocalDateTime.now(),
-              Objects.requireNonNull(requestVO.getExpireDate()).toLocalDateTime()
-      );
-  }
-
-  ReservationResultDTO givenReservationResultDTO(ReservationResultParam resultVO){
-      ZoneId ZONE_ID = ZoneId.of("Asia/Seoul");
-      return ReservationResultDTO.create(
-              resultVO.getId(),
-              resultVO.getMemberNumber(),
-              resultVO.getReservedPoint(),
-              resultVO.getHistoryType(),
-              resultVO.isPayment(),
-              resultVO.isSettle(),
-              resultVO.isApplied(),
-              ZonedDateTime.of(resultVO.getStartedAt(), ZONE_ID),
-              ZonedDateTime.now(),
-              ZonedDateTime.of(resultVO.getExpiredAt(), ZONE_ID)
+              Objects.requireNonNull(requestParam.getExpireDate()).toLocalDateTime()
       );
   }
 }
