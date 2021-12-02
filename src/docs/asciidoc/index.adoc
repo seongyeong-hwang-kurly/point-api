@@ -93,6 +93,8 @@ include::summary.adoc[]
 
 include::order-published-amount.adoc[]
 
+include::get-reserved-points.adoc[]
+
 == 지급
 
 include::publish.adoc[]
