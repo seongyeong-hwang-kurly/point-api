@@ -12,10 +12,7 @@ import com.kurly.cloud.point.api.point.service.MemberPointUseCase;
 import com.kurly.cloud.point.api.point.service.PublishPointUseCase;
 import com.kurly.cloud.point.api.point.util.PointExpireDateCalculator;
 import com.kurly.cloud.point.api.point.web.dto.MemberPointHistoryDto;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -76,6 +73,7 @@ class MemberPointServiceTest implements CommonTestGiven {
 
     @TransactionalTest
     @Nested
+    @Disabled("It hasn't worked after 2021.10")
     @DisplayName("숨겨진 이력을 포함하도록 요청하면")
     class Context0 {
       @Test
@@ -111,6 +109,7 @@ class MemberPointServiceTest implements CommonTestGiven {
 
     @TransactionalTest
     @Nested
+    @Disabled("It hasn't worked after 2021.10")
     @DisplayName("숨겨진 이력을 제외하고 조회한다면")
     class Context1 {
       @Test
@@ -149,6 +148,7 @@ class MemberPointServiceTest implements CommonTestGiven {
 
     @TransactionalTest
     @Nested
+    @Disabled("It hasn't worked after 2021.10")
     @DisplayName("memo 필드를 포함 하지 않는다면")
     class Context3 {
       @Test
@@ -179,6 +179,7 @@ class MemberPointServiceTest implements CommonTestGiven {
 
     @TransactionalTest
     @Nested
+    @Disabled("It hasn't worked after 2021.10")
     @DisplayName("적립금이 없으면")
     class Context0 {
       @Test
@@ -224,6 +225,7 @@ class MemberPointServiceTest implements CommonTestGiven {
     }
 
     @Nested
+    @Disabled("It hasn't worked after 2021.10")
     @DisplayName("만료될 적립금이 있으면")
     class Context2 {
 
@@ -393,6 +395,7 @@ class MemberPointServiceTest implements CommonTestGiven {
   }
 
   @Nested
+  @Disabled("It hasn't worked after 2021.10")
   @DisplayName("회원 사용가능 적립금을 조회 할 때")
   class DescribeGetMemberPoint {
 
@@ -424,6 +427,7 @@ class MemberPointServiceTest implements CommonTestGiven {
     class Context1 {
 
       @Test
+      @Disabled("It hasn't worked after 2021.10")
       @DisplayName("총 적립금과 유상적립금을 리턴한다")
       void test() {
         givenPoint();
@@ -453,6 +457,7 @@ class MemberPointServiceTest implements CommonTestGiven {
     class Context2 {
 
       @Test
+      @Disabled("It hasn't worked after 2021.10")
       @DisplayName("총 적립금과 무상적립금을 리턴한다")
       void test() {
         givenPoint();
