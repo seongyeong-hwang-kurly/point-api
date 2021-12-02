@@ -1,8 +1,5 @@
 package com.kurly.cloud.point.api.point.service.impl;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.TransactionalTest;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
@@ -11,9 +8,6 @@ import com.kurly.cloud.point.api.point.domain.history.MemberPointHistoryListRequ
 import com.kurly.cloud.point.api.point.entity.MemberPointHistory;
 import com.kurly.cloud.point.api.point.repository.MemberPointHistoryRepository;
 import com.kurly.cloud.point.api.point.util.PointExpireDateCalculator;
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
-import javax.validation.ConstraintViolationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -22,9 +16,18 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import javax.validation.ConstraintViolationException;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+
 @SpringBootTest
+@ActiveProfiles("local")
 @ExtendWith(SpringExtension.class)
 @DisplayName("MemberPointHistoryDomainServiceTest class")
 class MemberPointHistoryDomainServiceTest implements CommonTestGiven {
