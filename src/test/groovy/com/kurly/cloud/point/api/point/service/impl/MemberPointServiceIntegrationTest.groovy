@@ -5,7 +5,7 @@ import com.kurly.cloud.point.api.point.domain.consume.OrderConsumePointRequest
 import com.kurly.cloud.point.api.point.domain.history.HistoryType
 import com.kurly.cloud.point.api.point.domain.history.MemberPointHistoryListRequest
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest
-import com.kurly.cloud.point.api.point.domain.publish.ReservationRequestVO
+import com.kurly.cloud.point.api.point.domain.publish.ReservationRequestParam
 import org.apache.commons.lang.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -115,7 +115,7 @@ class MemberPointServiceIntegrationTest extends Specification {
 
     def '5. should reserve points not include in available points'(){
         when:
-        def reserveVO = ReservationRequestVO.create(
+        def reserveVO = ReservationRequestParam.create(
                 MEMBER_NO,
                 ORDER_NUMBER,
                 RESERVE_POINT,

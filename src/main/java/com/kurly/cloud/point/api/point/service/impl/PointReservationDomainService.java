@@ -1,7 +1,7 @@
 package com.kurly.cloud.point.api.point.service.impl;
 
-import com.kurly.cloud.point.api.point.domain.publish.ReservationRequestVO;
-import com.kurly.cloud.point.api.point.domain.publish.ReservationResultVO;
+import com.kurly.cloud.point.api.point.domain.publish.ReservationRequestParam;
+import com.kurly.cloud.point.api.point.domain.publish.ReservationResultParam;
 import com.kurly.cloud.point.api.point.entity.PointReservationEntity;
 import com.kurly.cloud.point.api.point.entity.PointReservationHistoryEntity;
 import com.kurly.cloud.point.api.point.repository.PointReservationHistoryRepository;
@@ -24,11 +24,11 @@ public class PointReservationDomainService {
     private final PointReservationHistoryRepository pointReservationHistoryRepository;
 
     @Transactional
-    public ReservationResultVO reserve(
-            ReservationRequestVO reservationRequestVO) {
-        PointReservationEntity saved = pointReservationRepository.save(reservationRequestVO.convertToEntity());
+    public ReservationResultParam reserve(
+            ReservationRequestParam reservationRequestParam) {
+        PointReservationEntity saved = pointReservationRepository.save(reservationRequestParam.convertToEntity());
         pointReservationHistoryRepository.save(PointReservationHistoryEntity.from(saved));
-        return ReservationResultVO.from(saved);
+        return ReservationResultParam.from(saved);
     }
 
     public long sumReservedPoint(long memberNumber) {
@@ -52,7 +52,7 @@ public class PointReservationDomainService {
         pointReservationHistoryRepository.save(PointReservationHistoryEntity.from(reservedOne));
     }
 
-    public List<ReservationResultVO> getReservedPoints(long memberNumber) {
+    public List<ReservationResultParam> getReservedPoints(long memberNumber) {
         return Collections.emptyList();
     }
 }

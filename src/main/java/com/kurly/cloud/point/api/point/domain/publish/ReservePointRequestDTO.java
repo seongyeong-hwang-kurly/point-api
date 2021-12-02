@@ -50,8 +50,8 @@ public class ReservePointRequestDTO extends PublishPointRequest {
     this.startDate = startDate;
   }
 
-  public ReservationRequestVO toVO() {
-    return ReservationRequestVO.create(
+  public ReservationRequestParam toParam() {
+    return ReservationRequestParam.create(
             memberNumber,
             orderNumber,
             point,

@@ -1,6 +1,6 @@
 package com.kurly.cloud.point.api.point.web;
 
-import com.kurly.cloud.point.api.point.domain.publish.ReservationResultVO;
+import com.kurly.cloud.point.api.point.domain.publish.ReservationResultParam;
 import com.kurly.cloud.point.api.point.domain.publish.ReservePointRequestDTO;
 import com.kurly.cloud.point.api.point.service.impl.PointReservationDomainService;
 import com.kurly.cloud.point.api.point.web.dto.ReservationResultDTO;
@@ -23,13 +23,17 @@ public class ReservationController {
     ReservationResultDTO reserve(
             @RequestBody @Valid ReservePointRequestDTO request
     ) {
-        ReservationResultVO vo = pointReservationDomainService.reserve(request.toVO());
-        return ReservationResultDTO.from(vo);
+        ReservationResultParam param = pointReservationDomainService.reserve(request.toParam());
+        return ReservationResultDTO.from(param);
     }
 
     @GetMapping(value = "/v2/members/{memberNumber}/reserved-points", consumes = MediaType.APPLICATION_JSON_VALUE)
     List<ReservationResultDTO> getReservedPoints(@PathVariable("memberNumber") long memberNumber) {
-        List<ReservationResultVO> reservedPoints = pointReservationDomainService.getReservedPoints(memberNumber);
-        return reservedPoints.stream().map(ReservationResultDTO::from).collect(Collectors.toList());
+        List<ReservationResultParam> reservedPoints = pointReservationDomainService.getReservedPoints(memberNumber);
+        return convertFrom(reservedPoints);
     }
+
+  private List<ReservationResultDTO> convertFrom(List<ReservationResultParam> reservedPointParams) {
+    return reservedPointParams.stream().map(ReservationResultDTO::from).collect(Collectors.toList());
+  }
 }

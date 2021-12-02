@@ -5,7 +5,7 @@ import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.config.SpringSecurityTestConfig;
 import com.kurly.cloud.point.api.point.documentation.ApiDocumentUtils;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
-import com.kurly.cloud.point.api.point.domain.publish.ReservationResultVO;
+import com.kurly.cloud.point.api.point.domain.publish.ReservationResultParam;
 import com.kurly.cloud.point.api.point.domain.publish.ReservePointRequestDTO;
 import com.kurly.cloud.point.api.point.service.impl.PointReservationDomainService;
 import com.kurly.cloud.point.api.point.web.dto.ReservationResultDTO;
@@ -72,11 +72,11 @@ public class PointReservationDocumentTest implements CommonTestGiven {
   @DisplayName("RestDoc - 적립금 예약")
   void reservePoint() throws Exception {
     ReservePointRequestDTO reservationRequest = givenReservationRequestDTO();
-    ReservationResultVO reservationResultVO = givenReservationResultVO(reservationRequest, 1);
-    ReservationResultDTO reservationResultDTO = givenReservationResultDTO(reservationResultVO);
+    ReservationResultParam reservationResultParam = givenReservationResultVO(reservationRequest, 1);
+    ReservationResultDTO reservationResultDTO = givenReservationResultDTO(reservationResultParam);
 
       given(pointReservationDomainService.reserve(any()))
-            .willReturn(reservationResultVO);
+            .willReturn(reservationResultParam);
 
       ResultActions resultActions = mockMvc.perform(
               RestDocumentationRequestBuilders.post("/v2/reserve")
@@ -155,8 +155,8 @@ public class PointReservationDocumentTest implements CommonTestGiven {
     );
   }
 
-  ReservationResultVO givenReservationResultVO(ReservePointRequestDTO requestVO, long id) {
-      return ReservationResultVO.create(
+  ReservationResultParam givenReservationResultVO(ReservePointRequestDTO requestVO, long id) {
+      return ReservationResultParam.create(
               id,
               requestVO.getMemberNumber(),
               requestVO.getPoint(),
@@ -170,7 +170,7 @@ public class PointReservationDocumentTest implements CommonTestGiven {
       );
   }
 
-  ReservationResultDTO givenReservationResultDTO(ReservationResultVO resultVO){
+  ReservationResultDTO givenReservationResultDTO(ReservationResultParam resultVO){
       ZoneId ZONE_ID = ZoneId.of("Asia/Seoul");
       return ReservationResultDTO.create(
               resultVO.getId(),
