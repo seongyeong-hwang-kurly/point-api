@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.fail;
 @SpringBootTest
 @ActiveProfiles("local")
 @ExtendWith(SpringExtension.class)
-@Disabled("It hasn't worked after 2021.10")
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DisplayName("MemberPointHistoryDomainServiceTest class")
 class MemberPointHistoryDomainServiceTest implements CommonTestGiven {
 
@@ -35,6 +35,11 @@ class MemberPointHistoryDomainServiceTest implements CommonTestGiven {
 
   @Autowired
   MemberPointHistoryRepository memberPointHistoryRepository;
+
+  @BeforeEach
+  void init() {
+    memberPointHistoryRepository.deleteAll(memberPointHistoryRepository.findAll());
+  }
 
   @Nested
   @DisplayName("적립금 이력을 입력 할 때")
@@ -179,7 +184,7 @@ class MemberPointHistoryDomainServiceTest implements CommonTestGiven {
       @DisplayName("총 20개의 이력이 조회 된다")
       void test() {
         Page<MemberPointHistory> historyList = getMemberPointHistory(givenRequest());
-        assertThat(historyList.getTotalElements()).isEqualTo(100);
+        assertThat(historyList.getTotalElements()).isEqualTo(20);
       }
 
       MemberPointHistoryListRequest givenRequest() {
@@ -195,10 +200,10 @@ class MemberPointHistoryDomainServiceTest implements CommonTestGiven {
     @DisplayName("숨겨진 이력을 제외하고 조회한다면")
     class Context1 {
       @Test
-      @DisplayName("총 40개의 이력이 조회 된다")
+      @DisplayName("총 10 이력이 조회 된다")
       void test() {
         Page<MemberPointHistory> historyList = getMemberPointHistory(givenRequest());
-        assertThat(historyList.getTotalElements()).isEqualTo(40);
+        assertThat(historyList.getTotalElements()).isEqualTo(10);
       }
 
       MemberPointHistoryListRequest givenRequest() {
@@ -217,7 +222,7 @@ class MemberPointHistoryDomainServiceTest implements CommonTestGiven {
       @DisplayName("입력값 이후의 등록일을 가진 이력만 조회 된다")
       void test() {
         Page<MemberPointHistory> historyList = getMemberPointHistory(givenRequest());
-        assertThat(historyList.getTotalElements()).isEqualTo(27);
+        assertThat(historyList.getTotalElements()).isEqualTo(9);
       }
 
       MemberPointHistoryListRequest givenRequest() {
@@ -234,11 +239,10 @@ class MemberPointHistoryDomainServiceTest implements CommonTestGiven {
     @DisplayName("regDateTimeTo 값이 있다면")
     class Context3 {
       @Test
-      @Disabled("It hasn't worked after 2021.10")
       @DisplayName("입력값 이전의 등록일을 가진 이력만 조회 된다")
       void test() {
         Page<MemberPointHistory> historyList = getMemberPointHistory(givenRequest());
-        assertThat(historyList.getTotalElements()).isEqualTo(4);
+        assertThat(historyList.getTotalElements()).isEqualTo(2);
       }
 
       MemberPointHistoryListRequest givenRequest() {
