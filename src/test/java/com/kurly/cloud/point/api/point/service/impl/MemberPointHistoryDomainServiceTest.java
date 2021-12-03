@@ -144,7 +144,7 @@ class MemberPointHistoryDomainServiceTest implements CommonTestGiven {
   @DisplayName("적립금 이력을 조회 할 때")
   class DescribeGetHistoryList {
 
-    Page<MemberPointHistory> subject(MemberPointHistoryListRequest request) {
+    Page<MemberPointHistory> getMemberPointHistory(MemberPointHistoryListRequest request) {
       return memberPointHistoryDomainService.getHistoryList(request);
     }
 
@@ -180,8 +180,8 @@ class MemberPointHistoryDomainServiceTest implements CommonTestGiven {
       @Test
       @DisplayName("총 20개의 이력이 조회 된다")
       void test() {
-        Page<MemberPointHistory> historyList = subject(givenRequest());
-        assertThat(historyList.getTotalElements()).isEqualTo(20);
+        Page<MemberPointHistory> historyList = getMemberPointHistory(givenRequest());
+        assertThat(historyList.getTotalElements()).isEqualTo(100);
       }
 
       MemberPointHistoryListRequest givenRequest() {
@@ -197,10 +197,10 @@ class MemberPointHistoryDomainServiceTest implements CommonTestGiven {
     @DisplayName("숨겨진 이력을 제외하고 조회한다면")
     class Context1 {
       @Test
-      @DisplayName("총 10개의 이력이 조회 된다")
+      @DisplayName("총 40개의 이력이 조회 된다")
       void test() {
-        Page<MemberPointHistory> historyList = subject(givenRequest());
-        assertThat(historyList.getTotalElements()).isEqualTo(10);
+        Page<MemberPointHistory> historyList = getMemberPointHistory(givenRequest());
+        assertThat(historyList.getTotalElements()).isEqualTo(40);
       }
 
       MemberPointHistoryListRequest givenRequest() {
@@ -218,8 +218,8 @@ class MemberPointHistoryDomainServiceTest implements CommonTestGiven {
       @Test
       @DisplayName("입력값 이후의 등록일을 가진 이력만 조회 된다")
       void test() {
-        Page<MemberPointHistory> historyList = subject(givenRequest());
-        assertThat(historyList.getTotalElements()).isEqualTo(9);
+        Page<MemberPointHistory> historyList = getMemberPointHistory(givenRequest());
+        assertThat(historyList.getTotalElements()).isEqualTo(27);
       }
 
       MemberPointHistoryListRequest givenRequest() {
@@ -238,8 +238,8 @@ class MemberPointHistoryDomainServiceTest implements CommonTestGiven {
       @Test
       @DisplayName("입력값 이전의 등록일을 가진 이력만 조회 된다")
       void test() {
-        Page<MemberPointHistory> historyList = subject(givenRequest());
-        assertThat(historyList.getTotalElements()).isEqualTo(2);
+        Page<MemberPointHistory> historyList = getMemberPointHistory(givenRequest());
+        assertThat(historyList.getTotalElements()).isEqualTo(4);
       }
 
       MemberPointHistoryListRequest givenRequest() {
@@ -258,7 +258,7 @@ class MemberPointHistoryDomainServiceTest implements CommonTestGiven {
       @Test
       @DisplayName("입력값 사이의 등록일을 가진 이력만 조회 된다")
       void test() {
-        Page<MemberPointHistory> historyList = subject(givenRequest());
+        Page<MemberPointHistory> historyList = getMemberPointHistory(givenRequest());
         assertThat(historyList.getTotalElements()).isEqualTo(1);
       }
 
