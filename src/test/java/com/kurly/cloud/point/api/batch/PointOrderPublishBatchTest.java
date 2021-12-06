@@ -1,5 +1,6 @@
 package com.kurly.cloud.point.api.batch;
 
+import com.kurly.cloud.point.api.batch.config.PointBatchConfig;
 import com.kurly.cloud.point.api.batch.member.entity.Member;
 import com.kurly.cloud.point.api.batch.member.repository.MemberRepository;
 import com.kurly.cloud.point.api.batch.order.entity.Order;
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -25,6 +27,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.persistence.EntityManagerFactory;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -70,6 +73,8 @@ public class PointOrderPublishBatchTest implements CommonTestGiven {
   int givenPoint() {
     return 1000;
   }
+
+  long newMemberNumber = 0;
 
   long givenOrder(long orderNumber, long memberNumber, LocalDateTime deliveredDateTime) {
     Member member = Member.builder()
@@ -121,7 +126,6 @@ public class PointOrderPublishBatchTest implements CommonTestGiven {
     @Nested
     @DisplayName("적립 가능한 주문이 있다면")
     class Context0 {
-      long newMemberNumber = 0;
       void givenOrderBySize() {
         newMemberNumber = givenOrder(randomOrderNumber(), givenMemberNumber(), givenDeliveredDate());
       }
@@ -145,66 +149,62 @@ public class PointOrderPublishBatchTest implements CommonTestGiven {
     return new Random().nextInt();
   }
 
-//  @Nested
-//  @DisplayName("적립금 지급 배치를 실행 할 때")
-//  class DescribeOrderPublish {
-//    int givenPoint() {
-//      return 1000;
-//    }
-//
-//    LocalDateTime givenDeliveredDate() {
-//      return LocalDateTime.of(2000, 1, 2, 12, 0);
-//    }
-//
-//    void subject() throws Exception {
-//      JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
-//      jobParametersBuilder.addDate("now", new Date());
-//      jobParametersBuilder.addString("publishDate",
-//          givenDeliveredDate().plusDays(1).format(PointBatchConfig.DATE_TIME_FORMATTER));
-//      jobLauncher.run(pointOrderPublishJob, jobParametersBuilder.toJobParameters());
-//    }
-//
-//    @Nested
-//    @DisplayName("적립 가능한 주문이 있다면")
-//    class Context0 {
-//      void givenOrderBySize(int size) {
-//        IntStream.range(0, size).parallel().forEach(i -> {
-//          givenOrder(ranadomOrderNumber() - i, givenMemberNumber() - i, givenDeliveredDate());
-//        });
-//        fromOrderNumber = ranadomOrderNumber() - size;
-//        fromMemberNumber = givenMemberNumber() - size;
-//      }
-//
-//      @DisplayName("모두 적립 된다")
-//      @Test
-//      void test() throws Exception {
-//        givenOrderBySize(10);
-//        subject();
-//        MemberPoint memberPoint = memberPointRepository.findById(givenMemberNumber()).get();
-//
-//        int expectedPoint = givenPoint();
-//        assertThat(memberPoint.getTotalPoint()).isEqualTo(expectedPoint);
-//        assertThat(memberPoint.getFreePoint()).isEqualTo(expectedPoint);
-//        assertThat(memberPoint.getCashPoint()).isEqualTo(0);
-//      }
-//    }
-//
-//    @Nested
-//    @DisplayName("배치가 1번 이상 실행되어도")
-//    class Context1 {
-//      @DisplayName("한번만 적립 된다")
-//      @Test
-//      void test() throws Exception {
-//        givenOrder(ranadomOrderNumber(), givenMemberNumber(), givenDeliveredDate());
-//        subject();
-//        subject();
-//        MemberPoint memberPoint = memberPointRepository.findById(givenMemberNumber()).get();
-//
-//        int expectedPoint = givenPoint();
-//        assertThat(memberPoint.getTotalPoint()).isEqualTo(expectedPoint);
-//        assertThat(memberPoint.getFreePoint()).isEqualTo(expectedPoint);
-//        assertThat(memberPoint.getCashPoint()).isEqualTo(0);
-//      }
-//    }
-//  }
+  @Nested
+  @DisplayName("적립금 지급 배치를 실행 할 때")
+  class DescribeOrderPublish {
+    int givenPoint() {
+      return 1000;
+    }
+
+    LocalDateTime givenDeliveredDate() {
+      return LocalDateTime.of(2000, 1, 2, 12, 0);
+    }
+
+    void subject() throws Exception {
+      JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
+      jobParametersBuilder.addDate("now", new Date());
+      jobParametersBuilder.addString("publishDate",
+          givenDeliveredDate().plusDays(1).format(PointBatchConfig.DATE_TIME_FORMATTER));
+      jobLauncher.run(pointOrderPublishJob, jobParametersBuilder.toJobParameters());
+    }
+
+    @Nested
+    @DisplayName("적립 가능한 주문이 있다면")
+    class Context0 {
+      long givenOrderBySize() {
+        return givenOrder(randomOrderNumber(), givenMemberNumber(), givenDeliveredDate());
+      }
+
+      @DisplayName("모두 적립 된다")
+      @Test
+      void test() throws Exception {
+        newMemberNumber = givenOrderBySize();
+        subject();
+        MemberPoint memberPoint = memberPointRepository.findById(newMemberNumber).get();
+
+        int expectedPoint = givenPoint();
+        assertThat(memberPoint.getTotalPoint()).isEqualTo(expectedPoint);
+        assertThat(memberPoint.getFreePoint()).isEqualTo(expectedPoint);
+        assertThat(memberPoint.getCashPoint()).isEqualTo(0);
+      }
+    }
+
+    @Nested
+    @DisplayName("배치가 1번 이상 실행되어도")
+    class Context1 {
+      @DisplayName("한번만 적립 된다")
+      @Test
+      void test() throws Exception {
+        newMemberNumber = givenOrder(randomOrderNumber(), givenMemberNumber(), givenDeliveredDate());
+        subject();
+        subject();
+        MemberPoint memberPoint = memberPointRepository.findById(newMemberNumber).get();
+
+        int expectedPoint = givenPoint();
+        assertThat(memberPoint.getTotalPoint()).isEqualTo(expectedPoint);
+        assertThat(memberPoint.getFreePoint()).isEqualTo(expectedPoint);
+        assertThat(memberPoint.getCashPoint()).isEqualTo(0);
+      }
+    }
+  }
 }
