@@ -1,15 +1,5 @@
 package com.kurly.cloud.point.api.point.documentation.pri;
 
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.restdocs.payload.PayloadDocumentation.beneathPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.restdocs.snippet.Attributes.key;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.config.SpringSecurityTestConfig;
 import com.kurly.cloud.point.api.point.documentation.ApiDocumentUtils;
@@ -29,6 +19,7 @@ import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -36,10 +27,19 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.snippet.Attributes.key;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@Transactional
+@SpringBootTest
+@ActiveProfiles("local")
 @Import(SpringSecurityTestConfig.class)
 @ExtendWith({SpringExtension.class, RestDocumentationExtension.class})
-@SpringBootTest
-@Transactional
 @DisplayName("PrivateOrderPointDocumentationTest")
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = "gateway.cloud.dev.kurly.services/point", uriPort = 443)
 public class OrderPointDocumentationTest implements CommonTestGiven {
