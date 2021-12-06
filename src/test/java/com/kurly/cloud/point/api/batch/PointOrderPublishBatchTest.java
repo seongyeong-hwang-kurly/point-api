@@ -22,17 +22,15 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManagerFactory;
 import java.time.LocalDateTime;
 import java.util.Random;
-import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-@ActiveProfiles("dev")
+@ActiveProfiles("local")
 @ExtendWith(SpringExtension.class)
 @DisplayName("PointOrderPublishBatch class")
 public class PointOrderPublishBatchTest implements CommonTestGiven {
@@ -61,9 +59,6 @@ public class PointOrderPublishBatchTest implements CommonTestGiven {
   @Autowired
   OrderDynamicColumnRepository orderDynamicColumnRepository;
 
-  private long fromOrderNumber = randomOrderNumber();
-  private long fromMemberNumber = givenMemberNumber();
-
   int givenPayPrice() {
     return 3333;
   }
@@ -76,8 +71,17 @@ public class PointOrderPublishBatchTest implements CommonTestGiven {
     return 1000;
   }
 
-  void givenOrder(long orderNumber, long memberNumber, LocalDateTime deliveredDateTime) {
-    Member savedMember = memberRepository.findById(memberNumber).orElseThrow(()->new IllegalArgumentException("no member" + memberNumber));
+  long givenOrder(long orderNumber, long memberNumber, LocalDateTime deliveredDateTime) {
+    Member member = Member.builder()
+            .memberNumber(givenMemberNumber())
+            .memberId("memberId")
+            .memberUuid("memberUuid")
+            .recommendMemberId("test")
+            .mobile("01011112222")
+            .name("아무개")
+            .build();
+    var savedMember = memberRepository.save(member);
+
     Order order = Order.builder()
         .orderNumber(orderNumber)
         .orderStatus(4)
@@ -88,16 +92,18 @@ public class PointOrderPublishBatchTest implements CommonTestGiven {
         .publishPoint(givenPoint())
         .build();
     Order savedOrder = orderRepository.save(order);
+
     OrderDynamicColumn orderDynamicColumn = OrderDynamicColumn.builder()
         .orderNumber(savedOrder.getOrderNumber())
         .column("point_ratio")
         .value(String.valueOf(givenPointRatio()))
         .build();
-    orderDynamicColumnRepository.save(orderDynamicColumn);
+   orderDynamicColumnRepository.save(orderDynamicColumn);
+
+   return savedMember.getMemberNumber();
   }
 
   @Nested
-  @Transactional
   @DisplayName("적립금 지급 스케줄러를 실행 할 때")
   class DescribeOrderPublishSchedule {
 
@@ -115,20 +121,17 @@ public class PointOrderPublishBatchTest implements CommonTestGiven {
     @Nested
     @DisplayName("적립 가능한 주문이 있다면")
     class Context0 {
-      void givenOrderBySize(int size) {
-        IntStream.range(0, size).parallel().forEach(i -> {
-          givenOrder(randomOrderNumber() - i, givenMemberNumber() - i, givenDeliveredDate());
-        });
-        fromOrderNumber = randomOrderNumber() - size;
-        fromMemberNumber = givenMemberNumber() - size;
+      long newMemberNumber = 0;
+      void givenOrderBySize() {
+        newMemberNumber = givenOrder(randomOrderNumber(), givenMemberNumber(), givenDeliveredDate());
       }
 
       @DisplayName("모두 적립 된다")
       @Test
       void test() {
-        givenOrderBySize(1);
+        givenOrderBySize();
         subject();
-        MemberPoint memberPoint = memberPointRepository.findById(givenMemberNumber()).get();
+        MemberPoint memberPoint = memberPointRepository.findMemberPointByMemberNumber(newMemberNumber).get();
 
         int expectedPoint = givenPoint();
         assertThat(memberPoint.getTotalPoint()).isEqualTo(expectedPoint);
@@ -139,7 +142,7 @@ public class PointOrderPublishBatchTest implements CommonTestGiven {
   }
 
   long randomOrderNumber() {
-    return new Random().nextLong();
+    return new Random().nextInt();
   }
 
 //  @Nested
