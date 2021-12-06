@@ -21,7 +21,7 @@ public class OrderDynamicColumn {
   @Column(name = "ordno")
   long orderNumber;
 
-  @Column(name = "column")
+  @Column(name = "`column`")
   String column;
 
   @Column(name = "value")
