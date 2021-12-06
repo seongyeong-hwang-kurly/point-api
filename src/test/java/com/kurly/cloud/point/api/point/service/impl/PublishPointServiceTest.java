@@ -387,12 +387,14 @@ class PublishPointServiceTest implements CommonTestGiven {
     @Nested
     @DisplayName("보유햔 적립금이 충분하면")
     class Context0 {
+      public static final int MORE_DEBT_MEMBER = 110;
+      public static final int ORDER_NUMBER = 1245678911;
       @Test
       @DisplayName("적립된 적립금을 전부 회수(사용) 한다")
       void test() throws AlreadyPublishedException {
-        givenNonOrderPoint(givenMemberNumber());
-        givenOrderPoint(givenMemberNumber(), givenOrderNumber());
-        MemberPoint subject = cancelPublishByOrder(givenMemberNumber(), givenOrderNumber(), cancelAmount());
+        givenNonOrderPoint(MORE_DEBT_MEMBER);
+        givenOrderPoint(MORE_DEBT_MEMBER, ORDER_NUMBER);
+        MemberPoint subject = cancelPublishByOrder(MORE_DEBT_MEMBER, ORDER_NUMBER, cancelAmount());
 
         assertThat(subject.getTotalPoint())
             .isEqualTo(givenOrderPointAmount() + givenNonOrderPointAmount() - cancelAmount());
