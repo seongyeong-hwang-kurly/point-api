@@ -1,35 +1,43 @@
 package com.kurly.cloud.point.api.point.service.impl;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.TransactionalTest;
 import com.kurly.cloud.point.api.point.domain.consume.PointConsumeResult;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
 import com.kurly.cloud.point.api.point.entity.Point;
+import com.kurly.cloud.point.api.point.repository.PointRepository;
 import com.kurly.cloud.point.api.point.util.DateTimeUtil;
 import com.kurly.cloud.point.api.point.util.PointExpireDateCalculator;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import javax.validation.ConstraintViolationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.validation.ConstraintViolationException;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 @SpringBootTest
+@ActiveProfiles("local")
 @ExtendWith(SpringExtension.class)
 @DisplayName("PointDomainServiceTest class")
 class PointDomainServiceTest implements CommonTestGiven {
 
   @Autowired
   PointDomainService pointDomainService;
+
+  @Autowired
+  PointRepository pointRepository;
 
   @Nested
   @DisplayName("주문 적립금을 조회 할 때")
@@ -508,10 +516,10 @@ class PointDomainServiceTest implements CommonTestGiven {
   @Nested
   @DisplayName("특정 주문 적립금 우선 사용 할 때")
   class DescribeConsumeOrderPoint {
-    Point givenOrderPoint() {
+    Point givenOrderPoint(long memberNumber) {
       return pointDomainService.publishPoint(PublishPointRequest.builder()
-          .orderNumber(givenOrderNumber())
-          .memberNumber(givenMemberNumber())
+          .orderNumber(memberNumber)
+          .memberNumber(memberNumber)
           .point(givenOrderPointAmount())
           .historyType(HistoryType.TYPE_1.getValue())
           .build());
@@ -521,9 +529,9 @@ class PointDomainServiceTest implements CommonTestGiven {
       return 1000;
     }
 
-    Point givenNonOrderPoint() {
+    Point givenNonOrderPoint(long memberNumber) {
       return pointDomainService.publishPoint(PublishPointRequest.builder()
-          .memberNumber(givenMemberNumber())
+          .memberNumber(memberNumber)
           .point(givenNonOrderPointAmount())
           .historyType(HistoryType.TYPE_12.getValue())
           .build());
@@ -533,20 +541,23 @@ class PointDomainServiceTest implements CommonTestGiven {
       return 2000;
     }
 
-    PointConsumeResult subject(int amount) {
-      return pointDomainService.consumeOrderPoint(givenMemberNumber(), givenOrderNumber(), amount);
+    PointConsumeResult subject(long memberNumber, int amount) {
+      return pointDomainService.consumeOrderPoint(memberNumber, 123456712, amount);
     }
 
     @TransactionalTest
     @Nested
     @DisplayName("특정 주문 적립금이 충분하면")
     class Context0 {
+
+      public static final int MEMBER_NUMBER = 1004;
+
       @DisplayName("해당 주문 적립금만 차감 된다")
       @Test
       void test() {
-        Point orderPoint = givenOrderPoint();
-        Point nonOrderPoint = givenNonOrderPoint();
-        PointConsumeResult subject = subject(givenAmount());
+        Point orderPoint = givenOrderPoint(MEMBER_NUMBER);
+        Point nonOrderPoint = givenNonOrderPoint(MEMBER_NUMBER);
+        PointConsumeResult subject = subject(MEMBER_NUMBER, givenAmount());
 
         assertThat(subject.getTotalConsumed()).isEqualTo(givenAmount());
         assertThat(subject.getRemain()).isEqualTo(0);
@@ -564,12 +575,15 @@ class PointDomainServiceTest implements CommonTestGiven {
     @Nested
     @DisplayName("특정 주문 적립금이 부족하고 총 적립금이 충분하면")
     class Context1 {
+
+      public static final int MEMBER_NUMBER = 1005;
+
       @DisplayName("해당 주문 적립금이 차감 되고 다른 적립금에서 모자른 적립금이 차감 된다")
       @Test
       void test() {
-        Point orderPoint = givenOrderPoint();
-        Point nonOrderPoint = givenNonOrderPoint();
-        PointConsumeResult subject = subject(givenAmount());
+        Point orderPoint = givenOrderPoint(MEMBER_NUMBER);
+        Point nonOrderPoint = givenNonOrderPoint(MEMBER_NUMBER);
+        PointConsumeResult subject = subject(MEMBER_NUMBER, givenAmount());
 
         assertThat(subject.getTotalConsumed()).isEqualTo(givenAmount());
         assertThat(subject.getRemain()).isEqualTo(0);
@@ -584,24 +598,30 @@ class PointDomainServiceTest implements CommonTestGiven {
       }
     }
 
-    @TransactionalTest
     @Nested
+    @Transactional
+    @SpringBootTest
     @DisplayName("총 적립금이 부족하면")
     class Context2 {
+
+      public static final int MEMBER_NUMBER = 1006;
+
       @DisplayName("모든 적립금을 차감하고 차감하지 못한 적립금을 리턴한다")
       @Test
       void test() {
-        Point orderPoint = givenOrderPoint();
-        Point nonOrderPoint = givenNonOrderPoint();
-        PointConsumeResult subject = subject(givenAmount());
+        Point orderPoint = givenOrderPoint(MEMBER_NUMBER);
+        Point nonOrderPoint = givenNonOrderPoint(MEMBER_NUMBER);
+        PointConsumeResult subject = subject(MEMBER_NUMBER, 4000);
 
         assertThat(subject.getTotalConsumed())
             .isEqualTo(givenOrderPointAmount() + givenNonOrderPointAmount());
         assertThat(subject.getRemain())
             .isEqualTo(givenAmount() - givenOrderPointAmount() - givenNonOrderPointAmount());
 
-        assertThat(orderPoint.getRemain()).isEqualTo(0);
-        assertThat(nonOrderPoint.getRemain()).isEqualTo(0);
+        Point updatedOrder = pointRepository.findById(orderPoint.getSeq()).get();
+        assertThat(updatedOrder.getRemain()).isEqualTo(0);
+        Point updatedNonOrderPoint = pointRepository.findById(nonOrderPoint.getSeq()).get();
+        assertThat(updatedNonOrderPoint.getRemain()).isEqualTo(0);
       }
 
       int givenAmount() {
@@ -614,11 +634,11 @@ class PointDomainServiceTest implements CommonTestGiven {
   @Nested
   @DisplayName("대출 적립금을 상환 할 때")
   class DescribeRepayPoint {
-    void given() {
+    void given(long memberNumber) {
       pointDomainService.publishPoint(PublishPointRequest.builder()
           .point(-givenDebtAmount())
           .historyType(HistoryType.TYPE_12.getValue())
-          .memberNumber(givenMemberNumber())
+          .memberNumber(memberNumber)
           .unlimitedDate(true)
           .build());
     }
@@ -627,8 +647,8 @@ class PointDomainServiceTest implements CommonTestGiven {
       return 1000;
     }
 
-    PointConsumeResult subject(int amount) {
-      return pointDomainService.repayMemberPoint(givenMemberNumber(), amount);
+    PointConsumeResult subject(long memberNumber, int amount) {
+      return pointDomainService.repayMemberPoint(memberNumber, amount);
     }
 
     @TransactionalTest
@@ -638,8 +658,8 @@ class PointDomainServiceTest implements CommonTestGiven {
       @Test
       @DisplayName("모두 상환한다")
       void test() {
-        given();
-        PointConsumeResult subject = subject(givenAmount());
+        given(1000);
+        PointConsumeResult subject = subject(1000, givenAmount());
         assertThat(subject.getTotalConsumed()).isEqualTo(givenDebtAmount());
       }
 
@@ -655,8 +675,8 @@ class PointDomainServiceTest implements CommonTestGiven {
       @Test
       @DisplayName("상환적립금 만큼 상환 한다")
       void test() {
-        given();
-        PointConsumeResult subject = subject(givenAmount());
+        given(1001);
+        PointConsumeResult subject = subject(1001, givenAmount());
         assertThat(subject.getTotalConsumed()).isEqualTo(givenAmount());
       }
 
@@ -672,8 +692,8 @@ class PointDomainServiceTest implements CommonTestGiven {
       @Test
       @DisplayName("모두 상환한다")
       void test() {
-        given();
-        PointConsumeResult subject = subject(givenAmount());
+        given(1002);
+        PointConsumeResult subject = subject(1002, givenAmount());
         assertThat(subject.getTotalConsumed()).isEqualTo(givenDebtAmount());
       }
 
