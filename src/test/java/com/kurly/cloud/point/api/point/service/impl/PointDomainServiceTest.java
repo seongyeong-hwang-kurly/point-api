@@ -720,11 +720,13 @@ class PointDomainServiceTest implements CommonTestGiven {
     @Nested
     @DisplayName("대출적립금과 상환적립금이 같으면")
     class Context2 {
+      private static final long MEMBER_NUMBER = 1002;
+
       @Test
       @DisplayName("모두 상환한다")
       void test() {
-        given(1002);
-        PointConsumeResult subject = subject(1002, givenAmount());
+        given(MEMBER_NUMBER);
+        PointConsumeResult subject = subject(MEMBER_NUMBER, givenAmount());
         assertThat(subject.getTotalConsumed()).isEqualTo(givenDebtAmount());
       }
 
@@ -746,9 +748,9 @@ class PointDomainServiceTest implements CommonTestGiven {
       return LocalDateTime.of(2020, 1, 3, 0, 0, 0);
     }
 
-    List<Point> subject() {
+    List<Point> subject(long memberNumber) {
       return pointDomainService
-          .getExpiredMemberPoint(givenMemberNumber(), givenExpiredTargetDateTime());
+          .getExpiredMemberPoint(memberNumber, givenExpiredTargetDateTime());
     }
 
     LocalDateTime givenExpiredTargetDateTime() {
@@ -759,19 +761,21 @@ class PointDomainServiceTest implements CommonTestGiven {
     @Nested
     @DisplayName("만료된 적립금이 있다면")
     class Context0 {
+      private static final long MEMBER_NUMBER = 1025;
+
       @Test
       @DisplayName("만료된 적립금이 조회 된다")
       void test() {
-        givenPoint();
-        List<Point> expiredPoints = subject();
+        givenPoint(MEMBER_NUMBER);
+        List<Point> expiredPoints = subject(MEMBER_NUMBER);
         assertThat(expiredPoints.size()).isEqualTo(1);
       }
 
-      void givenPoint() {
+      void givenPoint(long memberNumber) {
         pointDomainService.publishPoint(PublishPointRequest.builder()
             .historyType(HistoryType.TYPE_1.getValue())
             .expireDate(givenExpiredDateTime())
-            .memberNumber(givenMemberNumber())
+            .memberNumber(memberNumber)
             .point(100L)
             .build());
       }
@@ -781,11 +785,13 @@ class PointDomainServiceTest implements CommonTestGiven {
     @Nested
     @DisplayName("만료된 적립금이 없다면")
     class Context1 {
+      private static final long MEMBER_NUMBER = 1026;
+
       @Test
       @DisplayName("적립금이 조회되지 않는다")
       void test() {
         givenPoint();
-        List<Point> expiredPoints = subject();
+        List<Point> expiredPoints = subject(MEMBER_NUMBER);
         assertThat(expiredPoints.size()).isEqualTo(0);
       }
 
