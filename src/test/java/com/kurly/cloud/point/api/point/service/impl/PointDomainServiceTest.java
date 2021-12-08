@@ -42,14 +42,14 @@ class PointDomainServiceTest implements CommonTestGiven {
   @Nested
   @DisplayName("주문 적립금을 조회 할 때")
   class DescribegetPublishedByOrderNumber {
-    Optional<Point> subject() {
-      return pointDomainService.getPublishedByOrderNumber(givenOrderNumber());
+    Optional<Point> subject(long orderNumber) {
+      return pointDomainService.getPublishedByOrderNumber(orderNumber);
     }
 
-    void givenOrderPoint() {
+    void givenOrderPoint(long memberNumber, long orderNumber) {
       pointDomainService.publishPoint(PublishPointRequest.builder()
-          .orderNumber(givenOrderNumber())
-          .memberNumber(givenMemberNumber())
+          .memberNumber(memberNumber)
+          .orderNumber(orderNumber)
           .point(1000L)
           .historyType(HistoryType.TYPE_1.getValue())
           .build());
@@ -58,10 +58,12 @@ class PointDomainServiceTest implements CommonTestGiven {
     @Nested
     @DisplayName("주문 적립금이 없으면")
     class Context0 {
+      private static final long ORDER_NUMBER = 1022000;
+
       @Test
       @DisplayName("비어 있는 Optional을 리턴한다")
       void test() {
-        Optional<Point> subject = subject();
+        Optional<Point> subject = subject(ORDER_NUMBER);
         assertThat(subject).isEmpty();
       }
     }
@@ -70,15 +72,17 @@ class PointDomainServiceTest implements CommonTestGiven {
     @Nested
     @DisplayName("주문 적립금이 있으면")
     class Context1 {
+      private static final long MEMBER_NUMBER = 1023;
+      private static final long ORDER_NUMBER = 1023000;
 
       @Test
       @DisplayName("적립된 적립금을 포함하는 Optional을 리턴한다")
       void test() {
-        givenOrderPoint();
-        Optional<Point> subject = subject();
+        givenOrderPoint(MEMBER_NUMBER, ORDER_NUMBER);
+        Optional<Point> subject = subject(ORDER_NUMBER);
         assertThat(subject).isNotEmpty();
-        assertThat(subject.get().getOrderNumber()).isEqualTo(givenOrderNumber());
-        assertThat(subject.get().getMemberNumber()).isEqualTo(givenMemberNumber());
+        assertThat(subject.get().getOrderNumber()).isEqualTo(ORDER_NUMBER);
+        assertThat(subject.get().getMemberNumber()).isEqualTo(MEMBER_NUMBER);
       }
     }
 
@@ -86,16 +90,18 @@ class PointDomainServiceTest implements CommonTestGiven {
     @Nested
     @DisplayName("두개 이상의 동일 주문 적립금이 있으면")
     class Context2 {
+      private static final long MEMBER_NUMBER = 1024;
+      private static final long ORDER_NUMBER = 1024000;
 
       @Test
       @DisplayName("두개중 한개의 주문 적립금을 리턴한다")
       void test() {
-        givenOrderPoint();
-        givenOrderPoint();
-        Optional<Point> subject = subject();
+        givenOrderPoint(MEMBER_NUMBER, ORDER_NUMBER);
+        givenOrderPoint(MEMBER_NUMBER, ORDER_NUMBER);
+        Optional<Point> subject = subject(ORDER_NUMBER);
         assertThat(subject).isNotEmpty();
-        assertThat(subject.get().getOrderNumber()).isEqualTo(givenOrderNumber());
-        assertThat(subject.get().getMemberNumber()).isEqualTo(givenMemberNumber());
+        assertThat(subject.get().getOrderNumber()).isEqualTo(ORDER_NUMBER);
+        assertThat(subject.get().getMemberNumber()).isEqualTo(MEMBER_NUMBER);
       }
     }
   }
