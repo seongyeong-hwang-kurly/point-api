@@ -1,7 +1,6 @@
 package com.kurly.cloud.point.api.batch;
 
 import com.kurly.cloud.point.api.batch.config.PointBatchConfig;
-import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
 import com.kurly.cloud.point.api.point.entity.MemberPoint;
@@ -33,7 +32,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("local")
 @ExtendWith(SpringExtension.class)
 @DisplayName("PointExpireBatch class")
-public class PointExpireBatchTest implements CommonTestGiven {
+public class PointExpireBatchTest {
+  long givenMemberNumber() {
+    return 2036;
+  }
+
   @Autowired
   JobLauncher jobLauncher;
 
@@ -71,6 +74,7 @@ public class PointExpireBatchTest implements CommonTestGiven {
           Optional<MemberPoint> memberPoint =
               memberPointRepository.findById(givenMemberNumber() - i);
           assertThat(memberPoint).isNotEmpty();
+          System.out.println("member:" + memberPoint.get().getMemberNumber() + ", totalPoint: " + memberPoint.get().getTotalPoint());
           assertThat(memberPoint.get().getTotalPoint()).isEqualTo(0);
         }
       }
