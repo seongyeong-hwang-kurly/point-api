@@ -1,6 +1,5 @@
 package com.kurly.cloud.point.api.point.service.impl;
 
-import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.TransactionalTest;
 import com.kurly.cloud.point.api.point.domain.consume.PointConsumeResult;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
@@ -31,7 +30,14 @@ import static org.assertj.core.api.Assertions.fail;
 @ActiveProfiles("local")
 @ExtendWith(SpringExtension.class)
 @DisplayName("PointDomainServiceTest class")
-class PointDomainServiceTest implements CommonTestGiven {
+class PointDomainServiceTest {
+  long givenMemberNumber() {
+    return 1034;
+  }
+
+  long givenOrderNumber() {
+    return 1034000;
+  }
 
   @Autowired
   PointDomainService pointDomainService;
