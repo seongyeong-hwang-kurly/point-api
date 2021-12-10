@@ -88,7 +88,7 @@ class MemberPointServiceTest {
       @Test
       @DisplayName("1페이지가 조회 된다")
       void test() {
-        long MEMBER_NUMBER = new Random().nextInt();
+        long MEMBER_NUMBER = new Random().nextLong();
         setupHistories(MEMBER_NUMBER);
 
         Page<MemberPointHistoryDto> historyList = subject(givenRequest(MEMBER_NUMBER, 0));
@@ -108,7 +108,7 @@ class MemberPointServiceTest {
       @Test
       @DisplayName("2페이지는 조회 되고 3페이지는 조회되지 않는다")
       void test1() {
-        long MEMBER_NUMBER = new Random().nextInt();
+        long MEMBER_NUMBER = new Random().nextLong();
         setupHistories(MEMBER_NUMBER);
 
         Page<MemberPointHistoryDto> historyList = subject(givenRequest(MEMBER_NUMBER, 1));
@@ -129,7 +129,7 @@ class MemberPointServiceTest {
       @Test
       @DisplayName("총 10개의 이력이 조회 된다")
       void test() {
-        long MEMBER_NUMBER = new Random().nextInt();
+        long MEMBER_NUMBER = new Random().nextLong();
         setupHistories(MEMBER_NUMBER);
 
         Page<MemberPointHistoryDto> historyList = subject(givenRequest(MEMBER_NUMBER));
@@ -200,7 +200,7 @@ class MemberPointServiceTest {
       @Test
       @DisplayName("만료일은 시스템 기본 만료금액은 0으로 리턴한다")
       void test() {
-        long MEMBER_NUMBER = new Random().nextInt();
+        long MEMBER_NUMBER = new Random().nextLong();
 
         MemberPointSummary memberPointSummary = subject(MEMBER_NUMBER);
         assertThat(memberPointSummary.getAmount()).isEqualTo(0);
@@ -219,7 +219,7 @@ class MemberPointServiceTest {
       @Test
       @DisplayName("만료일은 시스템 기본 만료금액은 0으로 리턴한다")
       void test() {
-        long MEMBER_NUMBER = new Random().nextInt();
+        long MEMBER_NUMBER = new Random().nextLong();
         givenPoint(MEMBER_NUMBER);
         MemberPointSummary memberPointSummary = subject(MEMBER_NUMBER);
         assertThat(memberPointSummary.getAmount()).isEqualTo(givenPointAmount());
@@ -254,7 +254,7 @@ class MemberPointServiceTest {
         @Test
         @DisplayName("다음 시스템 만료일에 만료예정 적립금을 리턴한다")
         void test() {
-          long MEMBER_NUMBER = new Random().nextInt();
+          long MEMBER_NUMBER = new Random().nextLong();
           givenPoint(MEMBER_NUMBER);
           MemberPointSummary memberPointSummary = subject(MEMBER_NUMBER);
 
@@ -286,7 +286,7 @@ class MemberPointServiceTest {
         @Test
         @DisplayName("해당 적립금의 만료일과 만료 예정금액을 리턴한다")
         void test() {
-          long MEMBER_NUMBER = new Random().nextInt();
+          long MEMBER_NUMBER = new Random().nextLong();
           givenPoint(MEMBER_NUMBER);
           MemberPointSummary memberPointSummary = subject(MEMBER_NUMBER);
 
@@ -321,7 +321,7 @@ class MemberPointServiceTest {
         @Test
         @DisplayName("만료일은 시스템 기본 만료금액은 0으로 리턴한다")
         void test() {
-          long MEMBER_NUMBER = new Random().nextInt();
+          long MEMBER_NUMBER = new Random().nextLong();
 
           givenPoint(MEMBER_NUMBER);
           MemberPointSummary memberPointSummary = subject(MEMBER_NUMBER);
@@ -356,7 +356,7 @@ class MemberPointServiceTest {
         @Test
         @DisplayName("만료 될 적립금의 합산을 리턴한다")
         void test() {
-          long MEMBER_NUMBER = new Random().nextInt();
+          long MEMBER_NUMBER = new Random().nextLong();
           givenPoint(MEMBER_NUMBER);
           givenNonExpirePoint(MEMBER_NUMBER);
           MemberPointSummary memberPointSummary = subject(MEMBER_NUMBER);
@@ -435,7 +435,7 @@ class MemberPointServiceTest {
       @Test
       @DisplayName("사용 가능 적립금은 0으로 리턴한다")
       void test() {
-        long MEMBER_NUMBER = new Random().nextInt();
+        long MEMBER_NUMBER = new Random().nextLong();
 
         MemberPoint memberPoint = subject(MEMBER_NUMBER);
         assertThat(memberPoint.getTotalPoint()).isEqualTo(0);
@@ -452,7 +452,7 @@ class MemberPointServiceTest {
       @Test
           @DisplayName("총 적립금과 유상적립금을 리턴한다")
       void test() {
-        long MEMBER_NUMBER = new Random().nextInt();
+        long MEMBER_NUMBER = new Random().nextLong();
         givenPoint(MEMBER_NUMBER);
         MemberPoint memberPoint = subject(MEMBER_NUMBER);
         assertThat(memberPoint.getTotalPoint()).isEqualTo(givenPointAmount());
@@ -482,7 +482,7 @@ class MemberPointServiceTest {
       @Test
           @DisplayName("총 적립금과 무상적립금을 리턴한다")
       void test() {
-        long MEMBER_NUMBER = new Random().nextInt();
+        long MEMBER_NUMBER = new Random().nextLong();
         givenPoint(MEMBER_NUMBER);
         MemberPoint memberPoint = subject(MEMBER_NUMBER);
         assertThat(memberPoint.getTotalPoint()).isEqualTo(givenPointAmount());
@@ -511,7 +511,7 @@ class MemberPointServiceTest {
       @Test
       @DisplayName("총 적립금은 유상 적립금과 무상적립금의 합산을 리턴한다")
       void test() {
-        long MEMBER_NUMBER = new Random().nextInt();
+        long MEMBER_NUMBER = new Random().nextLong();
         givenPoint(MEMBER_NUMBER);
         MemberPoint memberPoint = subject(MEMBER_NUMBER);
         assertThat(memberPoint.getTotalPoint()).isEqualTo(givenPointAmount() + givenPointAmount());

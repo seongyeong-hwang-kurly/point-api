@@ -146,7 +146,7 @@ public class PointOrderPublishBatchTest implements CommonTestGiven {
   }
 
   long randomOrderNumber() {
-    return new Random().nextInt();
+    return new Random().nextLong();
   }
 
   @Nested
