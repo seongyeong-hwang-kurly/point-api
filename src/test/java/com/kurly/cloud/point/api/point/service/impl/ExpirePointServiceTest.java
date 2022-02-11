@@ -15,6 +15,7 @@ import com.kurly.cloud.point.api.point.repository.PointHistoryRepository;
 import com.kurly.cloud.point.api.point.repository.PointRepository;
 import com.kurly.cloud.point.api.point.service.ExpirePointUseCase;
 import com.kurly.cloud.point.api.point.service.PublishPointUseCase;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -25,8 +26,14 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
+import static com.kurly.cloud.point.api.point.util.PointExpireDateCalculator.withEndOfDate;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 @SpringBootTest
 @ActiveProfiles("local")
@@ -69,7 +76,7 @@ public class ExpirePointServiceTest implements CommonTestGiven {
 
     PointExpireResult expireByDate(LocalDateTime expiringExecutionDate) {
       return expirePointUseCase
-          .expireMemberPoint(givenMemberNumber(), givenExpiredTargetDateTime());
+          .expireMemberPoint(givenMemberNumber(), givenTargetDateTime());
     }
 
     LocalDateTime givenTargetDateTime() {
