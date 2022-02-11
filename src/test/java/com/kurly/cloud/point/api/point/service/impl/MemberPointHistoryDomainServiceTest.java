@@ -1,8 +1,5 @@
 package com.kurly.cloud.point.api.point.service.impl;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.TransactionalTest;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
@@ -11,21 +8,25 @@ import com.kurly.cloud.point.api.point.domain.history.MemberPointHistoryListRequ
 import com.kurly.cloud.point.api.point.entity.MemberPointHistory;
 import com.kurly.cloud.point.api.point.repository.MemberPointHistoryRepository;
 import com.kurly.cloud.point.api.point.util.PointExpireDateCalculator;
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
-import javax.validation.ConstraintViolationException;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import javax.validation.ConstraintViolationException;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+
 @SpringBootTest
+@ActiveProfiles("local")
 @ExtendWith(SpringExtension.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DisplayName("MemberPointHistoryDomainServiceTest class")
 class MemberPointHistoryDomainServiceTest implements CommonTestGiven {
 
@@ -34,6 +35,11 @@ class MemberPointHistoryDomainServiceTest implements CommonTestGiven {
 
   @Autowired
   MemberPointHistoryRepository memberPointHistoryRepository;
+
+  @BeforeEach
+  void init() {
+    memberPointHistoryRepository.deleteAll(memberPointHistoryRepository.findAll());
+  }
 
   @Nested
   @DisplayName("적립금 이력을 입력 할 때")
@@ -141,7 +147,7 @@ class MemberPointHistoryDomainServiceTest implements CommonTestGiven {
   @DisplayName("적립금 이력을 조회 할 때")
   class DescribeGetHistoryList {
 
-    Page<MemberPointHistory> subject(MemberPointHistoryListRequest request) {
+    Page<MemberPointHistory> getMemberPointHistory(MemberPointHistoryListRequest request) {
       return memberPointHistoryDomainService.getHistoryList(request);
     }
 
@@ -177,7 +183,7 @@ class MemberPointHistoryDomainServiceTest implements CommonTestGiven {
       @Test
       @DisplayName("총 20개의 이력이 조회 된다")
       void test() {
-        Page<MemberPointHistory> historyList = subject(givenRequest());
+        Page<MemberPointHistory> historyList = getMemberPointHistory(givenRequest());
         assertThat(historyList.getTotalElements()).isEqualTo(20);
       }
 
@@ -194,9 +200,9 @@ class MemberPointHistoryDomainServiceTest implements CommonTestGiven {
     @DisplayName("숨겨진 이력을 제외하고 조회한다면")
     class Context1 {
       @Test
-      @DisplayName("총 10개의 이력이 조회 된다")
+      @DisplayName("총 10 이력이 조회 된다")
       void test() {
-        Page<MemberPointHistory> historyList = subject(givenRequest());
+        Page<MemberPointHistory> historyList = getMemberPointHistory(givenRequest());
         assertThat(historyList.getTotalElements()).isEqualTo(10);
       }
 
@@ -215,7 +221,7 @@ class MemberPointHistoryDomainServiceTest implements CommonTestGiven {
       @Test
       @DisplayName("입력값 이후의 등록일을 가진 이력만 조회 된다")
       void test() {
-        Page<MemberPointHistory> historyList = subject(givenRequest());
+        Page<MemberPointHistory> historyList = getMemberPointHistory(givenRequest());
         assertThat(historyList.getTotalElements()).isEqualTo(9);
       }
 
@@ -235,7 +241,7 @@ class MemberPointHistoryDomainServiceTest implements CommonTestGiven {
       @Test
       @DisplayName("입력값 이전의 등록일을 가진 이력만 조회 된다")
       void test() {
-        Page<MemberPointHistory> historyList = subject(givenRequest());
+        Page<MemberPointHistory> historyList = getMemberPointHistory(givenRequest());
         assertThat(historyList.getTotalElements()).isEqualTo(2);
       }
 
@@ -255,7 +261,7 @@ class MemberPointHistoryDomainServiceTest implements CommonTestGiven {
       @Test
       @DisplayName("입력값 사이의 등록일을 가진 이력만 조회 된다")
       void test() {
-        Page<MemberPointHistory> historyList = subject(givenRequest());
+        Page<MemberPointHistory> historyList = getMemberPointHistory(givenRequest());
         assertThat(historyList.getTotalElements()).isEqualTo(1);
       }
 

@@ -1,0 +1,25 @@
+=== 적립금 예약 조회
+
+예약된 적립금을 회원번호기준으로 조회합니다.
+
+IMPORTANT: 버전은 `v2`로 하셔야 합니다.
+
+==== HTTP method
+
+GET
+
+==== HTTP request
+
+include::{snippets}/point/pri/get-reserved-points/http-request.adoc[]
+
+==== Path Parameters
+
+include::{snippets}/point/pri/get-reserved-points/path-parameters.adoc[]
+
+==== Response fields
+
+include::{snippets}/point/pri/get-reserved-points/response-fields-data.adoc[]
+
+==== Response body
+
+include::{snippets}/point/pri/get-reserved-points/response-body.adoc[]

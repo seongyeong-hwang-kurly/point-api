@@ -1,9 +1,5 @@
 package com.kurly.cloud.point.api.point.service.impl;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-
-import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.TransactionalTest;
 import com.kurly.cloud.point.api.point.domain.consume.CancelOrderConsumePointRequest;
 import com.kurly.cloud.point.api.point.domain.consume.ConsumePointRequest;
@@ -16,7 +12,6 @@ import com.kurly.cloud.point.api.point.exception.CancelAmountExceedException;
 import com.kurly.cloud.point.api.point.exception.NotEnoughPointException;
 import com.kurly.cloud.point.api.point.service.ConsumePointUseCase;
 import com.kurly.cloud.point.api.point.service.PublishPointUseCase;
-import java.time.LocalDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -24,12 +19,21 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.time.LocalDateTime;
+import java.util.Random;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+
 @SpringBootTest
+@ActiveProfiles("local")
 @ExtendWith(SpringExtension.class)
 @DisplayName("ConsumePointServiceTest class")
-class ConsumePointServiceTest implements CommonTestGiven {
+class ConsumePointServiceTest {
+  public static final Random RANDOM = new Random();
   @Autowired
   ConsumePointUseCase consumePointUseCase;
 
@@ -39,7 +43,21 @@ class ConsumePointServiceTest implements CommonTestGiven {
   @Autowired
   MemberPointDomainService memberPointDomainService;
 
-  void publishCashPoint(long amount) {
+  private long memberNumber = 0;
+  private long orderNumber = 0;
+
+  long givenMemberNumber() {
+    return memberNumber;
+  }
+  long givenOrderNumber() { return orderNumber; }
+
+  @BeforeEach
+  void initMemberNOrderNumber() {
+    memberNumber = RANDOM.nextLong();
+    orderNumber = RANDOM.nextLong();
+  }
+
+    void publishCashPoint(long amount) {
     publishPointUseCase.publish(PublishPointRequest.builder()
         .memberNumber(givenMemberNumber())
         .point(amount)

@@ -1,6 +1,6 @@
 package com.kurly.cloud.point.api.point.web.dto;
 
-import com.kurly.cloud.point.api.point.domain.publish.ReservationResultVO;
+import com.kurly.cloud.point.api.point.domain.publish.ReservationResultParam;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -27,14 +27,14 @@ public class ReservationResultDTO {
   private final ZonedDateTime expireDateTime;
 
 
-  public static ReservationResultDTO from(ReservationResultVO vo) {
+  public static ReservationResultDTO from(ReservationResultParam param) {
     return ReservationResultDTO.create(
-         vo.getId(), vo.getMemberNumber(),
-         vo.getReservedPoint(), vo.getHistoryType(),
-         vo.isPayment(), vo.isSettle(), vo.isApplied(),
-         ZonedDateTime.of(vo.getStartedAt(), ZONE_ID),
-         ZonedDateTime.of(vo.getCreatedAt(), ZONE_ID),
-         ZonedDateTime.of(vo.getExpiredAt(), ZONE_ID)
+         param.getId(), param.getMemberNumber(),
+         param.getReservedPoint(), param.getHistoryType(),
+         param.isPayment(), param.isSettle(), param.isApplied(),
+         ZonedDateTime.of(param.getStartedAt(), ZONE_ID),
+         ZonedDateTime.of(param.getCreatedAt(), ZONE_ID),
+         ZonedDateTime.of(param.getExpiredAt(), ZONE_ID)
     );
   }
 }

@@ -5,10 +5,9 @@ import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.config.SpringSecurityTestConfig;
 import com.kurly.cloud.point.api.point.documentation.ApiDocumentUtils;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
-import com.kurly.cloud.point.api.point.domain.publish.ReservationResultVO;
+import com.kurly.cloud.point.api.point.domain.publish.ReservationResultParam;
 import com.kurly.cloud.point.api.point.domain.publish.ReservePointRequestDTO;
 import com.kurly.cloud.point.api.point.service.impl.PointReservationDomainService;
-import com.kurly.cloud.point.api.point.web.dto.ReservationResultDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,14 +30,19 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -69,14 +73,56 @@ public class PointReservationDocumentTest implements CommonTestGiven {
   }
 
   @Test
+  @DisplayName("RestDoc - 적립금 예약 조회")
+  void getReservedPoints() throws Exception {
+    //given:
+    ReservePointRequestDTO reservationRequest = givenReservationRequestDTO();
+    ReservationResultParam reservationResultParam = givenReservationResultVO(reservationRequest);
+    List<ReservationResultParam> reservedParams = new ArrayList<>(Collections.singletonList(reservationResultParam));
+
+    given(pointReservationDomainService.getReservedPoints(anyLong()))
+            .willReturn(reservedParams);
+
+    ResultActions resultActions = mockMvc.perform(
+            RestDocumentationRequestBuilders.get("/v2/members/{memberNumber}/reserved-points", 100000)
+                    .contentType(MediaType.APPLICATION_JSON)
+    );
+
+    resultActions
+            .andExpect(status().isOk())
+            .andDo(
+                    MockMvcRestDocumentation.document("point/pri/{method-name}"
+                            , ApiDocumentUtils.getDocumentRequest()
+                            , ApiDocumentUtils.getDocumentResponse()
+                            , pathParameters(
+                                    parameterWithName("memberNumber").description("회원번호")
+                            )
+                            , responseFields(
+                                    beneathPath("data").withSubsectionId("data")
+                                    , fieldWithPath("id").type(JsonFieldType.NUMBER).description("예약 번호")
+                                    , fieldWithPath("memberNumber").type(JsonFieldType.NUMBER).description("회원 번호")
+                                    , fieldWithPath("reservedPoint").type(JsonFieldType.NUMBER).description("예약 포인트")
+                                    , fieldWithPath("historyType").type(JsonFieldType.NUMBER).description("사유 번호")
+                                    , fieldWithPath("payment").type(JsonFieldType.BOOLEAN).description("결제여부 - 실제로 결제를 한 적립금인지를 판단합니다.")
+                                    , fieldWithPath("settle").type(JsonFieldType.BOOLEAN).description("유상여부 - 무상을 제외한 모든 적립금은 유상입니다.")
+                                    , fieldWithPath("applied").type(JsonFieldType.BOOLEAN).description("전환 여부 - 예약 상태에서 실 포인트로의 전환여부 입니다.")
+                                    , fieldWithPath("startDateTime").type(JsonFieldType.STRING).attributes(key("format").value("yyyy-MM-dd'T'HH:mm:ssXXX")).description("등록시각")
+                                    , fieldWithPath("createDateTime").type(JsonFieldType.STRING).attributes(key("format").value("yyyy-MM-dd'T'HH:mm:ssXXX")).description("등록시각")
+                                    , fieldWithPath("expireDateTime").type(JsonFieldType.STRING).attributes(key("format").value("yyyy-MM-dd'T'HH:mm:ssXXX")).description("만료시각")
+                            )
+                    )
+            );
+
+  }
+
+  @Test
   @DisplayName("RestDoc - 적립금 예약")
   void reservePoint() throws Exception {
     ReservePointRequestDTO reservationRequest = givenReservationRequestDTO();
-    ReservationResultVO reservationResultVO = givenReservationResultVO(reservationRequest, 1);
-    ReservationResultDTO reservationResultDTO = givenReservationResultDTO(reservationResultVO);
+    ReservationResultParam reservationResultParam = givenReservationResultVO(reservationRequest);
 
       given(pointReservationDomainService.reserve(any()))
-            .willReturn(reservationResultVO);
+            .willReturn(reservationResultParam);
 
       ResultActions resultActions = mockMvc.perform(
               RestDocumentationRequestBuilders.post("/v2/reserve")
@@ -155,34 +201,18 @@ public class PointReservationDocumentTest implements CommonTestGiven {
     );
   }
 
-  ReservationResultVO givenReservationResultVO(ReservePointRequestDTO requestVO, long id) {
-      return ReservationResultVO.create(
-              id,
-              requestVO.getMemberNumber(),
-              requestVO.getPoint(),
-              requestVO.getHistoryType(),
-              requestVO.isPayment(),
-              requestVO.isSettle(),
+  ReservationResultParam givenReservationResultVO(ReservePointRequestDTO requestParam) {
+      return ReservationResultParam.create(
+              1,
+              requestParam.getMemberNumber(),
+              requestParam.getPoint(),
+              requestParam.getHistoryType(),
+              requestParam.isPayment(),
+              requestParam.isSettle(),
               false,
-              requestVO.getStartDate().toLocalDateTime(),
+              requestParam.getStartDate().toLocalDateTime(),
               LocalDateTime.now(),
-              Objects.requireNonNull(requestVO.getExpireDate()).toLocalDateTime()
-      );
-  }
-
-  ReservationResultDTO givenReservationResultDTO(ReservationResultVO resultVO){
-      ZoneId ZONE_ID = ZoneId.of("Asia/Seoul");
-      return ReservationResultDTO.create(
-              resultVO.getId(),
-              resultVO.getMemberNumber(),
-              resultVO.getReservedPoint(),
-              resultVO.getHistoryType(),
-              resultVO.isPayment(),
-              resultVO.isSettle(),
-              resultVO.isApplied(),
-              ZonedDateTime.of(resultVO.getStartedAt(), ZONE_ID),
-              ZonedDateTime.now(),
-              ZonedDateTime.of(resultVO.getExpiredAt(), ZONE_ID)
+              Objects.requireNonNull(requestParam.getExpireDate()).toLocalDateTime()
       );
   }
 }

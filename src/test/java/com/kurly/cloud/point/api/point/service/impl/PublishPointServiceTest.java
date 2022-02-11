@@ -1,8 +1,5 @@
 package com.kurly.cloud.point.api.point.service.impl;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.TransactionalTest;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
@@ -16,8 +13,6 @@ import com.kurly.cloud.point.api.point.exception.AlreadyPublishedException;
 import com.kurly.cloud.point.api.point.service.PointHistoryUseCase;
 import com.kurly.cloud.point.api.point.service.PublishPointUseCase;
 import com.kurly.cloud.point.api.point.util.PointExpireDateCalculator;
-import java.time.LocalDateTime;
-import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -25,9 +20,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+
 @SpringBootTest
+@ActiveProfiles("local")
 @ExtendWith(SpringExtension.class)
 @DisplayName("PublishPointServiceTest class")
 class PublishPointServiceTest implements CommonTestGiven {
@@ -46,12 +49,12 @@ class PublishPointServiceTest implements CommonTestGiven {
   @Nested
   @DisplayName("주문 적립 적립금을 발행 할 때")
   class DescribePublishByOrder {
-    PublishPointRequest given() {
+    PublishPointRequest given(long memberNumber, long orderNumber) {
       return PublishPointRequest.builder()
-          .orderNumber(8888888888888L)
+          .orderNumber(orderNumber)
           .pointRatio(7)
           .point(1000L)
-          .memberNumber(givenMemberNumber())
+          .memberNumber(memberNumber)
           .build();
     }
 
@@ -59,13 +62,15 @@ class PublishPointServiceTest implements CommonTestGiven {
     @Nested
     @DisplayName("올바른 값이 입력되면")
     class Context0 {
+      public static final int MEMBER_NUMBER = 108;
+      public static final int ORDER_NUMBER = 1245678910;
       @Test
       @DisplayName("주문번호로 무상 적립금이 발행된다")
       void test() throws AlreadyPublishedException {
-        PublishPointRequest request = given();
+        PublishPointRequest request = given(MEMBER_NUMBER, ORDER_NUMBER);
         publishPointUseCase.publishByOrder(request);
         MemberPoint memberPoint =
-            memberPointDomainService.getOrCreateMemberPoint(givenMemberNumber());
+            memberPointDomainService.getOrCreateMemberPoint(MEMBER_NUMBER);
 
         assertThat(memberPoint.getTotalPoint()).isEqualTo(request.getPoint());
         assertThat(memberPoint.getFreePoint()).isEqualTo(request.getPoint());
@@ -74,7 +79,7 @@ class PublishPointServiceTest implements CommonTestGiven {
 
         Page<MemberPointHistory> historyList = memberPointHistoryDomainService.getHistoryList(
             MemberPointHistoryListRequest.builder()
-                .memberNumber(givenMemberNumber())
+                .memberNumber(MEMBER_NUMBER)
                 .build()
         );
 
@@ -90,7 +95,7 @@ class PublishPointServiceTest implements CommonTestGiven {
                 PointExpireDateCalculator.calculateDefault(LocalDateTime.now()));
 
         List<Point> availableMemberPoint =
-            pointDomainService.getAvailableMemberPoint(givenMemberNumber());
+            pointDomainService.getAvailableMemberPoint(MEMBER_NUMBER);
         assertThat(availableMemberPoint.size()).isEqualTo(1);
 
         Point point = availableMemberPoint.get(0);
@@ -114,10 +119,13 @@ class PublishPointServiceTest implements CommonTestGiven {
     @Nested
     @DisplayName("중복발행을 시도 하면")
     class Context1 {
+      public static final int MEMBER_NUMBER = 109;
+      public static final int ORDER_NUMBER = 1245678911;
+
       @DisplayName("AlreadyPublishedException이 발생 한다")
       @Test
       void test() {
-        PublishPointRequest request = given();
+        PublishPointRequest request = given(MEMBER_NUMBER, ORDER_NUMBER);
         try {
           publishPointUseCase.publishByOrder(request);
           publishPointUseCase.publishByOrder(request);
@@ -132,10 +140,10 @@ class PublishPointServiceTest implements CommonTestGiven {
   @Nested
   @DisplayName("관리자(시스템)가 적립금을 발행 할 때")
   class DescribePublish {
-    PublishPointRequest given() {
+    PublishPointRequest given(long memberNumber) {
       return PublishPointRequest.builder()
           .point(1000L)
-          .memberNumber(givenMemberNumber())
+          .memberNumber(memberNumber)
           .historyType(HistoryType.TYPE_12.getValue())
           .actionMemberNumber(givenMemberNumber())
           .detail("추천 지급")
@@ -147,13 +155,14 @@ class PublishPointServiceTest implements CommonTestGiven {
     @Nested
     @DisplayName("올바른 값이 입력되면")
     class Context0 {
+      public static final int MEMBER_NUM = 107;
       @Test
       @DisplayName("적립금이 발행된다")
       void test() {
-        PublishPointRequest request = given();
+        PublishPointRequest request = given(MEMBER_NUM);
         publishPointUseCase.publish(request);
         MemberPoint memberPoint =
-            memberPointDomainService.getOrCreateMemberPoint(givenMemberNumber());
+            memberPointDomainService.getOrCreateMemberPoint(MEMBER_NUM);
         assertThat(memberPoint.getTotalPoint()).isEqualTo(request.getPoint());
         assertThat(memberPoint.getFreePoint()).isEqualTo(request.getPoint());
         assertThat(memberPoint.getCashPoint()).isEqualTo(0);
@@ -163,64 +172,75 @@ class PublishPointServiceTest implements CommonTestGiven {
   }
 
   @Nested
-  @DisplayName("대출한 적립금이 있을 때")
+  @DisplayName("적립금이 -1000 포인트인 상태에서,")
   class DescribeRepay {
 
-    MemberPoint given() {
-      publishPointUseCase.cancelPublishByOrder(CancelPublishOrderPointRequest.builder()
-          .actionMemberNumber(givenMemberNumber())
-          .memberNumber(givenMemberNumber())
-          .orderNumber(givenOrderNumber())
-          .point(givenDebtAmount())
-          .build());
-      return memberPointDomainService.getOrCreateMemberPoint(givenMemberNumber());
+    public static final int MINUS_POINT = 1000;
+
+    MemberPoint whenMinusPointCommon() {
+      return whenMinusPointBy(givenMemberNumber(), givenOrderNumber(), MINUS_POINT);
     }
 
-    long givenDebtAmount() {
-      return 1000;
+    MemberPoint whenMinusPointBy(long memberNumber, long orderNumber, long extractMoney) {
+      publishPointUseCase.cancelPublishByOrder(CancelPublishOrderPointRequest.builder()
+              .actionMemberNumber(memberNumber)
+              .memberNumber(memberNumber)
+              .orderNumber(orderNumber)
+              .point(extractMoney)
+              .build());
+      return memberPointDomainService.getOrCreateMemberPoint(memberNumber);
     }
 
     @Nested
-    @DisplayName("무상적립금을 지급하면")
+    @DisplayName("무상적립금을,")
     class ContextOnPublishFree {
 
-      void subject(long amount) {
+      public static final int ORDER_NUMBER = 112233;
+
+      void giveFreePoint(long toWhom, long amount) {
         publishPointUseCase.publish(PublishPointRequest.builder()
             .point(amount)
-            .memberNumber(givenMemberNumber())
+            .memberNumber(toWhom)
             .historyType(HistoryType.TYPE_12.getValue())
             .build());
       }
 
       @TransactionalTest
       @Nested
-      @DisplayName("대출적립금 보다 지급적립금이 많으면")
+      @DisplayName("2000포인트 지급할 경우,")
       class Context0 {
-        @Test
-        @DisplayName("적립금을 지급하고 대출적립금만큼 차감한다")
-        void test() {
-          MemberPoint given = given();
-          subject(givenAmount());
-          assertThat(given.getTotalPoint()).isEqualTo(givenAmount() - givenDebtAmount());
-          assertThat(given.getFreePoint()).isEqualTo(givenAmount() - givenDebtAmount());
-        }
 
-        int givenAmount() {
-          return 2000;
+        public static final int MORE_DEBT_MEMBER = 100;
+        public static final int MORE_POINT = 2000;
+
+        @Test
+        @DisplayName("여전히 잔액은 지급한 만큼만 줄어든 마이너스가 되어야 한다.")
+        void test() {
+          MemberPoint before= whenMinusPointBy(MORE_DEBT_MEMBER, ORDER_NUMBER, MINUS_POINT);
+          assertThat(before.getTotalPoint()).isEqualTo(-MINUS_POINT);
+          giveFreePoint(MORE_DEBT_MEMBER, MORE_POINT);
+          MemberPoint after = memberPointDomainService.getMemberPoint(MORE_DEBT_MEMBER).get();
+          assertThat(after.getTotalPoint()).isEqualTo(2000 - MINUS_POINT);
+          assertThat(after.getFreePoint()).isEqualTo(2000 - MINUS_POINT);
         }
       }
 
       @TransactionalTest
       @Nested
-      @DisplayName("지급적립금 보다 대출적립금이 많으면")
+      @DisplayName("더 적게 지급할 경우,")
       class Context1 {
+
+        public static final int MORE_POINT_MEMBER = 101;
+
         @Test
-        @DisplayName("적립금을 지급하고 전액 차감한다")
+        @DisplayName("마이너스 금액만큼 뺀 금액이 잔액이 되어야 한다.")
         void test() {
-          MemberPoint given = given();
-          subject(givenAmount());
-          assertThat(given.getTotalPoint()).isEqualTo(givenAmount() - givenDebtAmount());
-          assertThat(given.getFreePoint()).isEqualTo(givenAmount() - givenDebtAmount());
+          MemberPoint before= whenMinusPointBy(MORE_POINT_MEMBER, ORDER_NUMBER, MINUS_POINT);
+          assertThat(before.getTotalPoint()).isEqualTo(-MINUS_POINT);
+          giveFreePoint(MORE_POINT_MEMBER,  givenAmount());
+          MemberPoint after = memberPointDomainService.getMemberPoint(MORE_POINT_MEMBER).get();
+          assertThat(after.getTotalPoint()).isEqualTo(givenAmount() - MINUS_POINT);
+          assertThat(after.getFreePoint()).isEqualTo(givenAmount() - MINUS_POINT);
         }
 
         int givenAmount() {
@@ -232,18 +252,21 @@ class PublishPointServiceTest implements CommonTestGiven {
       @Nested
       @DisplayName("대출적립금과 지급적립금이 같으면")
       class Context2 {
+
+        public static final int SAME_POINT_MEMBER = 102;
+        public static final int SAME_POINT = MINUS_POINT;
+
         @Test
         @DisplayName("적립금을 지급하고 전액 차감한다")
         void test() {
-          MemberPoint given = given();
-          subject(givenAmount());
-          assertThat(given.getTotalPoint()).isEqualTo(0);
-          assertThat(given.getFreePoint()).isEqualTo(0);
+          MemberPoint before = whenMinusPointBy(SAME_POINT_MEMBER, ORDER_NUMBER, MINUS_POINT);
+          assertThat(before.getTotalPoint()).isEqualTo(-MINUS_POINT);
+          giveFreePoint(SAME_POINT_MEMBER, SAME_POINT);
+          MemberPoint after = memberPointDomainService.getMemberPoint(SAME_POINT_MEMBER).get();
+          assertThat(after.getTotalPoint()).isEqualTo(0);
+          assertThat(after.getFreePoint()).isEqualTo(0);
         }
 
-        int givenAmount() {
-          return 1000;
-        }
       }
     }
 
@@ -251,11 +274,11 @@ class PublishPointServiceTest implements CommonTestGiven {
     @DisplayName("유상적립금을 지급하면")
     class ContextOnCashPoint {
 
-      void subject(long amount) {
+      void givePaidPoint(long memberNumber, long amount) {
         publishPointUseCase.publish(PublishPointRequest.builder()
             .point(amount)
             .settle(true)
-            .memberNumber(givenMemberNumber())
+            .memberNumber(memberNumber)
             .historyType(HistoryType.TYPE_12.getValue())
             .build());
       }
@@ -267,11 +290,12 @@ class PublishPointServiceTest implements CommonTestGiven {
         @Test
         @DisplayName("적립금을 지급하고 대출적립금만큼 차감한다")
         void test() {
-          MemberPoint given = given();
-          subject(givenAmount());
-          assertThat(given.getTotalPoint()).isEqualTo(givenAmount() - givenDebtAmount());
-          assertThat(given.getFreePoint()).isEqualTo(0);
-          assertThat(given.getCashPoint()).isEqualTo(givenAmount() - givenDebtAmount());
+          MemberPoint given = whenMinusPointBy(106, 12456789, MINUS_POINT);
+          givePaidPoint(106, givenAmount());
+          MemberPoint after = memberPointDomainService.getMemberPoint(106).get();
+          assertThat(after.getTotalPoint()).isEqualTo(givenAmount() - MINUS_POINT);
+          assertThat(after.getFreePoint()).isEqualTo(0);
+          assertThat(after.getCashPoint()).isEqualTo(givenAmount() - MINUS_POINT);
         }
 
         int givenAmount() {
@@ -286,11 +310,12 @@ class PublishPointServiceTest implements CommonTestGiven {
         @Test
         @DisplayName("적립금을 지급하고 전액 차감한다")
         void test() {
-          MemberPoint given = given();
-          subject(givenAmount());
-          assertThat(given.getTotalPoint()).isEqualTo(givenAmount() - givenDebtAmount());
-          assertThat(given.getFreePoint()).isEqualTo(givenAmount() - givenDebtAmount());
-          assertThat(given.getCashPoint()).isEqualTo(0);
+          MemberPoint given = whenMinusPointBy(105, 12456789, 1000);
+          givePaidPoint(105, givenAmount());
+          MemberPoint after = memberPointDomainService.getMemberPoint(105).get();
+          assertThat(after.getTotalPoint()).isEqualTo(givenAmount() - MINUS_POINT);
+          assertThat(after.getFreePoint()).isEqualTo(givenAmount() - MINUS_POINT);
+          assertThat(after.getCashPoint()).isEqualTo(0);
         }
 
         int givenAmount() {
@@ -302,18 +327,17 @@ class PublishPointServiceTest implements CommonTestGiven {
       @Nested
       @DisplayName("대출적립금과 지급적립금이 같으면")
       class Context2 {
+        public static final int PAID_SAME_POINT_MEMBER = 104;
         @Test
         @DisplayName("적립금을 지급하고 전액 차감한다")
         void test() {
-          MemberPoint given = given();
-          subject(givenAmount());
-          assertThat(given.getTotalPoint()).isEqualTo(0);
-          assertThat(given.getFreePoint()).isEqualTo(0);
-          assertThat(given.getCashPoint()).isEqualTo(0);
-        }
-
-        int givenAmount() {
-          return 1000;
+          MemberPoint before = whenMinusPointBy(PAID_SAME_POINT_MEMBER, givenOrderNumber(), MINUS_POINT);
+          assertThat(before.getTotalPoint()).isEqualTo(-MINUS_POINT);
+          givePaidPoint(PAID_SAME_POINT_MEMBER, MINUS_POINT);
+          MemberPoint after = memberPointDomainService.getMemberPoint(PAID_SAME_POINT_MEMBER).get();
+          assertThat(after.getTotalPoint()).isEqualTo(0);
+          assertThat(after.getFreePoint()).isEqualTo(0);
+          assertThat(after.getCashPoint()).isEqualTo(0);
         }
       }
     }
@@ -323,11 +347,11 @@ class PublishPointServiceTest implements CommonTestGiven {
   @Nested
   @DisplayName("주문 적립 적립금을 발행을 취소 할 때")
   class DescribeCancelPublishByOrder {
-    void givenOrderPoint() throws AlreadyPublishedException {
+    void givenOrderPoint(long memberNumber, long orderNumber) throws AlreadyPublishedException {
       publishPointUseCase.publishByOrder(PublishPointRequest.builder()
           .point(givenOrderPointAmount())
-          .orderNumber(givenOrderNumber())
-          .memberNumber(givenMemberNumber())
+          .orderNumber(orderNumber)
+          .memberNumber(memberNumber)
           .pointRatio(0.7f)
           .build()
       );
@@ -337,10 +361,10 @@ class PublishPointServiceTest implements CommonTestGiven {
       return 1000;
     }
 
-    void givenNonOrderPoint() {
+    void givenNonOrderPoint(long memberNubmer) {
       publishPointUseCase.publish(PublishPointRequest.builder()
           .point(givenNonOrderPointAmount())
-          .memberNumber(givenMemberNumber())
+          .memberNumber(memberNubmer)
           .historyType(HistoryType.TYPE_12.getValue())
           .build());
     }
@@ -349,32 +373,34 @@ class PublishPointServiceTest implements CommonTestGiven {
       return 2000;
     }
 
-    MemberPoint subject(long amount) {
+    MemberPoint cancelPublishByOrder(long memberNumber, long orderNumber, long amount) {
       publishPointUseCase.cancelPublishByOrder(CancelPublishOrderPointRequest.builder()
-          .actionMemberNumber(givenMemberNumber())
-          .memberNumber(givenMemberNumber())
-          .orderNumber(givenOrderNumber())
+          .actionMemberNumber(memberNumber)
+          .memberNumber(memberNumber)
+          .orderNumber(orderNumber)
           .point(amount)
           .build());
-      return memberPointDomainService.getOrCreateMemberPoint(givenMemberNumber());
+      return memberPointDomainService.getOrCreateMemberPoint(memberNumber);
     }
 
     @TransactionalTest
     @Nested
     @DisplayName("보유햔 적립금이 충분하면")
     class Context0 {
+      public static final int MORE_DEBT_MEMBER = 110;
+      public static final int ORDER_NUMBER = 1245678911;
       @Test
       @DisplayName("적립된 적립금을 전부 회수(사용) 한다")
       void test() throws AlreadyPublishedException {
-        givenNonOrderPoint();
-        givenOrderPoint();
-        MemberPoint subject = subject(givenAmount());
+        givenNonOrderPoint(MORE_DEBT_MEMBER);
+        givenOrderPoint(MORE_DEBT_MEMBER, ORDER_NUMBER);
+        MemberPoint subject = cancelPublishByOrder(MORE_DEBT_MEMBER, ORDER_NUMBER, cancelAmount());
 
         assertThat(subject.getTotalPoint())
-            .isEqualTo(givenOrderPointAmount() + givenNonOrderPointAmount() - givenAmount());
+            .isEqualTo(givenOrderPointAmount() + givenNonOrderPointAmount() - cancelAmount());
       }
 
-      long givenAmount() {
+      long cancelAmount() {
         return givenOrderPointAmount();
       }
     }
@@ -387,15 +413,15 @@ class PublishPointServiceTest implements CommonTestGiven {
       @Test
       @DisplayName("모자른 만큼 보유적립금이 대출(마이너스) 처리 된다")
       void test() throws AlreadyPublishedException {
-        givenNonOrderPoint();
-        givenOrderPoint();
-        MemberPoint subject = subject(givenAmount());
+        givenNonOrderPoint(givenMemberNumber()-1);
+        givenOrderPoint(givenMemberNumber()-1, givenOrderNumber()-1);
+        MemberPoint subject = cancelPublishByOrder(givenMemberNumber()-1, givenOrderNumber()-1, cancelAmount());
 
         assertThat(subject.getTotalPoint())
-            .isEqualTo(givenOrderPointAmount() + givenNonOrderPointAmount() - givenAmount());
+            .isEqualTo(givenOrderPointAmount() + givenNonOrderPointAmount() - cancelAmount());
       }
 
-      int givenAmount() {
+      int cancelAmount() {
         return 10000;
       }
     }

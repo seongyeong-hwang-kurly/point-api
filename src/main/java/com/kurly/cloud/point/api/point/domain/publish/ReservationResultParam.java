@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor(staticName = "create")
-public class ReservationResultVO {
+public class ReservationResultParam {
   private long id;
   private Long memberNumber;
   private Long reservedPoint;
@@ -22,8 +22,8 @@ public class ReservationResultVO {
   private LocalDateTime createdAt;
   private LocalDateTime expiredAt;
 
-  public static ReservationResultVO from(PointReservationEntity entity){
-    return ReservationResultVO.create(
+  public static ReservationResultParam from(PointReservationEntity entity){
+    return ReservationResultParam.create(
             entity.getId(), entity.getMemberNumber(), entity.getPoint(),
              entity.getHistoryType(), entity.isPayment(),
             entity.isSettle(), entity.isApplied(), entity.getStartedAt(),

@@ -1,23 +1,11 @@
 package com.kurly.cloud.point.api.batch;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.kurly.cloud.point.api.batch.config.PointBatchConfig;
-import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.domain.publish.PublishPointRequest;
 import com.kurly.cloud.point.api.point.entity.MemberPoint;
 import com.kurly.cloud.point.api.point.repository.MemberPointRepository;
 import com.kurly.cloud.point.api.point.service.PublishPointUseCase;
-import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ForkJoinPool;
-import java.util.stream.IntStream;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -28,12 +16,27 @@ import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import javax.persistence.EntityManagerFactory;
+import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
+import java.util.stream.IntStream;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 @SpringBootTest
+@ActiveProfiles("local")
 @ExtendWith(SpringExtension.class)
 @DisplayName("PointExpireBatch class")
-public class PointExpireBatchTest implements CommonTestGiven {
+public class PointExpireBatchTest {
+  long givenMemberNumber() {
+    return 2036;
+  }
+
   @Autowired
   JobLauncher jobLauncher;
 
@@ -57,37 +60,6 @@ public class PointExpireBatchTest implements CommonTestGiven {
   @Nested
   @DisplayName("적립금 만료 배치를 실행 할 때")
   class DescribeExpire {
-    @AfterEach
-    void clear() {
-      long startMemberNumber = givenMemberNumber() - givenSize();
-
-      EntityManager entityManager = entityManagerFactory.createEntityManager();
-      EntityTransaction tx = entityManager.getTransaction();
-      tx.begin();
-
-      entityManager
-          .createQuery("DELETE FROM MemberPoint mp WHERE mp.memberNumber >= :memberNumber")
-          .setParameter("memberNumber", startMemberNumber)
-          .executeUpdate();
-
-      entityManager
-          .createQuery("DELETE FROM Point p WHERE p.memberNumber >= :memberNumber")
-          .setParameter("memberNumber", startMemberNumber)
-          .executeUpdate();
-
-      entityManager
-          .createQuery("DELETE FROM MemberPointHistory ph WHERE ph.memberNumber >= :memberNumber")
-          .setParameter("memberNumber", startMemberNumber)
-          .executeUpdate();
-
-      entityManager
-          .createQuery("DELETE FROM PointHistory ph WHERE ph.actionMemberNumber >= :memberNumber")
-          .setParameter("memberNumber", startMemberNumber)
-          .executeUpdate();
-
-      tx.commit();
-    }
-
     @Nested
     @DisplayName("n개의 만료된 적립금이 있다면")
     class Context0 {
@@ -102,6 +74,7 @@ public class PointExpireBatchTest implements CommonTestGiven {
           Optional<MemberPoint> memberPoint =
               memberPointRepository.findById(givenMemberNumber() - i);
           assertThat(memberPoint).isNotEmpty();
+          System.out.println("member:" + memberPoint.get().getMemberNumber() + ", totalPoint: " + memberPoint.get().getTotalPoint());
           assertThat(memberPoint.get().getTotalPoint()).isEqualTo(0);
         }
       }

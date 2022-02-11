@@ -1,6 +1,5 @@
 package com.kurly.cloud.point.api.point.service.impl;
 
-import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.TransactionalTest;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.domain.history.PointHistoryInsertRequest;
@@ -15,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
@@ -26,9 +27,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
 @SpringBootTest
+@ActiveProfiles("local")
 @ExtendWith(SpringExtension.class)
 @DisplayName("PointHistoryDomainServiceTest class")
-class PointHistoryDomainServiceTest implements CommonTestGiven {
+class PointHistoryDomainServiceTest {
+  long givenMemberNumber() {
+    return 10003;
+  }
+
+  long givenOrderNumber() {
+    return 10003000;
+  }
 
   @Autowired
   PointHistoryDomainService pointHistoryDomainService;
@@ -46,8 +55,8 @@ class PointHistoryDomainServiceTest implements CommonTestGiven {
     @Nested
     @DisplayName("pointSeq가 없다면")
     class Context0 {
-      @DisplayName("ConstraintViolationException 예외가 발생 한다")
       @Test
+      @DisplayName("ConstraintViolationException 예외가 발생 한다")
       void test() {
         PointHistoryInsertRequest given = givenExceptPointSeq();
         try {
@@ -118,6 +127,7 @@ class PointHistoryDomainServiceTest implements CommonTestGiven {
     class Context3 {
       @DisplayName("입력하고 값을 리턴 한다")
       @Test
+      @Transactional
       void test() {
         Point point = pointDomainService.publishPoint(PublishPointRequest.builder()
                 .historyType(HistoryType.TYPE_1.getValue())
@@ -206,6 +216,7 @@ class PointHistoryDomainServiceTest implements CommonTestGiven {
     class Context0 {
 
       @Test
+      @Transactional
       @DisplayName("이력을 1건 리턴 한다")
       void test() {
         Point given = given();
@@ -227,15 +238,15 @@ class PointHistoryDomainServiceTest implements CommonTestGiven {
     @Nested
     @DisplayName("등록일로 조회 하면")
     class Context0 {
-      void given() {
-        givenPoint();
+      Point given(long memberNumber) {
+        return givenPoint(memberNumber);
       }
 
-      Point givenPoint() {
+      Point givenPoint(long memberNumber) {
         Point point = pointDomainService.publishPoint(PublishPointRequest.builder()
             .historyType(HistoryType.TYPE_1.getValue())
             .point(1000L)
-            .memberNumber(givenMemberNumber())
+            .memberNumber(memberNumber)
             .orderNumber(givenOrderNumber())
             .build());
         pointHistoryDomainService.insertHistory(
@@ -249,17 +260,20 @@ class PointHistoryDomainServiceTest implements CommonTestGiven {
         return point;
       }
 
-      Page<PointHistory> subject(LocalDateTime from, LocalDateTime to) {
-        return pointHistoryDomainService.getPublishedByRegTime(from, to, PageRequest.of(0, 10));
+      List<PointHistory> subject(long seq) {
+        return pointHistoryDomainService.getByPointSeq(seq);
       }
 
       @Test
+      @Transactional
       @DisplayName("이력을 리턴 한다")
       void test() {
-        given();
-        Page<PointHistory> subject =
-            subject(LocalDateTime.now().minusSeconds(1), LocalDateTime.now().plusSeconds(1));
-        assertThat(subject.getTotalElements()).isEqualTo(1);
+        long ACTION_MEMBER_NUMBER = 1033;
+
+        Point point = given(ACTION_MEMBER_NUMBER);
+        List<PointHistory> subject =
+            subject(point.getSeq());
+        assertThat(subject.size()).isEqualTo(1);
       }
     }
 
@@ -267,21 +281,23 @@ class PointHistoryDomainServiceTest implements CommonTestGiven {
     @Nested
     @DisplayName("이력 타입으로 조회 하면")
     class Context1 {
-      void given() {
-        givenPoint(HistoryType.TYPE_1.getValue());
-        givenPoint(HistoryType.TYPE_2.getValue());
+      void given(long memberNumber, long actionMemberNumber) {
+        givenPoint(memberNumber, actionMemberNumber, HistoryType.TYPE_1.getValue());
+        givenPoint(memberNumber, actionMemberNumber, HistoryType.TYPE_2.getValue());
       }
 
-      Point givenPoint(int historyType) {
+      Point givenPoint(long memberNumber, long actionMemberNumber, int historyType) {
         Point point = pointDomainService.publishPoint(PublishPointRequest.builder()
             .historyType(historyType)
             .point(1000L)
-            .memberNumber(givenMemberNumber())
+            .memberNumber(memberNumber)
+            .actionMemberNumber(actionMemberNumber)
             .orderNumber(givenOrderNumber())
             .build());
         pointHistoryDomainService.insertHistory(
             PointHistoryInsertRequest.builder()
                 .orderNumber(givenOrderNumber())
+                .actionMemberNumber(actionMemberNumber)
                 .historyType(historyType)
                 .pointSeq(point.getSeq())
                 .amount(1000L)
@@ -290,39 +306,52 @@ class PointHistoryDomainServiceTest implements CommonTestGiven {
         return point;
       }
 
-      Page<PointHistory> subject(List<Integer> historyTypes) {
-        return pointHistoryDomainService.getPublishedByHistoryTypes(
+      Page<PointHistory> subject(long actionMemberNumber, List<Integer> historyTypes) {
+        return pointHistoryDomainService.getPublishedByHistoryTypesAndActionMemberNumbers(
             LocalDateTime.now().minusSeconds(1),
             LocalDateTime.now().plusSeconds(1),
             historyTypes,
+            List.of(actionMemberNumber),
             PageRequest.of(0, 10));
       }
 
 
       @Test
+      @Transactional
       @DisplayName("이력타입이 1인 이력을 리턴 한다")
       void test() {
-        given();
+        long MEMBER_NUMBER = 1030;
+        long ACTION_MEMBER_NUMBER = 103000;
+
+        given(MEMBER_NUMBER, ACTION_MEMBER_NUMBER);
         Page<PointHistory> subject =
-            subject(Arrays.asList(HistoryType.TYPE_1.getValue()));
+            subject(ACTION_MEMBER_NUMBER, Arrays.asList(HistoryType.TYPE_1.getValue()));
         assertThat(subject.getTotalElements()).isEqualTo(1);
       }
 
       @Test
+      @Transactional
       @DisplayName("이력타입이 2인 이력을 리턴 한다")
       void test1() {
-        given();
+        long MEMBER_NUMBER = 1031;
+        long ACTION_MEMBER_NUMBER = 103100;
+
+        given(MEMBER_NUMBER, ACTION_MEMBER_NUMBER);
         Page<PointHistory> subject =
-            subject(Arrays.asList(HistoryType.TYPE_2.getValue()));
+            subject(ACTION_MEMBER_NUMBER, Arrays.asList(HistoryType.TYPE_2.getValue()));
         assertThat(subject.getTotalElements()).isEqualTo(1);
       }
 
       @Test
+      @Transactional
       @DisplayName("이력타입이 1과 2인 이력을 리턴 한다")
       void test2() {
-        given();
+        long MEMBER_NUMBER = 1032;
+        long ACTION_MEMBER_NUMBER = 103200;
+
+        given(MEMBER_NUMBER, ACTION_MEMBER_NUMBER);
         Page<PointHistory> subject =
-            subject(Arrays.asList(HistoryType.TYPE_1.getValue(), HistoryType.TYPE_2.getValue()));
+            subject(ACTION_MEMBER_NUMBER, Arrays.asList(HistoryType.TYPE_1.getValue(), HistoryType.TYPE_2.getValue()));
         assertThat(subject.getTotalElements()).isEqualTo(2);
       }
     }
@@ -331,16 +360,17 @@ class PointHistoryDomainServiceTest implements CommonTestGiven {
     @Nested
     @DisplayName("지급자로 조회 하면")
     class Context2 {
-      void given() {
-        givenPoint(HistoryType.TYPE_1.getValue(), givenMemberNumber());
-        givenPoint(HistoryType.TYPE_2.getValue(), givenMemberNumber() - 1);
+
+      void given(long memberNumber) {
+        givenPoint(memberNumber, HistoryType.TYPE_1.getValue(), memberNumber);
+        givenPoint(memberNumber, HistoryType.TYPE_2.getValue(), memberNumber - 1);
       }
 
-      Point givenPoint(int historyType, long actionMemberNumber) {
+      Point givenPoint(long memberNumber, int historyType, long actionMemberNumber) {
         Point point = pointDomainService.publishPoint(PublishPointRequest.builder()
             .historyType(historyType)
             .point(1000L)
-            .memberNumber(givenMemberNumber())
+            .memberNumber(memberNumber)
             .orderNumber(givenOrderNumber())
             .actionMemberNumber(actionMemberNumber)
             .build());
@@ -366,27 +396,33 @@ class PointHistoryDomainServiceTest implements CommonTestGiven {
 
 
       @Test
+      @Transactional
       @DisplayName("지급자가 givenMemberNumber()인 이력을 리턴 한다")
       void test() {
-        given();
-        Page<PointHistory> subject = subject(Arrays.asList(givenMemberNumber()));
+        long MEMBER_NUMBER = 10271;
+        given(MEMBER_NUMBER);
+        Page<PointHistory> subject = subject(Arrays.asList(MEMBER_NUMBER));
         assertThat(subject.getTotalElements()).isEqualTo(1);
       }
 
       @Test
+      @Transactional
       @DisplayName("지급자가 givenMemberNumber()-1인 이력을 리턴 한다")
       void test1() {
-        given();
-        Page<PointHistory> subject = subject(Arrays.asList(givenMemberNumber() - 1));
+        long MEMBER_NUMBER = 10281;
+        given(MEMBER_NUMBER);
+        Page<PointHistory> subject = subject(Arrays.asList(MEMBER_NUMBER - 1));
         assertThat(subject.getTotalElements()).isEqualTo(1);
       }
 
       @Test
+      @Transactional
       @DisplayName("이력타입이 givenMemberNumber()와 givenMemberNumber()-1인 이력을 리턴 한다")
       void test2() {
-        given();
+        long MEMBER_NUMBER = 10291;
+        given(MEMBER_NUMBER);
         Page<PointHistory> subject =
-            subject(Arrays.asList(givenMemberNumber(), givenMemberNumber() - 1));
+            subject(Arrays.asList(MEMBER_NUMBER, MEMBER_NUMBER - 1));
         assertThat(subject.getTotalElements()).isEqualTo(2);
       }
     }

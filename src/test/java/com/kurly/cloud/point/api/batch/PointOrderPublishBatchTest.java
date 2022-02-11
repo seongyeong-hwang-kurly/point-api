@@ -1,23 +1,17 @@
 package com.kurly.cloud.point.api.batch;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.kurly.cloud.point.api.batch.config.PointBatchConfig;
 import com.kurly.cloud.point.api.batch.member.entity.Member;
+import com.kurly.cloud.point.api.batch.member.repository.MemberRepository;
 import com.kurly.cloud.point.api.batch.order.entity.Order;
 import com.kurly.cloud.point.api.batch.order.entity.OrderDynamicColumn;
+import com.kurly.cloud.point.api.batch.order.repository.OrderDynamicColumnRepository;
+import com.kurly.cloud.point.api.batch.order.repository.OrderRepository;
 import com.kurly.cloud.point.api.batch.publish.PointOrderPublishScheduler;
 import com.kurly.cloud.point.api.batch.publish.config.PointOrderPublishJobConfig;
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.entity.MemberPoint;
 import com.kurly.cloud.point.api.point.repository.MemberPointRepository;
-import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.stream.IntStream;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -28,9 +22,18 @@ import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import javax.persistence.EntityManagerFactory;
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.Random;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 @SpringBootTest
+@ActiveProfiles("local")
 @ExtendWith(SpringExtension.class)
 @DisplayName("PointOrderPublishBatch class")
 public class PointOrderPublishBatchTest implements CommonTestGiven {
@@ -50,60 +53,14 @@ public class PointOrderPublishBatchTest implements CommonTestGiven {
   @Autowired
   MemberPointRepository memberPointRepository;
 
-  private long fromOrderNumber = givenOrderNumber();
-  private long fromMemberNumber = givenMemberNumber();
+  @Autowired
+  MemberRepository memberRepository;
 
-  @AfterEach
-  void clear() {
-    EntityManager entityManager = entityManagerFactory.createEntityManager();
-    EntityTransaction tx = entityManager.getTransaction();
-    tx.begin();
+  @Autowired
+  OrderRepository orderRepository;
 
-    entityManager
-        .createQuery(
-            "DELETE FROM Order o WHERE o.orderNumber BETWEEN :fromOrderNumber AND :toOrderNumber")
-        .setParameter("fromOrderNumber", fromOrderNumber)
-        .setParameter("toOrderNumber", givenOrderNumber())
-        .executeUpdate();
-
-    entityManager
-        .createQuery(
-            "DELETE FROM OrderDynamicColumn odc WHERE odc.orderNumber BETWEEN :fromOrderNumber AND :toOrderNumber")
-        .setParameter("fromOrderNumber", fromOrderNumber)
-        .setParameter("toOrderNumber", givenOrderNumber())
-        .executeUpdate();
-
-    entityManager
-        .createQuery(
-            "DELETE FROM MemberPoint mp WHERE mp.memberNumber BETWEEN :fromMemberNumber AND :toMemberNumber")
-        .setParameter("fromMemberNumber", fromMemberNumber)
-        .setParameter("toMemberNumber", givenMemberNumber())
-        .executeUpdate();
-
-    entityManager
-        .createQuery(
-            "DELETE FROM Point p WHERE p.memberNumber BETWEEN :fromMemberNumber AND :toMemberNumber")
-        .setParameter("fromMemberNumber", fromMemberNumber)
-        .setParameter("toMemberNumber", givenMemberNumber())
-        .executeUpdate();
-
-    entityManager
-        .createQuery(
-            "DELETE FROM PointHistory ph WHERE ph.orderNumber BETWEEN :fromOrderNumber AND :toOrderNumber")
-        .setParameter("fromOrderNumber", fromOrderNumber)
-        .setParameter("toOrderNumber", givenOrderNumber())
-        .executeUpdate();
-
-    entityManager
-        .createQuery(
-            "DELETE FROM MemberPointHistory ph WHERE ph.memberNumber BETWEEN :fromMemberNumber AND :toMemberNumber")
-        .setParameter("fromMemberNumber", fromMemberNumber)
-        .setParameter("toMemberNumber", givenMemberNumber())
-        .executeUpdate();
-
-    entityManager.close();
-    tx.commit();
-  }
+  @Autowired
+  OrderDynamicColumnRepository orderDynamicColumnRepository;
 
   int givenPayPrice() {
     return 3333;
@@ -117,28 +74,38 @@ public class PointOrderPublishBatchTest implements CommonTestGiven {
     return 1000;
   }
 
-  void givenOrder(long orderNumber, long memberNumber, LocalDateTime deliveredDateTime) {
-    EntityManager entityManager = entityManagerFactory.createEntityManager();
-    EntityTransaction tx = entityManager.getTransaction();
-    tx.begin();
+  long newMemberNumber = 0;
+
+  long givenOrder(long orderNumber, long memberNumber, LocalDateTime deliveredDateTime) {
+    Member member = Member.builder()
+            .memberNumber(givenMemberNumber())
+            .memberId("memberId")
+            .memberUuid("memberUuid")
+            .recommendMemberId("test")
+            .mobile("01011112222")
+            .name("아무개")
+            .build();
+    var savedMember = memberRepository.save(member);
+
     Order order = Order.builder()
         .orderNumber(orderNumber)
         .orderStatus(4)
         .orderProcessCode(0)
-        .member(Member.builder().memberNumber(memberNumber).build())
+        .member(savedMember)
         .deliveredDateTime(deliveredDateTime)
         .payPrice(givenPayPrice())
         .publishPoint(givenPoint())
         .build();
-    entityManager.persist(order);
+    Order savedOrder = orderRepository.save(order);
+
     OrderDynamicColumn orderDynamicColumn = OrderDynamicColumn.builder()
-        .orderNumber(order.getOrderNumber())
+        .orderNumber(savedOrder.getOrderNumber())
         .column("point_ratio")
         .value(String.valueOf(givenPointRatio()))
         .build();
-    entityManager.persist(orderDynamicColumn);
-    entityManager.close();
-    tx.commit();
+   orderDynamicColumnRepository.save(orderDynamicColumn);
+
+   return savedMember.getMemberNumber();
   }
 
   @Nested
@@ -159,20 +126,16 @@ public class PointOrderPublishBatchTest implements CommonTestGiven {
     @Nested
     @DisplayName("적립 가능한 주문이 있다면")
     class Context0 {
-      void givenOrderBySize(int size) {
-        IntStream.range(0, size).parallel().forEach(i -> {
-          givenOrder(givenOrderNumber() - i, givenMemberNumber() - i, givenDeliveredDate());
-        });
-        fromOrderNumber = givenOrderNumber() - size;
-        fromMemberNumber = givenMemberNumber() - size;
+      void givenOrderBySize() {
+        newMemberNumber = givenOrder(randomOrderNumber(), givenMemberNumber(), givenDeliveredDate());
       }
 
       @DisplayName("모두 적립 된다")
       @Test
       void test() {
-        givenOrderBySize(10);
+        givenOrderBySize();
         subject();
-        MemberPoint memberPoint = memberPointRepository.findById(givenMemberNumber()).get();
+        MemberPoint memberPoint = memberPointRepository.findMemberPointByMemberNumber(newMemberNumber).get();
 
         int expectedPoint = givenPoint();
         assertThat(memberPoint.getTotalPoint()).isEqualTo(expectedPoint);
@@ -180,6 +143,10 @@ public class PointOrderPublishBatchTest implements CommonTestGiven {
         assertThat(memberPoint.getCashPoint()).isEqualTo(0);
       }
     }
+  }
+
+  long randomOrderNumber() {
+    return new Random().nextLong();
   }
 
   @Nested
@@ -204,20 +171,16 @@ public class PointOrderPublishBatchTest implements CommonTestGiven {
     @Nested
     @DisplayName("적립 가능한 주문이 있다면")
     class Context0 {
-      void givenOrderBySize(int size) {
-        IntStream.range(0, size).parallel().forEach(i -> {
-          givenOrder(givenOrderNumber() - i, givenMemberNumber() - i, givenDeliveredDate());
-        });
-        fromOrderNumber = givenOrderNumber() - size;
-        fromMemberNumber = givenMemberNumber() - size;
+      long givenOrderBySize() {
+        return givenOrder(randomOrderNumber(), givenMemberNumber(), givenDeliveredDate());
       }
 
       @DisplayName("모두 적립 된다")
       @Test
       void test() throws Exception {
-        givenOrderBySize(10);
+        newMemberNumber = givenOrderBySize();
         subject();
-        MemberPoint memberPoint = memberPointRepository.findById(givenMemberNumber()).get();
+        MemberPoint memberPoint = memberPointRepository.findById(newMemberNumber).get();
 
         int expectedPoint = givenPoint();
         assertThat(memberPoint.getTotalPoint()).isEqualTo(expectedPoint);
@@ -232,10 +195,10 @@ public class PointOrderPublishBatchTest implements CommonTestGiven {
       @DisplayName("한번만 적립 된다")
       @Test
       void test() throws Exception {
-        givenOrder(givenOrderNumber(), givenMemberNumber(), givenDeliveredDate());
+        newMemberNumber = givenOrder(randomOrderNumber(), givenMemberNumber(), givenDeliveredDate());
         subject();
         subject();
-        MemberPoint memberPoint = memberPointRepository.findById(givenMemberNumber()).get();
+        MemberPoint memberPoint = memberPointRepository.findById(newMemberNumber).get();
 
         int expectedPoint = givenPoint();
         assertThat(memberPoint.getTotalPoint()).isEqualTo(expectedPoint);
