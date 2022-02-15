@@ -99,7 +99,7 @@ public class RecommendPublishBatchTest implements CommonTestGiven {
     return LocalDateTime.now().format(PointBatchConfig.DATE_TIME_FORMATTER);
   }
 
-  Member givenRecommenderMember(int index) {
+  Member createRecommender(int index) {
     Member member = Member.builder()
         .memberId("recommend" + index)
         .mobile("010-4321-4321")
@@ -112,7 +112,7 @@ public class RecommendPublishBatchTest implements CommonTestGiven {
     return member;
   }
 
-  Member givenRecommendeeMember(String recommenderId, int index) {
+  Member createRecommendee(String recommenderId, int index) {
     Member member = Member.builder()
         .memberId("recommendee" + index)
         .mobile("010-3321-4321")
@@ -149,8 +149,8 @@ public class RecommendPublishBatchTest implements CommonTestGiven {
       tx.begin();
       Member recommendee;
       if (createMember) {
-        Member recommender = givenRecommenderMember(index);
-        recommendee = givenRecommendeeMember(recommender.getMemberId(), index);
+        Member recommender = createRecommender(index);
+        recommendee = createRecommendee(recommender.getMemberId(), index);
       } else {
         recommendee = memberRepository.findByMemberId("recommendee" + index).get();
       }
@@ -167,8 +167,7 @@ public class RecommendPublishBatchTest implements CommonTestGiven {
   @Test
   void test() throws Exception {
     createData(givenSize(), true);
-    JobExecution subject = subject();
-    ExecutionContext executionContext = subject.getExecutionContext();
+    ExecutionContext executionContext = subject().getExecutionContext();
     long totalOrderCount = executionContext.getLong("totalOrderCount");
     long totalValidCount = executionContext.getLong("totalValidCount");
     long totalPublishPointAmount = executionContext.getLong("totalPublishPointAmount");
@@ -191,8 +190,7 @@ public class RecommendPublishBatchTest implements CommonTestGiven {
   void test1() throws Exception {
     createData(givenSize(), true);
     createData(givenSize(), false);
-    JobExecution subject = subject();
-    ExecutionContext executionContext = subject.getExecutionContext();
+    ExecutionContext executionContext = subject().getExecutionContext();
     long totalOrderCount = executionContext.getLong("totalOrderCount");
     long totalValidCount = executionContext.getLong("totalValidCount");
     long totalPublishPointAmount = executionContext.getLong("totalPublishPointAmount");
@@ -200,13 +198,13 @@ public class RecommendPublishBatchTest implements CommonTestGiven {
     assertThat(totalOrderCount).isEqualTo(givenSize());
     assertThat(totalValidCount).isEqualTo(givenSize());
     assertThat(totalPublishPointCount).isEqualTo(givenSize() * 2);
-    assertThat(totalPublishPointAmount).isEqualTo(givenSize() * 2 *
-        recommendationPointHistoryUseCase.getPaidPoint());
+    assertThat(totalPublishPointAmount)
+            .isEqualTo(givenSize() * 2 * recommendationPointHistoryUseCase.getPaidPoint());
     List<MemberPoint> memberPoints = memberPointRepository.findAllById(memberNumbers);
     assertThat(memberPoints.size()).isEqualTo(givenSize() * 2);
     memberPoints.forEach(memberPoint -> {
       assertThat(memberPoint.getTotalPoint())
-          .isEqualTo(recommendationPointHistoryUseCase.getPaidPoint());
+              .isEqualTo(recommendationPointHistoryUseCase.getPaidPoint());
     });
   }
 
