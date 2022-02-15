@@ -32,7 +32,7 @@ client.test("Request executed successfully", function() {
 %}
 
 ### 3. 포인트 예약
-POST {{host}}/v2/reserve
+POST http://127.0.0.1:8080/v2/reserve
 Content-Type: application/json
 
 {

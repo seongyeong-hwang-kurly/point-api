@@ -1,7 +1,5 @@
 package com.kurly.cloud.point.api.point.web.pub;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurly.cloud.point.api.point.common.CommonTestGiven;
 import com.kurly.cloud.point.api.point.common.ControllerTest;
@@ -24,6 +22,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
+
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -67,7 +67,7 @@ public class ConsumeControllerTest implements CommonTestGiven {
 
       OrderConsumePointRequest givenRequest() {
         return OrderConsumePointRequest.builder()
-            .memberNumber(givenMemberNumber())
+            .memberNumber(givenStaticMemberNumber())
             .orderNumber(givenOrderNumber())
             .point(100L)
             .build();
@@ -92,7 +92,7 @@ public class ConsumeControllerTest implements CommonTestGiven {
 
       OrderConsumePointRequest givenRequest() {
         return OrderConsumePointRequest.builder()
-            .memberNumber(givenMemberNumber() - 1)
+            .memberNumber(givenStaticMemberNumber() - 1)
             .orderNumber(givenOrderNumber())
             .point(100L)
             .build();

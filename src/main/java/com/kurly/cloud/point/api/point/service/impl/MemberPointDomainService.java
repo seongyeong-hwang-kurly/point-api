@@ -2,11 +2,12 @@ package com.kurly.cloud.point.api.point.service.impl;
 
 import com.kurly.cloud.point.api.point.entity.MemberPoint;
 import com.kurly.cloud.point.api.point.repository.MemberPointRepository;
-import java.time.LocalDateTime;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -60,6 +61,12 @@ class MemberPointDomainService {
     MemberPoint memberPoint = getOrCreateMemberPoint(memberNumber);
     memberPoint.minusPoint(amount, 0);
     return memberPointRepository.saveAndFlush(memberPoint);
+  }
+
+  void expireFreePoint(long memberNumber, long amount, LocalDateTime expiredAt) {
+    MemberPoint memberPoint = getOrCreateMemberPoint(memberNumber);
+    memberPoint.expire(amount, 0, expiredAt);
+    memberPointRepository.saveAndFlush(memberPoint);
   }
 
   MemberPoint minusCashPoint(long memberNumber, long amount) {

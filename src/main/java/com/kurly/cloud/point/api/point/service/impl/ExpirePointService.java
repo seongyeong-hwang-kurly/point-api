@@ -7,13 +7,16 @@ import com.kurly.cloud.point.api.point.domain.history.MemberPointHistoryInsertRe
 import com.kurly.cloud.point.api.point.domain.history.PointHistoryInsertRequest;
 import com.kurly.cloud.point.api.point.entity.Point;
 import com.kurly.cloud.point.api.point.service.ExpirePointUseCase;
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+
+import static com.kurly.cloud.point.api.point.service.impl.ExpirePointServiceHelper.getLatestExpiredAt;
 
 @Slf4j
 @Service
@@ -28,19 +31,22 @@ class ExpirePointService implements ExpirePointUseCase {
   @Transactional
   @Override
   public PointExpireResult expireMemberPoint(long memberNumber,
-                                             LocalDateTime expireTime) {
-    List<Point> expiredMemberPoint = pointDomainService
-        .getExpiredMemberPoint(memberNumber, expireTime);
-    PointExpireResult pointExpireResult = doExpire(expiredMemberPoint);
+                                             LocalDateTime executionExpiringTime) {
+    List<Point> targetPoints = pointDomainService
+        .getExpiredPointBy(memberNumber, executionExpiringTime);
+    PointExpireResult pointExpireResult = doExpire(targetPoints);
     pointExpireResult.setMemberNumber(memberNumber);
 
-    memberPointDomainService.minusFreePoint(memberNumber, pointExpireResult.getTotalExpired());
+    memberPointDomainService.expireFreePoint(
+            memberNumber, pointExpireResult.getTotalExpired(), pointExpireResult.getExpiredAt());
 
     memberPointHistoryDomainService.insertHistory(MemberPointHistoryInsertRequest.builder()
         .detail(HistoryType.TYPE_103.buildMessage())
         .freePoint(-pointExpireResult.getTotalExpired())
         .memberNumber(memberNumber)
         .type(HistoryType.TYPE_103.getValue())
+        .expireTime(pointExpireResult.getExpiredAt())
+        .expiredAt(pointExpireResult.getExpiredAt())
         .build());
 
     FileBeatLogger.info(new HashMap<>() {
@@ -69,10 +75,14 @@ class ExpirePointService implements ExpirePointUseCase {
           .amount(-remain)
           .historyType(HistoryType.TYPE_103.getValue())
           .detail(HistoryType.TYPE_103.buildMessage())
+          .expiredAt(point.getExpireTime())
           .pointSeq(pointSeq)
           .build());
     });
 
+    pointExpireResult.setExpiredAt(getLatestExpiredAt(points));
+
     return pointExpireResult;
   }
+
 }

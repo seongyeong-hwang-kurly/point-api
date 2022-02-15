@@ -2,10 +2,11 @@ package com.kurly.cloud.point.api.point.domain.history;
 
 import com.kurly.cloud.point.api.point.entity.Point;
 import com.kurly.cloud.point.api.point.entity.PointHistory;
-import java.time.LocalDateTime;
-import java.util.Objects;
 import lombok.Builder;
 import lombok.Getter;
+
+import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Getter
 @Builder
@@ -21,6 +22,7 @@ public class PointHistoryInsertRequest {
   String memo = "";
   boolean settle;
   long actionMemberNumber;
+  LocalDateTime expiredAt;
 
   /**
    * Entity로 변환.
@@ -36,6 +38,7 @@ public class PointHistoryInsertRequest {
         .orderNumber(orderNumber)
         .regTime(LocalDateTime.now())
         .settle(settle)
+        .expiredAt(expiredAt)
         .build();
   }
 

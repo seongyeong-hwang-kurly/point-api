@@ -16,6 +16,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Service
 class PointDomainService {
@@ -104,7 +108,7 @@ class PointDomainService {
     return pointConsumeResult;
   }
 
-  public List<Point> getExpiredMemberPoint(long memberNumber, LocalDateTime expireTime) {
+  public List<Point> getExpiredPointBy(long memberNumber, LocalDateTime expireTime) {
     return pointRepository.findAllExpiredMemberPoint(memberNumber, expireTime);
   }
 

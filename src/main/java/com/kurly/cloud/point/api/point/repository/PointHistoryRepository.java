@@ -1,13 +1,14 @@
 package com.kurly.cloud.point.api.point.repository;
 
 import com.kurly.cloud.point.api.point.entity.PointHistory;
-import java.time.LocalDateTime;
-import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Repository
 public interface PointHistoryRepository extends JpaRepository<PointHistory, Long> {
@@ -46,4 +47,6 @@ public interface PointHistoryRepository extends JpaRepository<PointHistory, Long
       List<Integer> historyType,
       Pageable pageable
   );
+
+  List<PointHistory> findAllByPointSeq(long point);
 }

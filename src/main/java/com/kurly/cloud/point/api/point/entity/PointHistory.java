@@ -3,25 +3,12 @@ package com.kurly.cloud.point.api.point.entity;
 import com.kurly.cloud.point.api.point.domain.history.HistoryType;
 import com.kurly.cloud.point.api.point.entity.converter.UnixTimestampConverter;
 import com.kurly.cloud.point.api.point.exception.HistoryTypeNotFoundException;
-import java.time.LocalDateTime;
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Index;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Type;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 @Builder
 @Setter
@@ -73,6 +60,9 @@ public class PointHistory {
   @Convert(converter = UnixTimestampConverter.class)
   @Column(name = "reg_time")
   LocalDateTime regTime;
+
+  @Column(name = "expired_at")
+  LocalDateTime expiredAt;
 
   /**
    * 이력의 설명을 리턴 한다.

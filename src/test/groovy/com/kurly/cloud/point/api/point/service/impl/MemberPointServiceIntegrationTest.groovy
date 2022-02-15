@@ -56,7 +56,7 @@ class MemberPointServiceIntegrationTest extends Specification {
 
     def setup() {
         historyRequest = MemberPointHistoryListRequest.builder().memberNumber(MEMBER_NO).build()
-        expiredAt = LocalDateTime.parse("2021-12-31T23:59:59.99")
+        expiredAt = LocalDateTime.parse("2022-12-31T23:59:59.99")
     }
 
     def '1. should give point to a member(/v1/publish)'() {

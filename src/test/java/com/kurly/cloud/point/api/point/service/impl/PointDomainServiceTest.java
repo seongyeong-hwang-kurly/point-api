@@ -756,7 +756,7 @@ class PointDomainServiceTest {
 
     List<Point> subject(long memberNumber) {
       return pointDomainService
-          .getExpiredMemberPoint(memberNumber, givenExpiredTargetDateTime());
+          .getExpiredPointBy(memberNumber, givenExpiredTargetDateTime());
     }
 
     LocalDateTime givenExpiredTargetDateTime() {

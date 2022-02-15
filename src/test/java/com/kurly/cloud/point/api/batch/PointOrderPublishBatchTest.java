@@ -135,7 +135,7 @@ public class PointOrderPublishBatchTest implements CommonTestGiven {
       void test() {
         givenOrderBySize();
         subject();
-        MemberPoint memberPoint = memberPointRepository.findMemberPointByMemberNumber(newMemberNumber).get();
+        MemberPoint memberPoint = memberPointRepository.findAllByMemberNumber(newMemberNumber).get(0);
 
         int expectedPoint = givenPoint();
         assertThat(memberPoint.getTotalPoint()).isEqualTo(expectedPoint);

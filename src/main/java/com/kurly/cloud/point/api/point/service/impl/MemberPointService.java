@@ -8,13 +8,14 @@ import com.kurly.cloud.point.api.point.entity.Point;
 import com.kurly.cloud.point.api.point.service.MemberPointUseCase;
 import com.kurly.cloud.point.api.point.util.PointExpireDateCalculator;
 import com.kurly.cloud.point.api.point.web.dto.MemberPointHistoryDto;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -54,7 +55,7 @@ class MemberPointService implements MemberPointUseCase {
     }
 
     List<Point> expirePoints =
-        pointDomainService.getExpiredMemberPoint(memberNumber, memberPointNextExpireDate.get());
+        pointDomainService.getExpiredPointBy(memberNumber, memberPointNextExpireDate.get());
 
     long expireAmount = expirePoints.stream().mapToLong(Point::getRemain).sum();
 
