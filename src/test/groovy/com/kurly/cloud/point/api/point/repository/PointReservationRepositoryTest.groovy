@@ -12,7 +12,7 @@ import javax.transaction.Transactional
 import java.time.LocalDateTime
 
 @SpringBootTest
-@ActiveProfiles("dev")
+@ActiveProfiles("local")
 class PointReservationRepositoryTest extends Specification {
     public static final int POINT = 1000
     @Subject
