@@ -3,14 +3,17 @@ package com.kurly.cloud.point.api.batch.expire;
 import com.kurly.cloud.point.api.batch.config.PointBatchConfig;
 import com.kurly.cloud.point.api.point.domain.PointExpireResult;
 import com.kurly.cloud.point.api.point.service.ExpirePointUseCase;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.concurrent.ForkJoinPool;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemWriter;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.concurrent.ForkJoinPool;
+
+@Slf4j
 public class PointExpireItemWriter implements ItemWriter<Long> {
 
   private final ExpirePointUseCase expirePointUseCase;
@@ -26,9 +29,14 @@ public class PointExpireItemWriter implements ItemWriter<Long> {
   @Override public void write(List<? extends Long> items) throws Exception {
     forkJoinPool.submit(() -> {
       items.parallelStream().forEach(memberNumber -> {
-        PointExpireResult result = expirePointUseCase.expireMemberPoint(memberNumber,
-            LocalDateTime.parse(expireTime, PointBatchConfig.DATE_TIME_FORMATTER));
-        putSummary(result);
+        try {
+          PointExpireResult result = expirePointUseCase.expireMemberPoint(memberNumber,
+                  LocalDateTime.parse(expireTime, PointBatchConfig.DATE_TIME_FORMATTER));
+          putSummary(result);
+        } catch (Exception e) {
+          log.error("###Error on memberNumber : " + memberNumber);
+          throw e;
+        }
       });
     }).get();
   }
