@@ -66,7 +66,18 @@ class MemberPointDomainService {
   void expireFreePoint(long memberNumber, long amount, LocalDateTime expiredAt) {
     MemberPoint memberPoint = getOrCreateMemberPoint(memberNumber);
     memberPoint.expire(amount, 0, expiredAt);
-    memberPointRepository.saveAndFlush(memberPoint);
+    try {
+      memberPointRepository.saveAndFlush(memberPoint);
+    } catch (Exception e) {
+      log.error("###Error arguments"
+              + "memberNumber : " + memberNumber
+              + "amount:" + amount
+              + "expiredAt:" + expiredAt
+              + "memberPoint == "
+              + "freePoint" + memberPoint.getFreePoint()
+      );
+      throw e;
+    }
   }
 
   MemberPoint minusCashPoint(long memberNumber, long amount) {
