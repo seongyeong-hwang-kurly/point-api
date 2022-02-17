@@ -74,7 +74,10 @@ public class PointExpireBatchTest {
           Optional<MemberPoint> memberPoint =
               memberPointRepository.findById(givenMemberNumber() - i);
           assertThat(memberPoint).isNotEmpty();
-          System.out.println("member:" + memberPoint.get().getMemberNumber() + ", totalPoint: " + memberPoint.get().getTotalPoint());
+          System.out.println("### expired member:" + memberPoint.get().getMemberNumber()
+                  + ", totalPoint: " + memberPoint.get().getTotalPoint()
+                  + ", expiredAt:" + memberPoint.get().getExpiredAt()
+          );
           assertThat(memberPoint.get().getTotalPoint()).isEqualTo(0);
         }
       }
