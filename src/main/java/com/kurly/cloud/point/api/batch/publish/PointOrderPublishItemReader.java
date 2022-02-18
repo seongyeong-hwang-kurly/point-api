@@ -2,11 +2,12 @@ package com.kurly.cloud.point.api.batch.publish;
 
 import com.kurly.cloud.point.api.batch.config.PointBatchConfig;
 import com.kurly.cloud.point.api.batch.order.entity.Order;
+import org.springframework.batch.item.database.JpaPagingItemReader;
+
+import javax.persistence.EntityManagerFactory;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
-import javax.persistence.EntityManagerFactory;
-import org.springframework.batch.item.database.JpaPagingItemReader;
 
 public class PointOrderPublishItemReader extends JpaPagingItemReader<Order> {
 
@@ -23,9 +24,8 @@ public class PointOrderPublishItemReader extends JpaPagingItemReader<Order> {
     setSaveState(false);
     LocalDateTime publishDate =
         LocalDateTime.parse(publishDateStr, PointBatchConfig.DATE_TIME_FORMATTER);
-    LocalDateTime deliveredDate = publishDate.minusDays(1);
-    LocalDateTime from = deliveredDate.withHour(0).withMinute(0).withSecond(0).withNano(0);
-    LocalDateTime to = deliveredDate.withHour(23).withMinute(59).withSecond(59).withNano(0);
+    LocalDateTime from = publishDate.minusDays(2).withHour(0).withMinute(0).withSecond(0).withNano(0);
+    LocalDateTime to = publishDate.minusDays(1).withHour(23).withMinute(59).withSecond(59).withNano(0);
     setParameterValues(getParameterValues(from, to));
   }
 
