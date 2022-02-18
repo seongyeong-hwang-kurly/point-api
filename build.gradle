@@ -9,7 +9,7 @@ plugins {
 }
 
 group 'com.kurly.cloud'
-version '1.7.13'
+version '1.7.15'
 
 sourceCompatibility = JavaVersion.VERSION_11
 
