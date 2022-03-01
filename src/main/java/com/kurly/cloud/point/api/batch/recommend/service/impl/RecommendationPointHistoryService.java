@@ -13,12 +13,8 @@ import com.kurly.cloud.point.api.batch.recommend.domain.RecommendationPointStatu
 import com.kurly.cloud.point.api.batch.recommend.entity.RecommendationPointHistory;
 import com.kurly.cloud.point.api.batch.recommend.repository.RecommendationPointHistoryRepository;
 import com.kurly.cloud.point.api.batch.recommend.service.RecommendationPointHistoryUseCase;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -28,6 +24,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+@Slf4j
 @RefreshScope
 @RequiredArgsConstructor
 @Service
@@ -144,8 +147,14 @@ public class RecommendationPointHistoryService implements RecommendationPointHis
       return false;
     }
 
-    if (isPaidMember(order.getMemberNumber())) {
-      return false;
+    try {
+      if (isPaidMember(order.getMemberNumber())) {
+        return false;
+      }
+    } catch (Exception e) { // todo : should be removed after fixed a problem.
+      log.error("#### an Error occurs with order number[" + order.getOrderNumber() + "], member["
+      + order.getMemberNumber() + "] when it comes to a validation isPaidMember ");
+      throw e;
     }
 
     return true;
