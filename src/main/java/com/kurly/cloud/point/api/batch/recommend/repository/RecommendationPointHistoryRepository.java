@@ -4,9 +4,10 @@ import com.kurly.cloud.point.api.batch.recommend.domain.RecommendationDataType;
 import com.kurly.cloud.point.api.batch.recommend.domain.RecommendationDelayType;
 import com.kurly.cloud.point.api.batch.recommend.domain.RecommendationPointStatus;
 import com.kurly.cloud.point.api.batch.recommend.entity.RecommendationPointHistory;
+import org.springframework.data.jpa.repository.JpaRepository;
+
 import java.util.List;
 import java.util.Optional;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RecommendationPointHistoryRepository
     extends JpaRepository<RecommendationPointHistory, Long> {
@@ -16,7 +17,7 @@ public interface RecommendationPointHistoryRepository
       RecommendationDelayType delayType,
       RecommendationDataType type);
 
-  List<RecommendationPointHistory> findAllByOrderMemberNumberAndStatus(
+  List<RecommendationPointHistory> findAllByOrderMemberNumberAndStatusAndRecommendationMemberNumberIsNotNull(
       long memberNumber,
       RecommendationPointStatus status
   );

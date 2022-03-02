@@ -8,22 +8,11 @@ import com.kurly.cloud.point.api.batch.recommend.entity.converter.Recommendation
 import com.kurly.cloud.point.api.batch.recommend.entity.converter.RecommendationDelayTypeConverter;
 import com.kurly.cloud.point.api.batch.recommend.entity.converter.RecommendationPointReasonConverter;
 import com.kurly.cloud.point.api.batch.recommend.entity.converter.RecommendationPointStatusConverter;
+import lombok.*;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.PrePersist;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Builder
 @Setter
@@ -61,7 +50,7 @@ public class RecommendationPointHistory {
   String orderPhoneNumber;
 
   @Column(name = "recommendation_member_no")
-  long recommendationMemberNumber;
+  Long recommendationMemberNumber;
 
   @Column(name = "recommendation_phone_number")
   String recommendationPhoneNumber;

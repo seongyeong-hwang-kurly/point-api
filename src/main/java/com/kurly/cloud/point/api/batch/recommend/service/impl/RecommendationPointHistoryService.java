@@ -147,14 +147,8 @@ public class RecommendationPointHistoryService implements RecommendationPointHis
       return false;
     }
 
-    try {
-      if (isPaidMember(order.getMemberNumber())) {
-        return false;
-      }
-    } catch (Exception e) { // todo : should be removed after fixed a problem.
-      log.error("#### an Error occurs with order number[" + order.getOrderNumber() + "], member["
-      + order.getMemberNumber() + "] when it comes to a validation isPaidMember ");
-      throw e;
+    if (isPaidMember(order.getMemberNumber())) {
+      return false;
     }
 
     return true;
@@ -168,7 +162,7 @@ public class RecommendationPointHistoryService implements RecommendationPointHis
 
   private boolean isPaidMember(long memberNumber) {
     List<RecommendationPointHistory> paidHistory = recommendRepository
-        .findAllByOrderMemberNumberAndStatus(memberNumber, RecommendationPointStatus.PAID);
+        .findAllByOrderMemberNumberAndStatusAndRecommendationMemberNumberIsNotNull(memberNumber, RecommendationPointStatus.PAID);
 
     if (paidHistory.size() == 0) {
       return false;
