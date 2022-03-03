@@ -27,7 +27,6 @@ public class DivideUsingFreePointHelper {
                 0);
     }
 
-
     public static int getProportionalPoint(int totalPrice, int eachPrice, int point) {
         return (int) (point * ((double)eachPrice/totalPrice));
     }
