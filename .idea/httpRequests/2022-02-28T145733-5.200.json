@@ -1,0 +1,37 @@
+{
+  "success": true,
+  "message": null,
+  "data": {
+    "content": [
+      {
+        "seq": 2,
+        "orderNumber": 88888888,
+        "point": -1000,
+        "detail": "[적립취소] 주문(88888888) 취소",
+        "memo": "",
+        "regDateTime": "2022-02-28T14:57:33+09:00",
+        "regTimestamp": 1646027853000,
+        "expireDateTime": null,
+        "expireTimestamp": 0
+      },
+      {
+        "seq": 1,
+        "orderNumber": 0,
+        "point": 100,
+        "detail": "발급사유(고객용)",
+        "memo": "발급사유(내부)",
+        "regDateTime": "2022-02-28T14:57:32+09:00",
+        "regTimestamp": 1646027852000,
+        "expireDateTime": "2030-12-31T23:59:59+09:00",
+        "expireTimestamp": 1924959599000
+      }
+    ],
+    "totalPages": 1,
+    "totalElements": 2,
+    "size": 10,
+    "numberOfElements": 2,
+    "number": 0,
+    "last": true,
+    "first": true
+  }
+}

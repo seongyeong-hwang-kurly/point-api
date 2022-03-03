@@ -1,0 +1,14 @@
+{
+  "success": true,
+  "message": null,
+  "data": {
+    "content": [],
+    "totalPages": 0,
+    "totalElements": 0,
+    "size": 10,
+    "numberOfElements": 0,
+    "number": 0,
+    "last": true,
+    "first": true
+  }
+}

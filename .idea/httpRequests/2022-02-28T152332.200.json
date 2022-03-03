@@ -1,0 +1,26 @@
+{
+  "success": true,
+  "message": null,
+  "data": {
+    "content": [
+      {
+        "seq": 1,
+        "orderNumber": 0,
+        "point": 100,
+        "detail": "발급사유(고객용)",
+        "memo": "발급사유(내부)",
+        "regDateTime": "2022-02-28T15:18:53+09:00",
+        "regTimestamp": 1646029133000,
+        "expireDateTime": "2030-12-31T23:59:59+09:00",
+        "expireTimestamp": 1924959599000
+      }
+    ],
+    "totalPages": 1,
+    "totalElements": 1,
+    "size": 10,
+    "numberOfElements": 1,
+    "number": 0,
+    "last": true,
+    "first": true
+  }
+}

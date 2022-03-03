@@ -1,0 +1,16 @@
+{
+  "success": true,
+  "message": null,
+  "data": {
+    "seq": 1,
+    "memberNumber": 888888888,
+    "orderNumber": 0,
+    "charge": 100,
+    "pointRatio": 0.0,
+    "historyType": 1,
+    "payment": false,
+    "settle": false,
+    "regDateTime": "2022-02-28T17:15:10+09:00",
+    "expireDateTime": "2030-12-31T23:59:59+09:00"
+  }
+}

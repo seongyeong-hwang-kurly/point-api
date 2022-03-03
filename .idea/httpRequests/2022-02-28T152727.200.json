@@ -1,0 +1,70 @@
+{
+  "success": true,
+  "message": null,
+  "data": {
+    "content": [
+      {
+        "seq": 5,
+        "orderNumber": 88888888,
+        "point": -1000,
+        "detail": "[적립취소] 주문(88888888) 취소",
+        "memo": "",
+        "regDateTime": "2022-02-28T15:27:26+09:00",
+        "regTimestamp": 1646029646000,
+        "expireDateTime": null,
+        "expireTimestamp": 0
+      },
+      {
+        "seq": 4,
+        "orderNumber": 88888888,
+        "point": 100,
+        "detail": "[사용취소] 주문(88888888) 결제 시 사용한 적립금 반환",
+        "memo": "",
+        "regDateTime": "2022-02-28T15:27:26+09:00",
+        "regTimestamp": 1646029646000,
+        "expireDateTime": "2023-02-28T23:59:59+09:00",
+        "expireTimestamp": 1677596399000
+      },
+      {
+        "seq": 3,
+        "orderNumber": 88888888,
+        "point": -150,
+        "detail": "[사용] 주문(88888888) 결제 시 사용",
+        "memo": "",
+        "regDateTime": "2022-02-28T15:27:26+09:00",
+        "regTimestamp": 1646029646000,
+        "expireDateTime": null,
+        "expireTimestamp": 0
+      },
+      {
+        "seq": 2,
+        "orderNumber": 0,
+        "point": 100,
+        "detail": "발급사유(고객용)",
+        "memo": "발급사유(내부)",
+        "regDateTime": "2022-02-28T15:27:26+09:00",
+        "regTimestamp": 1646029646000,
+        "expireDateTime": "2030-12-31T23:59:59+09:00",
+        "expireTimestamp": 1924959599000
+      },
+      {
+        "seq": 1,
+        "orderNumber": 0,
+        "point": 100,
+        "detail": "발급사유(고객용)",
+        "memo": "발급사유(내부)",
+        "regDateTime": "2022-02-28T15:26:14+09:00",
+        "regTimestamp": 1646029574000,
+        "expireDateTime": "2030-12-31T23:59:59+09:00",
+        "expireTimestamp": 1924959599000
+      }
+    ],
+    "totalPages": 1,
+    "totalElements": 5,
+    "size": 10,
+    "numberOfElements": 5,
+    "number": 0,
+    "last": true,
+    "first": true
+  }
+}

@@ -1,0 +1,449 @@
+POST http://localhost:8080/v1/publish
+Content-Type: application/json
+
+{
+  "memberNumber" : 888888888,
+  "point" : 100,
+  "historyType" : 1,
+  "payment" : false,
+  "settle" : false,
+  "expireDate" : "2030-12-31T23:59:59Z",
+  "memo" : "발급사유(내부)",
+  "detail" : "발급사유(고객용)",
+  "actionMemberNumber" : 0,
+  "hidden" : false
+}
+
+<> 2022-02-28T173424.200.json
+
+###
+
+GET http://localhost:8080/v1/history/888888888?regDateTimeFrom=2020-01-01T00:00:00+09:00&regDateTimeTo=2030-01-01T00:00:00+09:00&size=10&page=0
+
+<> 2022-02-28T173413.200.json
+
+###
+
+GET http://localhost:8080/public/v1/available/888888888
+Content-Type: application/json
+
+<> 2022-02-28T171517.401.json
+
+###
+
+POST http://localhost:8080/v1/publish
+Content-Type: application/json
+
+{
+  "memberNumber" : 888888888,
+  "point" : 100,
+  "historyType" : 1,
+  "payment" : false,
+  "settle" : false,
+  "expireDate" : "2030-12-31T23:59:59Z",
+  "memo" : "발급사유(내부)",
+  "detail" : "발급사유(고객용)",
+  "actionMemberNumber" : 0,
+  "hidden" : false
+}
+
+<> 2022-02-28T171510.200.json
+
+###
+
+POST http://localhost:8080/v1/publish
+Content-Type: application/json
+
+{
+  "memberNumber" : 888888888,
+  "point" : 100,
+  "historyType" : 1,
+  "payment" : false,
+  "settle" : false,
+  "expireDate" : "2030-12-31T23:59:59Z",
+  "memo" : "발급사유(내부)",
+  "detail" : "발급사유(고객용)",
+  "actionMemberNumber" : 0,
+  "hidden" : false
+}
+
+<> 2022-02-28T154509.200.json
+
+###
+
+GET http://localhost:8080/public/v1/history/888888888
+Content-Type: application/json
+
+<> 2022-02-28T152727-1.401.json
+
+###
+
+GET http://localhost:8080/public/v1/summary/888888888
+Content-Type: application/json
+
+<> 2022-02-28T152727.401.json
+
+###
+
+GET http://localhost:8080/v1/history/888888888?regDateTimeFrom=2020-01-01T00:00:00+09:00&regDateTimeTo=2030-01-01T00:00:00+09:00&size=10&page=0
+Content-Type: application/json
+
+<> 2022-02-28T152727.200.json
+
+###
+
+POST http://localhost:8080/v1/publish/order-cancel
+Content-Type: application/json
+
+{
+  "memberNumber" : 888888888,
+  "orderNumber" : 88888888,
+  "point" : 1000,
+  "actionMemberNumber" : 0
+}
+
+###
+
+POST http://localhost:8080/v1/reserve/calculate
+Content-Type: application/json
+
+{
+  "memberReserveRatio" : 3,
+  "products" : [ {
+    "price" : 1000,
+    "quantity" : 1,
+    "totalPrice" : 1000,
+    "contentProductNo" : 1,
+    "dealProductNo" : 2,
+    "productReserveType" : 0,
+    "productReserveValue" : 0
+  } ]
+}
+
+<> 2022-02-28T152726-5.200.json
+
+###
+
+GET http://localhost:8080/v1/history/888888888?regDateTimeFrom=2020-01-01T00:00:00+09:00&regDateTimeTo=2030-01-01T00:00:00+09:00&size=10&page=0
+Content-Type: application/json
+
+<> 2022-02-28T152726-4.200.json
+
+###
+
+POST http://localhost:8080/v1/consume/cancel
+Content-Type: application/json
+
+{
+  "orderNumber" : 88888888,
+  "memberNumber" : 888888888,
+  "point" : 100,
+  "actionMemberNumber" : 0
+}
+
+###
+
+GET http://localhost:8080/v1/history/888888888?regDateTimeFrom=2020-01-01T00:00:00+09:00&regDateTimeTo=2030-01-01T00:00:00+09:00&size=10&page=0
+Content-Type: application/json
+
+<> 2022-02-28T152726-3.200.json
+
+###
+
+POST http://localhost:8080/v1/consume/order
+Content-Type: application/json
+
+{
+  "memberNumber" : 888888888,
+  "orderNumber" : 88888888,
+  "point" : 150,
+  "settle" : false
+}
+
+###
+
+GET http://localhost:8080/v1/point-history/publish
+Content-Type: application/json
+
+{
+  "historyType" : [ 1 ],
+  "regDateTimeFrom" : "2021-09-06T05:45:32Z",
+  "actionMemberNumber" : [ 888888888 ],
+  "regDateTimeTo" : "2022-09-06T05:45:34Z"
+}
+
+<> 2022-02-28T152726-2.200.json
+
+###
+
+GET http://localhost:8080/v1/history/888888888?regDateTimeFrom=2020-01-01T00:00:00+09:00&regDateTimeTo=2030-01-01T00:00:00+09:00&size=10&page=0
+
+<> 2022-02-28T152726-1.200.json
+
+###
+
+GET http://localhost:8080/public/v1/available/888888888
+Content-Type: application/json
+
+<> 2022-02-28T152726.401.json
+
+###
+
+POST http://localhost:8080/v1/publish
+Content-Type: application/json
+
+{
+  "memberNumber" : 888888888,
+  "point" : 100,
+  "historyType" : 1,
+  "payment" : false,
+  "settle" : false,
+  "expireDate" : "2030-12-31T23:59:59Z",
+  "memo" : "발급사유(내부)",
+  "detail" : "발급사유(고객용)",
+  "actionMemberNumber" : 0,
+  "hidden" : false
+}
+
+<> 2022-02-28T152726.200.json
+
+###
+
+POST http://localhost:8080/v1/publish
+Content-Type: application/json
+
+{
+  "memberNumber" : 888888888,
+  "point" : 100,
+  "historyType" : 1,
+  "payment" : false,
+  "settle" : false,
+  "expireDate" : "2030-12-31T23:59:59Z",
+  "memo" : "발급사유(내부)",
+  "detail" : "발급사유(고객용)",
+  "actionMemberNumber" : 0,
+  "hidden" : false
+}
+
+<> 2022-02-28T152614.200.json
+
+###
+
+GET http://localhost:8080/v1/history/888888888?regDateTimeFrom=2020-01-01T00:00:00+09:00&regDateTimeTo=2030-01-01T00:00:00+09:00&size=10&page=0
+
+<> 2022-02-28T152332.200.json
+
+###
+
+GET http://localhost:8080/public/v1/available/888888888
+Content-Type: application/json
+
+<> 2022-02-28T152318.401.json
+
+###
+
+GET http://localhost:8080/public/v1/available/888888888
+Content-Type: application/json
+
+<> 2022-02-28T151859.401.json
+
+###
+
+POST http://localhost:8080/v1/publish
+Content-Type: application/json
+
+{
+  "memberNumber" : 888888888,
+  "point" : 100,
+  "historyType" : 1,
+  "payment" : false,
+  "settle" : false,
+  "expireDate" : "2030-12-31T23:59:59Z",
+  "memo" : "발급사유(내부)",
+  "detail" : "발급사유(고객용)",
+  "actionMemberNumber" : 0,
+  "hidden" : false
+}
+
+<> 2022-02-28T151853.200.json
+
+###
+
+GET http://localhost:8080/public/v1/history/888888888
+Content-Type: application/json
+
+<> 2022-02-28T145733-2.401.json
+
+###
+
+GET http://localhost:8080/public/v1/summary/888888888
+Content-Type: application/json
+
+<> 2022-02-28T145733-1.401.json
+
+###
+
+GET http://localhost:8080/v1/history/888888888?regDateTimeFrom=2020-01-01T00:00:00+09:00&regDateTimeTo=2030-01-01T00:00:00+09:00&size=10&page=0
+Content-Type: application/json
+
+<> 2022-02-28T145733-5.200.json
+
+###
+
+POST http://localhost:8080/v1/publish/order-cancel
+Content-Type: application/json
+
+{
+  "memberNumber" : 888888888,
+  "orderNumber" : 88888888,
+  "point" : 1000,
+  "actionMemberNumber" : 0
+}
+
+###
+
+POST http://localhost:8080/v1/reserve/calculate
+Content-Type: application/json
+
+{
+  "memberReserveRatio" : 3,
+  "products" : [ {
+    "price" : 1000,
+    "quantity" : 1,
+    "totalPrice" : 1000,
+    "contentProductNo" : 1,
+    "dealProductNo" : 2,
+    "productReserveType" : 0,
+    "productReserveValue" : 0
+  } ]
+}
+
+<> 2022-02-28T145733-4.200.json
+
+###
+
+GET http://localhost:8080/v1/history/888888888?regDateTimeFrom=2020-01-01T00:00:00+09:00&regDateTimeTo=2030-01-01T00:00:00+09:00&size=10&page=0
+Content-Type: application/json
+
+<> 2022-02-28T145733-3.200.json
+
+###
+
+POST http://localhost:8080/v1/consume/cancel
+Content-Type: application/json
+
+{
+  "orderNumber" : 88888888,
+  "memberNumber" : 888888888,
+  "point" : 100,
+  "actionMemberNumber" : 0
+}
+
+<> 2022-02-28T145733-1.400.json
+
+###
+
+GET http://localhost:8080/v1/history/888888888?regDateTimeFrom=2020-01-01T00:00:00+09:00&regDateTimeTo=2030-01-01T00:00:00+09:00&size=10&page=0
+Content-Type: application/json
+
+<> 2022-02-28T145733-2.200.json
+
+###
+
+POST http://localhost:8080/v1/consume/order
+Content-Type: application/json
+
+{
+  "memberNumber" : 888888888,
+  "orderNumber" : 88888888,
+  "point" : 150,
+  "settle" : false
+}
+
+<> 2022-02-28T145733.400.json
+
+###
+
+GET http://localhost:8080/v1/point-history/publish
+Content-Type: application/json
+
+{
+  "historyType" : [ 1 ],
+  "regDateTimeFrom" : "2021-09-06T05:45:32Z",
+  "actionMemberNumber" : [ 888888888 ],
+  "regDateTimeTo" : "2022-09-06T05:45:34Z"
+}
+
+<> 2022-02-28T145733-1.200.json
+
+###
+
+GET http://localhost:8080/v1/history/888888888?regDateTimeFrom=2020-01-01T00:00:00+09:00&regDateTimeTo=2030-01-01T00:00:00+09:00&size=10&page=0
+
+<> 2022-02-28T145733.200.json
+
+###
+
+GET http://localhost:8080/public/v1/available/888888888
+Content-Type: application/json
+
+<> 2022-02-28T145733.401.json
+
+###
+
+POST http://localhost:8080/v1/publish
+Content-Type: application/json
+
+{
+  "memberNumber" : 888888888,
+  "point" : 100,
+  "historyType" : 1,
+  "payment" : false,
+  "settle" : false,
+  "expireDate" : "2030-12-31T23:59:59Z",
+  "memo" : "발급사유(내부)",
+  "detail" : "발급사유(고객용)",
+  "actionMemberNumber" : 0,
+  "hidden" : false
+}
+
+<> 2022-02-28T145732.200.json
+
+###
+
+POST http://{{host}}/v1/publish
+Content-Type: application/json
+
+{
+  "memberNumber" : 888888888,
+  "point" : 100,
+  "historyType" : 1,
+  "payment" : false,
+  "settle" : false,
+  "expireDate" : "2030-12-31T23:59:59Z",
+  "memo" : "발급사유(내부)",
+  "detail" : "발급사유(고객용)",
+  "actionMemberNumber" : 0,
+  "hidden" : false
+}
+
+###
+
+POST http://{{host}}/v1/publish
+Content-Type: application/json
+
+{
+  "memberNumber" : 888888888,
+  "point" : 100,
+  "historyType" : 1,
+  "payment" : false,
+  "settle" : false,
+  "expireDate" : "2030-12-31T23:59:59Z",
+  "memo" : "발급사유(내부)",
+  "detail" : "발급사유(고객용)",
+  "actionMemberNumber" : 0,
+  "hidden" : false
+}
+
+###
+

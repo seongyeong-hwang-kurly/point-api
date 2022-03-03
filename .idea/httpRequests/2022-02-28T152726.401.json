@@ -1,0 +1,7 @@
+{
+  "timestamp": "2022-02-28T06:27:26.443+0000",
+  "status": 401,
+  "error": "Unauthorized",
+  "message": "Unauthorized [JWT]",
+  "path": "/public/v1/available/888888888"
+}
