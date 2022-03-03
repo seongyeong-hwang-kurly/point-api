@@ -1,4 +1,4 @@
-package com.kurly.cloud.point.api.point.param;
+package com.kurly.cloud.point.api.point.web.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @AllArgsConstructor(staticName = "create")
-public class DealProductResponseParam {
+public class DealProductResponseDto {
     private long dealProductNo;
     @Setter
     private int usedFreePoint;

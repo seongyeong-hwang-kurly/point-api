@@ -1,12 +1,11 @@
 package com.kurly.cloud.point.api.point.web
 
-import com.kurly.cloud.point.api.point.param.DealProductRequestParam
-import com.kurly.cloud.point.api.point.param.DealProductResponseParam
-import com.kurly.cloud.point.api.point.param.DivideUsingFreePointRequestParam
+import com.kurly.cloud.point.api.point.web.dto.DealProductRequestDto
+import com.kurly.cloud.point.api.point.web.dto.DealProductResponseDto
+import com.kurly.cloud.point.api.point.web.dto.DivideUsingFreePointRequestParam
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
@@ -36,15 +35,15 @@ class DivideUsingFreePointControllerTest extends Specification {
         DivideUsingFreePointRequestParam param = DivideUsingFreePointRequestParam.create(
                 17900, 2010, 0,
                 [
-                        DealProductRequestParam.create(1, 1894),
-                        DealProductRequestParam.create(2, 10938),
-                        DealProductRequestParam.create(3, 4262),
-                        DealProductRequestParam.create(4,806)
+                        DealProductRequestDto.create(1, 1894),
+                        DealProductRequestDto.create(2, 10938),
+                        DealProductRequestDto.create(3, 4262),
+                        DealProductRequestDto.create(4,806)
                 ]
         );
         MockHttpServletRequestBuilder post = MockMvcRequestBuilders.post("/divide", param);
         when:
-        List<DealProductResponseParam> dealProducts = this.mockMvc.perform(MockHttpServletRequestBuilder).andDo(MockMvcResultHandlers.print());
+        List<DealProductResponseDto> dealProducts = this.mockMvc.perform(MockHttpServletRequestBuilder).andDo(MockMvcResultHandlers.print());
         then:
         dealProducts.size() == 4
         dealProducts.get(0).getUsedFreePoint() == 213

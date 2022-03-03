@@ -1,8 +1,8 @@
 package com.kurly.cloud.point.api.point.service.impl
 
-import com.kurly.cloud.point.api.point.param.DealProductRequestParam
-import com.kurly.cloud.point.api.point.param.DealProductResponseParam
-import com.kurly.cloud.point.api.point.param.DivideUsingFreePointRequestParam
+import com.kurly.cloud.point.api.point.web.dto.DealProductRequestDto
+import com.kurly.cloud.point.api.point.web.dto.DealProductResponseDto
+import com.kurly.cloud.point.api.point.web.dto.DivideUsingFreePointRequestDto
 import com.kurly.cloud.point.api.point.service.DivideUsingFreePointService
 import spock.lang.Specification
 import spock.lang.Subject
@@ -17,12 +17,12 @@ class DivideUsingFreePointServiceTest extends Specification {
 
     def "Split"() {
         given:
-        def param = DivideUsingFreePointRequestParam.create(
+        def param = DivideUsingFreePointRequestDto.create(
                 1000, 100, 0,
-                [DealProductRequestParam.create(1, 1000)]
+                [DealProductRequestDto.create(1, 1000)]
         )
         when:
-        List<DealProductResponseParam> dealProducts = divideService.divide(param)
+        List<DealProductResponseDto> dealProducts = divideService.divide(param)
 
         then:
         dealProducts.size() > 0
@@ -30,15 +30,15 @@ class DivideUsingFreePointServiceTest extends Specification {
 
     def "Split2"() {
         given:
-        def param = DivideUsingFreePointRequestParam.create(
+        def param = DivideUsingFreePointRequestDto.create(
                 1000, 100, 0,
                 [
-                        DealProductRequestParam.create(1, 500),
-                        DealProductRequestParam.create(2, 500)
+                        DealProductRequestDto.create(1, 500),
+                        DealProductRequestDto.create(2, 500)
                 ]
         )
         when:
-        List<DealProductResponseParam> dealProducts = divideService.divide(param)
+        List<DealProductResponseDto> dealProducts = divideService.divide(param)
 
         then:
         dealProducts.size() == 2
@@ -49,16 +49,16 @@ class DivideUsingFreePointServiceTest extends Specification {
 
     def "Split3"() {
         given:
-        def param = DivideUsingFreePointRequestParam.create(
+        def param = DivideUsingFreePointRequestDto.create(
                 1000, 100, 0,
                 [
-                        DealProductRequestParam.create(1, 300),
-                        DealProductRequestParam.create(2, 300),
-                        DealProductRequestParam.create(3, 400)
+                        DealProductRequestDto.create(1, 300),
+                        DealProductRequestDto.create(2, 300),
+                        DealProductRequestDto.create(3, 400)
                 ]
         )
         when:
-        List<DealProductResponseParam> dealProducts = divideService.divide(param)
+        List<DealProductResponseDto> dealProducts = divideService.divide(param)
 
         then:
         dealProducts.size() == 3
@@ -69,17 +69,17 @@ class DivideUsingFreePointServiceTest extends Specification {
 
     def "Split4"() {
         given:
-        def param = DivideUsingFreePointRequestParam.create(
+        def param = DivideUsingFreePointRequestDto.create(
                 17900, 2010, 0,
                 [
-                        DealProductRequestParam.create(1, 1894),
-                        DealProductRequestParam.create(2, 10938),
-                        DealProductRequestParam.create(3, 4262),
-                        DealProductRequestParam.create(4,806)
+                        DealProductRequestDto.create(1, 1894),
+                        DealProductRequestDto.create(2, 10938),
+                        DealProductRequestDto.create(3, 4262),
+                        DealProductRequestDto.create(4,806)
                 ]
         )
         when:
-        List<DealProductResponseParam> dealProducts = divideService.divide(param)
+        List<DealProductResponseDto> dealProducts = divideService.divide(param)
 
         then:
         dealProducts.size() == 4
