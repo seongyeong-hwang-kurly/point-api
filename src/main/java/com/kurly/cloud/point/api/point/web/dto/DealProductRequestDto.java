@@ -2,8 +2,10 @@ package com.kurly.cloud.point.api.point.web.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor(staticName = "create")
 public class DealProductRequestDto {
     private Long dealProductNo;

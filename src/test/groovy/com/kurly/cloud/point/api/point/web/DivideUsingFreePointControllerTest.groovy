@@ -1,39 +1,42 @@
 package com.kurly.cloud.point.api.point.web
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.kurly.cloud.api.common.domain.ApiResponseModel
 import com.kurly.cloud.point.api.point.web.dto.DealProductRequestDto
-import com.kurly.cloud.point.api.point.web.dto.DealProductResponseDto
-import com.kurly.cloud.point.api.point.web.dto.DivideUsingFreePointRequestParam
+import com.kurly.cloud.point.api.point.web.dto.DivideUsingFreePointRequestDto
+import com.kurly.cloud.point.api.point.web.dto.DivideUsingFreePointResponseDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder
+import org.springframework.test.web.servlet.MvcResult
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
-import org.springframework.web.context.WebApplicationContext
-import org.springframework.web.filter.CharacterEncodingFilter
 import spock.lang.Specification
+import spock.lang.Subject
 
 @SpringBootTest
 class DivideUsingFreePointControllerTest extends Specification {
+
+
     @Autowired
-    private DivideUsingFreePointController controller
-
+    ObjectMapper objectMapper;
     private MockMvc mockMvc;
+    @Subject
+    DivideUsingFreePointController controller
 
-    void setup(WebApplicationContext webApplicationContext){
-        this.mockMvc = MockMvcBuilders
-                .webAppContextSetup(webApplicationContext)
-                .addFilters(new CharacterEncodingFilter("UTF-8", true))
-                .build();
+    def setup() {
+        controller = new DivideUsingFreePointController()
+        this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
     }
-
 
 
     def '적립금을 단수처리해서 배분한다'(){
         given:
-        DivideUsingFreePointRequestParam param = DivideUsingFreePointRequestParam.create(
+        DivideUsingFreePointRequestDto param = DivideUsingFreePointRequestDto.create(
                 17900, 2010, 0,
+
                 [
                         DealProductRequestDto.create(1, 1894),
                         DealProductRequestDto.create(2, 10938),
@@ -41,16 +44,21 @@ class DivideUsingFreePointControllerTest extends Specification {
                         DealProductRequestDto.create(4,806)
                 ]
         );
-        MockHttpServletRequestBuilder post = MockMvcRequestBuilders.post("/divide", param);
+
         when:
-        List<DealProductResponseDto> dealProducts = this.mockMvc.perform(MockHttpServletRequestBuilder).andDo(MockMvcResultHandlers.print());
+        MvcResult response = this.mockMvc.perform(MockMvcRequestBuilders.post("/divide")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(param )))
+                .andDo(MockMvcResultHandlers.print()).andReturn();
         then:
+        ApiResponseModel<List<DivideUsingFreePointResponseDto>> result = objectMapper.readValue(response.getResponse().getContentAsString(), ApiResponseModel.class)
+        List<DivideUsingFreePointResponseDto> dealProducts = result.getData().get("dealProducts");
         dealProducts.size() == 4
-        dealProducts.get(0).getUsedFreePoint() == 213
-        dealProducts.get(1).getUsedFreePoint() == 1229
-        dealProducts.get(2).getUsedFreePoint() == 478
-        dealProducts.get(3).getUsedFreePoint() == 90
-        dealProducts.stream().mapToInt({ it -> it.getUsedFreePoint() }).sum() == 2010
+        dealProducts.get(0).get("usedFreePoint") == 213
+        dealProducts.get(1).get("usedFreePoint") == 1229
+        dealProducts.get(2).get("usedFreePoint") == 478
+        dealProducts.get(3).get("usedFreePoint") == 90
+        dealProducts.stream().mapToInt({ it -> it.get("usedFreePoint") }).sum() == 2010
     }
 
 }

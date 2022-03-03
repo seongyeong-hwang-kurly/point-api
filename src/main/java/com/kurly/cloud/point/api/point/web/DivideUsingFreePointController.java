@@ -5,8 +5,7 @@ import com.kurly.cloud.point.api.point.service.DivideUsingFreePointService;
 
 import com.kurly.cloud.point.api.point.web.dto.DealProductResponseDto;
 import com.kurly.cloud.point.api.point.web.dto.DivideUsingFreePointRequestDto;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
+import com.kurly.cloud.point.api.point.web.dto.DivideUsingFreePointResponseDto;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,9 +17,10 @@ public class DivideUsingFreePointController {
 
 
     @PostMapping("/divide")
-    ApiResponseModel<DivideUsingFreePointRequestDto> divide(
+    ApiResponseModel<DivideUsingFreePointResponseDto> divide(
             @RequestBody DivideUsingFreePointRequestDto divideUsingFreePointRequestDto){
-        List<DealProductResponseDto> divide = DivideUsingFreePointService.divide(divideUsingFreePointRequestDto);
+        List<DealProductResponseDto> result = DivideUsingFreePointService.divide(divideUsingFreePointRequestDto);
+        return new ApiResponseModel(true, "success", DivideUsingFreePointResponseDto.create(result));
     }
 
 }
