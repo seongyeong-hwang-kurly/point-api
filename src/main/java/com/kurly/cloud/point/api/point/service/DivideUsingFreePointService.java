@@ -19,6 +19,10 @@ public class DivideUsingFreePointService {
         responseParams.stream().limit(subPoint).
                 forEach(DealProductResponseDto::increaseUseFreePoint);
 
+        int totalUsedFreePoint = responseParams.stream()
+                .mapToInt(DealProductResponseDto::getUsedFreePoint).sum();
+        if (totalUsingFreePoint != totalUsedFreePoint) throw new IllegalArgumentException("요청한 usingFreePoint와 계산된 무상적립금이 일치하지 않습니다.");
+
         return responseParams;
     }
 

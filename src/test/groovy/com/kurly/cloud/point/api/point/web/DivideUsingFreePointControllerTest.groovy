@@ -46,7 +46,7 @@ class DivideUsingFreePointControllerTest extends Specification {
         );
 
         when:
-        MvcResult response = this.mockMvc.perform(MockMvcRequestBuilders.post("/divide")
+        MvcResult response = this.mockMvc.perform(MockMvcRequestBuilders.post("/v1/divide")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(param )))
                 .andDo(MockMvcResultHandlers.print()).andReturn();
@@ -60,5 +60,6 @@ class DivideUsingFreePointControllerTest extends Specification {
         dealProducts.get(3).get("usedFreePoint") == 90
         dealProducts.stream().mapToInt({ it -> it.get("usedFreePoint") }).sum() == 2010
     }
+
 
 }

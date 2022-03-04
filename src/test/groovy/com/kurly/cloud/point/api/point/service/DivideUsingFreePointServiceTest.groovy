@@ -15,7 +15,7 @@ class DivideUsingFreePointServiceTest extends Specification {
         divideService = new DivideUsingFreePointService()
     }
 
-    def "Split"() {
+    def "Divide"() {
         given:
         def param = DivideUsingFreePointRequestDto.create(
                 1000, 100, 0,
@@ -26,9 +26,10 @@ class DivideUsingFreePointServiceTest extends Specification {
 
         then:
         dealProducts.size() > 0
+        
     }
 
-    def "Split2"() {
+    def "Divide2"() {
         given:
         def param = DivideUsingFreePointRequestDto.create(
                 1000, 100, 0,
@@ -47,7 +48,7 @@ class DivideUsingFreePointServiceTest extends Specification {
         }
     }
 
-    def "Split3"() {
+    def "Divide3"() {
         given:
         def param = DivideUsingFreePointRequestDto.create(
                 1000, 100, 0,
@@ -67,7 +68,7 @@ class DivideUsingFreePointServiceTest extends Specification {
         dealProducts.get(2).getUsedFreePoint() == 40
     }
 
-    def "Split4"() {
+    def "Divide4"() {
         given:
         def param = DivideUsingFreePointRequestDto.create(
                 17900, 2010, 0,

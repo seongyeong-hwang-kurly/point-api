@@ -5,9 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5499dca8-ec1b-487f-84dc-a819a51eee5b" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/kurly/cloud/point/api/point/exception/advice/PointControllerAdvice.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/kurly/cloud/point/api/point/service/DivideUsingFreePointService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kurly/cloud/point/api/point/service/DivideUsingFreePointService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/kurly/cloud/point/api/point/web/DivideUsingFreePointController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kurly/cloud/point/api/point/web/DivideUsingFreePointController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/groovy/com/kurly/cloud/point/api/point/service/impl/DivideUsingFreePointServiceTest.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/groovy/com/kurly/cloud/point/api/point/service/DivideUsingFreePointServiceTest.groovy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/groovy/com/kurly/cloud/point/api/point/service/DivideUsingFreePointServiceTest.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/groovy/com/kurly/cloud/point/api/point/service/DivideUsingFreePointServiceTest.groovy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/groovy/com/kurly/cloud/point/api/point/web/DivideUsingFreePointControllerTest.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/groovy/com/kurly/cloud/point/api/point/web/DivideUsingFreePointControllerTest.groovy" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -135,7 +138,7 @@
       <recent name="com.kurly.cloud.point.api.point.service.impl" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.DivideUsingFreePointServiceTest (1)">
+  <component name="RunManager" selected="Spring Boot.PointApiApplication">
     <configuration name="DivideUsingFreePointControllerTest (1)" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -150,6 +153,29 @@
             <option value=":test" />
             <option value="--tests" />
             <option value="&quot;com.kurly.cloud.point.api.point.web.DivideUsingFreePointControllerTest&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="DivideUsingFreePointControllerTest.요청한 usingFreePoint와 계산된 무상 적립금이 다르면, 에러를 던진다" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;com.kurly.cloud.point.api.point.web.DivideUsingFreePointControllerTest.요청한 usingFreePoint와 계산된 무상 적립금이 다르면, 에러를 던진다&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -228,29 +254,6 @@
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="DivideUsingFreePointServiceTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":test" />
-            <option value="--tests" />
-            <option value="&quot;com.kurly.cloud.point.api.point.service.impl.DivideUsingFreePointServiceTest&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <method v="2" />
-    </configuration>
     <configuration name="PointApiApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
       <module name="point-api.main" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.kurly.cloud.point.api.PointApiApplication" />
@@ -260,11 +263,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.DivideUsingFreePointControllerTest.요청한 usingFreePoint와 계산된 무상 적립금이 다르면, 에러를 던진다" />
+        <item itemvalue="Gradle.DivideUsingFreePointControllerTest (1)" />
+        <item itemvalue="Gradle.DivideUsingFreePointHelperTest.비율에 맞게 포인트 금액을 계산한다." />
         <item itemvalue="Gradle.DivideUsingFreePointServiceTest (1)" />
         <item itemvalue="Gradle.DivideUsingFreePointControllerTest.적립금을 단수처리해서 배분한다" />
-        <item itemvalue="Gradle.DivideUsingFreePointControllerTest (1)" />
-        <item itemvalue="Gradle.DivideUsingFreePointServiceTest" />
-        <item itemvalue="Gradle.DivideUsingFreePointHelperTest.비율에 맞게 포인트 금액을 계산한다." />
       </list>
     </recent_temporary>
   </component>
@@ -284,7 +287,7 @@
       <workItem from="1646016146427" duration="11751000" />
       <workItem from="1646142355755" duration="8610000" />
       <workItem from="1646210384010" duration="10441000" />
-      <workItem from="1646222908391" duration="29658000" />
+      <workItem from="1646222908391" duration="31477000" />
     </task>
     <servers />
   </component>
