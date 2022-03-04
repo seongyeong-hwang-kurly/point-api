@@ -1,9 +1,9 @@
-package com.kurly.cloud.point.api.point.service.impl
+package com.kurly.cloud.point.api.point.service
 
+import com.kurly.cloud.point.api.point.service.DivideUsingFreePointService
 import com.kurly.cloud.point.api.point.web.dto.DealProductRequestDto
 import com.kurly.cloud.point.api.point.web.dto.DealProductResponseDto
 import com.kurly.cloud.point.api.point.web.dto.DivideUsingFreePointRequestDto
-import com.kurly.cloud.point.api.point.service.DivideUsingFreePointService
 import spock.lang.Specification
 import spock.lang.Subject
 
@@ -88,6 +88,24 @@ class DivideUsingFreePointServiceTest extends Specification {
         dealProducts.get(2).getUsedFreePoint() == 478
         dealProducts.get(3).getUsedFreePoint() == 90
         dealProducts.stream().mapToInt({ it -> it.getUsedFreePoint() }).sum() == 2010
+    }
+
+    def "요청한 usingFreePoint와 계산된 무상 적립금이 다르면, 에러를 던진다" (){
+        given:
+        def param = DivideUsingFreePointRequestDto.create(
+                37900, 3644, 0,
+                [
+                        DealProductRequestDto.create(13415, 17498),
+                        DealProductRequestDto.create(14213, 6318),
+                        DealProductRequestDto.create(13433, 7292),
+                        DealProductRequestDto.create(13433,3792)
+                ]
+        )
+        when:
+        List<DealProductResponseDto> dealProducts = divideService.divide(param)
+        then:
+        def e = thrown(IllegalArgumentException.class)
+        e.message == "요청한 usingFreePoint와 계산된 무상적립금이 일치하지 않습니다."
     }
 
 

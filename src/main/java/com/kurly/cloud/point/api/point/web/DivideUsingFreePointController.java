@@ -16,7 +16,7 @@ import java.util.List;
 public class DivideUsingFreePointController {
 
 
-    @PostMapping("/divide")
+    @PostMapping("/v1/divide")
     ApiResponseModel<DivideUsingFreePointResponseDto> divide(
             @RequestBody DivideUsingFreePointRequestDto divideUsingFreePointRequestDto){
         List<DealProductResponseDto> result = DivideUsingFreePointService.divide(divideUsingFreePointRequestDto);
