@@ -5,12 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5499dca8-ec1b-487f-84dc-a819a51eee5b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/kurly/cloud/point/api/point/exception/advice/PointControllerAdvice.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/kurly/cloud/point/api/point/service/DivideUsingFreePointService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kurly/cloud/point/api/point/service/DivideUsingFreePointService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kurly/cloud/point/api/point/web/DivideUsingFreePointController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kurly/cloud/point/api/point/web/DivideUsingFreePointController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/groovy/com/kurly/cloud/point/api/point/service/DivideUsingFreePointServiceTest.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/groovy/com/kurly/cloud/point/api/point/service/DivideUsingFreePointServiceTest.groovy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/groovy/com/kurly/cloud/point/api/point/web/DivideUsingFreePointControllerTest.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/groovy/com/kurly/cloud/point/api/point/web/DivideUsingFreePointControllerTest.groovy" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,6 +45,19 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <favorite-branches>
+      <branch-storage>
+        <map>
+          <entry type="LOCAL">
+            <value>
+              <list>
+                <branch-info repo="$PROJECT_DIR$" source="feature/OPD-69" />
+              </list>
+            </value>
+          </entry>
+        </map>
+      </branch-storage>
+    </favorite-branches>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="UPDATE_TYPE" value="REBASE" />
   </component>
@@ -287,7 +296,8 @@
       <workItem from="1646016146427" duration="11751000" />
       <workItem from="1646142355755" duration="8610000" />
       <workItem from="1646210384010" duration="10441000" />
-      <workItem from="1646222908391" duration="31477000" />
+      <workItem from="1646222908391" duration="35792000" />
+      <workItem from="1646469523037" duration="604000" />
     </task>
     <servers />
   </component>
@@ -305,7 +315,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="feature/OPA-69" />
+                        <option value="feature/OPD-69" />
                       </list>
                     </value>
                   </entry>
@@ -316,6 +326,29 @@
         </entry>
       </map>
     </option>
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="Branch">
+          <value>
+            <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="feature/OPD-69" />
+                </option>
+              </RecentGroup>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="[OPD-69] refactorized free point divide login" />
+    <MESSAGE value="[OPD-69] create DivideUsingFreePointControllerTest code" />
+    <MESSAGE value="[OPD-69] rename Param -&gt; Dto" />
+    <MESSAGE value="[OPD-69] make DivideUsingFreePointControllerTest code" />
+    <MESSAGE value="[OPD-69] add exception test" />
+    <MESSAGE value="[OPD-69] add PointControllerAdvice" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -11,6 +11,7 @@ public class DivideUsingFreePointHelper {
 
     public static List<DealProductResponseDto> makeResponse(DivideUsingFreePointRequestDto param){
         return    param.getDealProducts().stream()
+                .filter(deal -> deal.getSellingPrice() > 0)
                 .map(deal -> createEachResponse(param, deal))
                 .collect(Collectors.toList());
     }
