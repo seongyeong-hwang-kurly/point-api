@@ -116,3 +116,7 @@ include::consume.adoc[]
 include::bulk-consume.adoc[]
 
 include::cancel-consume.adoc[]
+
+== 분배
+
+include::divide-point.adoc[]
