@@ -5,8 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5499dca8-ec1b-487f-84dc-a819a51eee5b" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/docs/asciidoc/divide-point.adoc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/com/kurly/cloud/point/api/point/documentation/pri/DividePointDocumentTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kurly/cloud/point/api/point/service/DivideUsingFreePointService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kurly/cloud/point/api/point/service/DivideUsingFreePointService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,7 +30,23 @@
         </task>
         <projects_view>
           <tree_state>
-            <expand />
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="point-api" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="point-api" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="point-api" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="build" type="c8890929:TasksNode$1" />
+              </path>
+            </expand>
             <select />
           </tree_state>
         </projects_view>
@@ -43,6 +60,9 @@
         <option value="Class" />
       </list>
     </option>
+  </component>
+  <component name="Git.Rebase.Settings">
+    <option name="NEW_BASE" value="feature/OPD-69" />
   </component>
   <component name="Git.Settings">
     <favorite-branches>
@@ -58,6 +78,11 @@
         </map>
       </branch-storage>
     </favorite-branches>
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="develop" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="UPDATE_TYPE" value="REBASE" />
   </component>
@@ -68,6 +93,13 @@
       <filtered-out-file-type name="TAG" />
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
+  </component>
+  <component name="GithubProjectSettings">
+    <option name="branchProtectionPatterns">
+      <list>
+        <option value="master" />
+      </list>
+    </option>
   </component>
   <component name="JpbToolWindowState">
     <option name="myId2FirstActivated">
@@ -110,13 +142,13 @@
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.Spock" value="spock.lang.Specification" />
     <property name="jdk.selected.JAVA_MODULE" value="zulu-11 (2)" />
     <property name="last_directory_selection" value="$PROJECT_DIR$/src/test/groovy/com/kurly/cloud/point/api/point" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/java/com/kurly/cloud/point/api/point" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/docs/asciidoc" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.17" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="rest.client.default.execution.environment" value="local" />
-    <property name="settings.editor.selected.configurable" value="editor.preferences.import" />
+    <property name="settings.editor.selected.configurable" value="reference.projectsettings.compiler.annotationProcessors" />
   </component>
   <component name="ReactorSettings">
     <option name="notificationShown" value="true" />
@@ -126,6 +158,7 @@
       <recent name="com.kurly.cloud.point.api.point.service.impl" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/docs/asciidoc" />
       <recent name="$PROJECT_DIR$/src/main/java/com/kurly/cloud/point/api/point" />
     </key>
     <key name="CreateTestDialog.Recents.Supers">
@@ -147,7 +180,30 @@
       <recent name="com.kurly.cloud.point.api.point.service.impl" />
     </key>
   </component>
-  <component name="RunManager" selected="Spring Boot.PointApiApplication">
+  <component name="RunManager" selected="Gradle.point-cloud-api [build]">
+    <configuration name="DividePointDocumentTest.divideFreePoint" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;com.kurly.cloud.point.api.point.documentation.pri.DividePointDocumentTest.divideFreePoint&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
     <configuration name="DivideUsingFreePointControllerTest (1)" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -194,7 +250,7 @@
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="DivideUsingFreePointControllerTest.적립금을 단수처리해서 배분한다" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="MemberPointDocumentationTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -207,7 +263,7 @@
           <list>
             <option value=":test" />
             <option value="--tests" />
-            <option value="&quot;com.kurly.cloud.point.api.point.web.DivideUsingFreePointControllerTest.적립금을 단수처리해서 배분한다&quot;" />
+            <option value="&quot;com.kurly.cloud.point.api.point.documentation.pri.MemberPointDocumentationTest&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -217,48 +273,23 @@
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="DivideUsingFreePointHelperTest.비율에 맞게 포인트 금액을 계산한다." type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="point-cloud-api [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
+        <option name="scriptParameters" />
         <option name="taskDescriptions">
           <list />
         </option>
         <option name="taskNames">
           <list>
-            <option value=":test" />
-            <option value="--tests" />
-            <option value="&quot;com.kurly.cloud.point.api.point.service.helper.DivideUsingFreePointHelperTest.비율에 맞게 포인트 금액을 계산한다*&quot;" />
+            <option value="build" />
           </list>
         </option>
         <option name="vmOptions" />
       </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <method v="2" />
-    </configuration>
-    <configuration name="DivideUsingFreePointServiceTest (1)" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":test" />
-            <option value="--tests" />
-            <option value="&quot;com.kurly.cloud.point.api.point.service.DivideUsingFreePointServiceTest&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
@@ -272,11 +303,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.point-cloud-api [build]" />
+        <item itemvalue="Gradle.DividePointDocumentTest.divideFreePoint" />
+        <item itemvalue="Gradle.MemberPointDocumentationTest" />
         <item itemvalue="Gradle.DivideUsingFreePointControllerTest.요청한 usingFreePoint와 계산된 무상 적립금이 다르면, 에러를 던진다" />
         <item itemvalue="Gradle.DivideUsingFreePointControllerTest (1)" />
-        <item itemvalue="Gradle.DivideUsingFreePointHelperTest.비율에 맞게 포인트 금액을 계산한다." />
-        <item itemvalue="Gradle.DivideUsingFreePointServiceTest (1)" />
-        <item itemvalue="Gradle.DivideUsingFreePointControllerTest.적립금을 단수처리해서 배분한다" />
       </list>
     </recent_temporary>
   </component>
@@ -298,6 +329,8 @@
       <workItem from="1646210384010" duration="10441000" />
       <workItem from="1646222908391" duration="35792000" />
       <workItem from="1646469523037" duration="604000" />
+      <workItem from="1646879233914" duration="3836000" />
+      <workItem from="1647244806590" duration="5324000" />
     </task>
     <servers />
   </component>
@@ -309,19 +342,7 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State>
-              <option name="FILTERS">
-                <map>
-                  <entry key="branch">
-                    <value>
-                      <list>
-                        <option value="feature/OPD-69" />
-                      </list>
-                    </value>
-                  </entry>
-                </map>
-              </option>
-            </State>
+            <State />
           </value>
         </entry>
       </map>
@@ -334,6 +355,11 @@
               <RecentGroup>
                 <option name="FILTER_VALUES">
                   <option value="feature/OPD-69" />
+                </option>
+              </RecentGroup>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="develop" />
                 </option>
               </RecentGroup>
             </list>

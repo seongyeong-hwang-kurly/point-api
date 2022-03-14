@@ -1,0 +1,27 @@
+=== 회원 적립금 분배
+
+상품별로 적립금을 분배한다
+분배할 때 발생하는 단수는 상품 목록을 순차적으로 조회하면서
+분배한다
+
+==== HTTP method
+
+POST
+
+==== HTTP request
+
+===== Private
+
+include::{snippets}/point/pri/divide-free-point/http-request.adoc[]
+
+==== Request Fields
+
+include::{snippets}/point/pri/divide-free-point/request-fields.adoc[]
+
+==== Response fields
+
+include::{snippets}/point/pri/divide-free-point/response-fields-data.adoc[]
+
+==== Response body
+
+include::{snippets}/point/pri/divide-free-point/response-body.adoc[]
