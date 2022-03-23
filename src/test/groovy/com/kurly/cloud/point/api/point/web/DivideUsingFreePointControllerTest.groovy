@@ -38,10 +38,10 @@ class DivideUsingFreePointControllerTest extends Specification {
                 17900, 2010, 0,
 
                 [
-                        DealProductRequestDto.create(1, 1894),
-                        DealProductRequestDto.create(2, 10938),
-                        DealProductRequestDto.create(3, 4262),
-                        DealProductRequestDto.create(4,806)
+                        DealProductRequestDto.create(1, null, 1894),
+                        DealProductRequestDto.create(2, null, 10938),
+                        DealProductRequestDto.create(3, null, 4262),
+                        DealProductRequestDto.create(4, null, 806)
                 ]
         );
 

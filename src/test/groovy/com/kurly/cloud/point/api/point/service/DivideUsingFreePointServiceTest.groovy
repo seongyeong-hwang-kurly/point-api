@@ -19,7 +19,7 @@ class DivideUsingFreePointServiceTest extends Specification {
         given:
         def param = DivideUsingFreePointRequestDto.create(
                 1000, 100, 0,
-                [DealProductRequestDto.create(1, 1000)]
+                [DealProductRequestDto.create(1, null, 1000)]
         )
         when:
         List<DealProductResponseDto> dealProducts = divideService.divide(param)
@@ -34,8 +34,8 @@ class DivideUsingFreePointServiceTest extends Specification {
         def param = DivideUsingFreePointRequestDto.create(
                 1000, 100, 0,
                 [
-                        DealProductRequestDto.create(1, 500),
-                        DealProductRequestDto.create(2, 500)
+                        DealProductRequestDto.create(1, null, 500),
+                        DealProductRequestDto.create(2, null, 500)
                 ]
         )
         when:
@@ -53,9 +53,9 @@ class DivideUsingFreePointServiceTest extends Specification {
         def param = DivideUsingFreePointRequestDto.create(
                 1000, 100, 0,
                 [
-                        DealProductRequestDto.create(1, 300),
-                        DealProductRequestDto.create(2, 300),
-                        DealProductRequestDto.create(3, 400)
+                        DealProductRequestDto.create(1, null, 300),
+                        DealProductRequestDto.create(2, null, 300),
+                        DealProductRequestDto.create(3, null, 400)
                 ]
         )
         when:
@@ -73,10 +73,10 @@ class DivideUsingFreePointServiceTest extends Specification {
         def param = DivideUsingFreePointRequestDto.create(
                 17900, 2010, 0,
                 [
-                        DealProductRequestDto.create(1, 1894),
-                        DealProductRequestDto.create(2, 10938),
-                        DealProductRequestDto.create(3, 4262),
-                        DealProductRequestDto.create(4,806)
+                        DealProductRequestDto.create(1, null, 1894),
+                        DealProductRequestDto.create(2, null, 10938),
+                        DealProductRequestDto.create(3, null, 4262),
+                        DealProductRequestDto.create(4, null,806)
                 ]
         )
         when:
@@ -96,10 +96,10 @@ class DivideUsingFreePointServiceTest extends Specification {
         def param = DivideUsingFreePointRequestDto.create(
                 37900, 3644, 0,
                 [
-                        DealProductRequestDto.create(13415, 17498),
-                        DealProductRequestDto.create(14213, 6318),
-                        DealProductRequestDto.create(13433, 7292),
-                        DealProductRequestDto.create(13433,3792)
+                        DealProductRequestDto.create(13415, null, 17498),
+                        DealProductRequestDto.create(14213, null, 6318),
+                        DealProductRequestDto.create(13433, null, 7292),
+                        DealProductRequestDto.create(13433, null, 3792)
                 ]
         )
         when:

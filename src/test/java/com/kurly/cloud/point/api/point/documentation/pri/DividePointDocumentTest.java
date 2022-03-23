@@ -67,10 +67,10 @@ public class DividePointDocumentTest implements CommonTestGiven {
     @DisplayName("RestDoc - 무상 적립금 분배 ")
     void divideFreePoint() throws Exception {
         List<DealProductRequestDto> dealList = new ArrayList<>();
-        dealList.add(DealProductRequestDto.create(1L, 1894));
-        dealList.add(DealProductRequestDto.create(2L, 10938));
-        dealList.add(DealProductRequestDto.create(3L, 4262));
-        dealList.add(DealProductRequestDto.create(4L,806));
+        dealList.add(DealProductRequestDto.create(1L, null,1894));
+        dealList.add(DealProductRequestDto.create(2L, null, 10938));
+        dealList.add(DealProductRequestDto.create(3L, null, 4262));
+        dealList.add(DealProductRequestDto.create(4L, null,806));
         DivideUsingFreePointRequestDto param = DivideUsingFreePointRequestDto.create(
                 17900, 2010, 0,
                 dealList
@@ -95,6 +95,8 @@ public class DividePointDocumentTest implements CommonTestGiven {
                                         , fieldWithPath("dealProducts").type(JsonFieldType.ARRAY).description("딜상품목록")
                                         , fieldWithPath("dealProducts[].dealProductNo").type(JsonFieldType.NUMBER)
                                                 .description("딜 상품번호")
+                                        , fieldWithPath("dealProducts[].contentNo").type(JsonFieldType.NUMBER)
+                                                .description("컨텐츠 상품 번호").optional()
                                         ,fieldWithPath("dealProducts[].sellingPrice").type(JsonFieldType.NUMBER)
                                                 .description("딜 상품번호")
                                 )
@@ -102,6 +104,8 @@ public class DividePointDocumentTest implements CommonTestGiven {
                                         beneathPath("data").withSubsectionId("data")
                                         , fieldWithPath("dealProducts").type(JsonFieldType.ARRAY).description("분배된 적립금을 담은 딜상품목록")
                                         , fieldWithPath("dealProducts[].dealProductNo").type(JsonFieldType.NUMBER).description("딜 상품번호")
+                                        , fieldWithPath("dealProducts[].contentNo").type(JsonFieldType.NUMBER)
+                                                .description("컨텐츠 상품 번호").optional()
                                         , fieldWithPath("dealProducts[].usedFreePoint").type(JsonFieldType.NUMBER).description("상품별 사용된 무상 적립금")
                                         , fieldWithPath("dealProducts[].usedPaidPoint").type(JsonFieldType.NUMBER).description("상품별 사용된 유상적립금")
                                 )

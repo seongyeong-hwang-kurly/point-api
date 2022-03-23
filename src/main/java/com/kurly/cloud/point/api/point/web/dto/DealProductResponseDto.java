@@ -7,7 +7,8 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor(staticName = "create")
 public class DealProductResponseDto {
-    private long dealProductNo;
+    private Long dealProductNo;
+    private Long contentNo;
     @Setter
     private int usedFreePoint;
     private int usedPaidPoint;
