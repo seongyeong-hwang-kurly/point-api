@@ -24,7 +24,7 @@ public class DivideUsingFreePointHelper {
         );
         return DealProductResponseDto.create(
                 sub.getDealProductNo(),
-                sub.getContentNo(),
+                sub.getContentsProductNo(),
                 usedFreePoint,
                 0);
     }
