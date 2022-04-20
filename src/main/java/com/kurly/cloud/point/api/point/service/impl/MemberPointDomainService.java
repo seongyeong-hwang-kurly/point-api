@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -24,8 +25,9 @@ class MemberPointDomainService {
     });
   }
 
+  @Transactional
   Optional<MemberPoint> getMemberPoint(long memberNumber) {
-    return memberPointRepository.findById(memberNumber);
+    return memberPointRepository.findWithPessimisticLockById(memberNumber);
   }
 
   MemberPoint createMemberPoint(long memberNumber, int freePoint, int cashPoint) {

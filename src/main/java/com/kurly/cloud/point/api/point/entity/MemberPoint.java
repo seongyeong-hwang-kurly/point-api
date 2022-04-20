@@ -3,16 +3,11 @@ package com.kurly.cloud.point.api.point.entity;
 import com.kurly.cloud.point.api.point.entity.converter.UnixTimestampConverter;
 import com.kurly.cloud.point.api.point.util.PointExpireDateCalculator;
 import lombok.*;
-import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.OptimisticLockType;
-import org.hibernate.annotations.OptimisticLocking;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-@DynamicUpdate
-@OptimisticLocking(type = OptimisticLockType.DIRTY)
 @Builder
 @Setter
 @Getter
