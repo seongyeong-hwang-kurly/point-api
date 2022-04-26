@@ -4,8 +4,10 @@ import com.kurly.cloud.point.api.point.entity.MemberPoint;
 import com.kurly.cloud.point.api.point.repository.MemberPointRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.LockModeType;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -17,7 +19,7 @@ class MemberPointDomainService {
   private final MemberPointRepository memberPointRepository;
 
   MemberPoint getOrCreateMemberPoint(long memberNumber) {
-    Optional<MemberPoint> memberPoint = getMemberPoint(memberNumber);
+    Optional<MemberPoint> memberPoint = memberPointRepository.findWithPessimisticLockById(memberNumber);
     return memberPoint.orElseGet(() -> {
       log.debug("회원의 적립금 정보가 존재하지 않아 새로 생성합니다.[{}]", memberNumber);
       return createMemberPoint(memberNumber, 0, 0);
@@ -25,7 +27,7 @@ class MemberPointDomainService {
   }
 
   Optional<MemberPoint> getMemberPoint(long memberNumber) {
-    return memberPointRepository.findWithPessimisticLockById(memberNumber);
+    return memberPointRepository.findById(memberNumber);
   }
 
   MemberPoint createMemberPoint(long memberNumber, int freePoint, int cashPoint) {
